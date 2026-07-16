@@ -1,0 +1,88 @@
+---
+import type { Locale } from '../../config/locales';
+import type { SiteContent } from '../../i18n/content';
+import { products } from '../../data/products';
+import { contact, whatsappUrl } from '../../config/contact';
+import Icon from '../ui/Icon.astro';
+import PlaceholderMedia from '../ui/PlaceholderMedia.astro';
+import ProductCard from '../ui/ProductCard.astro';
+
+interface Props { locale: Locale; content: SiteContent }
+const { locale, content: t } = Astro.props;
+const benefitIcons = ['briefcase', 'image', 'quality', 'truck'] as const;
+---
+
+<section class="hero section section--warm">
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">{t.hero.eyebrow}</p>
+      <h1>{t.hero.title}</h1>
+      <p class="lead">{t.hero.text}</p>
+      <div class="button-row">
+        <a class="button button--primary" href={whatsappUrl('general', locale)} target="_blank" rel="noopener"><Icon name="whatsapp" />{t.common.availability}</a>
+        <a class="button button--secondary" href={`tel:${contact.phoneE164}`}><Icon name="phone" />{t.common.call}</a>
+      </div>
+      <p class="microcopy">{t.hero.note}</p>
+      <dl class="hero-facts">{t.hero.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+    </div>
+    <PlaceholderMedia label={t.hero.imageLabel} ratio="hero" />
+  </div>
+  <div class="shell benefits" aria-label={t.benefits.eyebrow}>
+    {t.benefits.items.map((item, index) => <article><Icon name={benefitIcons[index]} /><div><h2>{item.title}</h2><p>{item.text}</p></div></article>)}
+  </div>
+</section>
+
+<section class="section catalog" id="oferta">
+  <div class="shell">
+    <p class="eyebrow">{t.catalog.eyebrow}</p><h2 class="section-title">{t.catalog.title}</h2><p class="section-intro">{t.catalog.text} <strong>{t.catalog.taxNote}</strong></p>
+    <div class="filters" role="group" aria-label={t.catalog.title}>
+      {Object.entries(t.catalog.filters).map(([key, label], index) => <button class:list={['filter-button', { active: index === 0 }]} type="button" data-filter={key} aria-pressed={index === 0 ? 'true' : 'false'}>{label}</button>)}
+    </div>
+    <div class="product-grid">{products.map((product) => <ProductCard product={product} locale={locale} content={t} />)}</div>
+    <p class="catalog-disclaimer">{t.catalog.disclaimer}</p>
+    <div class="inline-cta"><div><h3>{t.photoCta.title}</h3><p>{t.photoCta.text}</p></div><a class="button button--primary" href={whatsappUrl('photos', locale)} target="_blank" rel="noopener"><Icon name="whatsapp" />{t.photoCta.action}</a></div>
+  </div>
+</section>
+
+<section class="section section--warm" id="jakosc">
+  <div class="shell split-section">
+    <PlaceholderMedia label={t.quality.imageAlt} ratio="quality" />
+    <div><p class="eyebrow">{t.quality.eyebrow}</p><h2 class="section-title">{t.quality.title}</h2><p class="section-intro">{t.quality.text}</p><ol class="principles">{t.quality.principles.map((item, index) => <li><span>{index + 1}</span><div><h3>{item.title}</h3><p>{item.text}</p></div></li>)}</ol></div>
+  </div>
+</section>
+
+<section class="section section--compact" id="zamowienie">
+  <div class="shell">
+    <p class="eyebrow">{t.process.eyebrow}</p><h2 class="section-title">{t.process.title}</h2><p class="section-intro">{t.process.text}</p>
+    <ol class="process-grid">{t.process.steps.map((step, index) => <li><span>{index + 1}</span><h3>{step.title}</h3><p>{step.text}</p></li>)}</ol>
+  </div>
+</section>
+
+<section class="section section--warm" id="dostawa">
+  <div class="shell"><p class="eyebrow">{t.terms.eyebrow}</p><h2 class="section-title">{t.terms.title}</h2>
+    <div class="terms-grid">{[t.terms.delivery, t.terms.payment].map((block) => <article><h3>{block.title}</h3><dl>{block.rows.map((row) => <div><dt>{row.label}</dt><dd>{row.value}</dd></div>)}</dl>{'note' in block && <p>{block.note}</p>}</article>)}</div>
+    <div class="inline-cta"><div><h3>{t.transportCta.title}</h3><p>{t.transportCta.text}</p></div><div class="button-row"><a class="button button--primary" href={whatsappUrl('transport', locale)} target="_blank" rel="noopener"><Icon name="whatsapp" />{t.transportCta.action}</a><a class="button button--secondary" href={`tel:${contact.phoneE164}`}><Icon name="phone" />{t.common.call}</a></div></div>
+  </div>
+</section>
+
+<section class="section faq" id="faq">
+  <div class="shell faq-shell"><p class="eyebrow">{t.faq.eyebrow}</p><h2 class="section-title">{t.faq.title}</h2><div class="faq-list">{t.faq.items.map((item, index) => <details open={index === 0}><summary>{item.question}<span>+</span></summary><p>{item.answer}</p></details>)}</div></div>
+</section>
+
+<section class="final-cta">
+  <div class="shell final-cta__grid">
+    <div><p class="eyebrow">{t.finalCta.eyebrow}</p><h2>{t.finalCta.title}</h2><p>{t.finalCta.text}</p><div class="button-row"><a class="button button--light" href={whatsappUrl('general', locale)} target="_blank" rel="noopener"><Icon name="whatsapp" />{t.common.availability}</a><a class="button button--outline-light" href={`tel:${contact.phoneE164}`}><Icon name="phone" />{t.common.call}</a></div></div>
+    <dl>{t.finalCta.summary.map((item) => <div><dt>{item.label}</dt><dd>{item.value}</dd></div>)}</dl>
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll('[data-filter]');
+  const cards = document.querySelectorAll('[data-product]');
+  buttons.forEach((button) => button.addEventListener('click', () => {
+    const filter = button.getAttribute('data-filter');
+    buttons.forEach((item) => { item.classList.remove('active'); item.setAttribute('aria-pressed', 'false'); });
+    button.classList.add('active'); button.setAttribute('aria-pressed', 'true');
+    cards.forEach((card) => { if (card instanceof HTMLElement) card.hidden = filter !== 'all' && card.dataset.category !== filter; });
+  }));
+</script>

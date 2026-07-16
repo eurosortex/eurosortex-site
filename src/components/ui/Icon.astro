@@ -1,0 +1,23 @@
+---
+interface Props {
+  name: 'whatsapp' | 'phone' | 'menu' | 'close' | 'chevron' | 'check' | 'image' | 'quality' | 'truck' | 'briefcase' | 'arrow';
+  size?: number;
+}
+
+const { name, size = 20 } = Astro.props;
+const paths: Record<Props['name'], string> = {
+  whatsapp: '<path d="M20.5 11.6a8.9 8.9 0 0 1-13.2 7.8L3 20.5l1.1-4.2A8.9 8.9 0 1 1 20.5 11.6Z"/><path d="M8 7.5c.3-.7.6-.7.9-.7h.6c.2 0 .4.1.5.5l.8 1.9c.1.3.1.5-.1.8l-.6.8c-.2.2-.3.4-.1.7.5 1 1.3 1.8 2.3 2.4.3.2.5.2.7-.1l.9-1.1c.2-.3.5-.3.8-.2l1.9.9c.3.2.5.3.5.5 0 .3-.1 1.5-.8 2.1-.6.6-1.5.9-2.4.7-1.2-.2-2.7-.8-4.4-2.3-2.1-1.8-3.4-4.1-3.5-5.5 0-.6.1-1 .3-1.4Z"/>',
+  phone: '<path d="M7.1 3.5 9 7.7 7.2 9.5c.9 2 2.5 3.6 4.5 4.5l1.8-1.8 4.2 1.9v3.1c0 1-.8 1.8-1.8 1.8A12.9 12.9 0 0 1 3 6.1c0-1 .8-1.8 1.8-1.8h2.3Z"/>',
+  menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
+  close: '<path d="m6 6 12 12M18 6 6 18"/>',
+  chevron: '<path d="m8 10 4 4 4-4"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m5 17 4.5-4.5 3 3 2-2L19 17"/>',
+  quality: '<path d="M4 6h16M7 12h10M9 18h6"/><circle cx="8" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/>',
+  truck: '<path d="M3 6h11v10H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V5h6v2M3 12h18"/>',
+  arrow: '<path d="M5 12h14m-5-5 5 5-5 5"/>',
+};
+---
+
+<svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={paths[name]} />
