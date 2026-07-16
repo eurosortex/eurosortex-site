@@ -1,0 +1,35 @@
+---
+import type { Locale } from '../../config/locales';
+import type { SiteContent } from '../../i18n/content';
+import { contact, whatsappUrl } from '../../config/contact';
+import Icon from '../ui/Icon.astro';
+import LanguageSwitcher from '../ui/LanguageSwitcher.astro';
+
+interface Props { locale: Locale; content: SiteContent }
+const { locale, content: t } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="site-header__inner shell">
+    <a class="brand" href={locale === 'pl' ? '/' : `/${locale}/`} aria-label="EuroSortex Group">
+      <img src="/images/eurosortex-logo.png" width="245" height="62" alt="EuroSortex Group" />
+    </a>
+    <nav class="desktop-nav" aria-label={t.footer.navigation}>
+      <a href="#oferta">{t.nav.offer}</a><a href="#jakosc">{t.nav.quality}</a><a href="#zamowienie">{t.nav.process}</a><a href="#dostawa">{t.nav.terms}</a><a href="#faq">{t.nav.faq}</a>
+    </nav>
+    <div class="header-actions">
+      <a class="header-phone" href={`tel:${contact.phoneE164}`}>{contact.phoneDisplay}</a>
+      <LanguageSwitcher locale={locale} label={t.languageLabel} compact />
+      <a class="button button--primary header-cta" href={whatsappUrl('general', locale)} target="_blank" rel="noopener">
+        <Icon name="whatsapp" size={17} /><span>{t.common.availability}</span>
+      </a>
+      <details class="mobile-menu" data-mobile-menu>
+        <summary aria-label="Menu"><Icon name="menu" size={22} /></summary>
+        <nav aria-label={t.footer.navigation}>
+          <a href="#oferta">{t.nav.offer}</a><a href="#jakosc">{t.nav.quality}</a><a href="#zamowienie">{t.nav.process}</a><a href="#dostawa">{t.nav.terms}</a><a href="#faq">{t.nav.faq}</a>
+          <a href={`tel:${contact.phoneE164}`}>{contact.phoneDisplay}</a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
