@@ -16,7 +16,12 @@ const t = content[locale];
         <h3>{t.photoCta.title}</h3>
         <p>{t.photoCta.text}</p>
       </div>
-      <a class="btn btn-primary strip-btn" href={whatsappUrl('photos', locale)}>
+      <a
+        class="btn btn-primary strip-btn"
+        href={whatsappUrl('photos', locale)}
+        data-analytics-whatsapp
+        data-analytics-placement="quality_section"
+      >
         <IconWhatsApp size={18} />
         {t.photoCta.action}
       </a>

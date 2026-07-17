@@ -19,11 +19,20 @@ const u = ui[locale];
         <p>{t.transportCta.text}</p>
       </div>
       <div class="strip-actions">
-        <a class="btn btn-primary btn-wa" href={whatsappUrl('transport', locale)}>
+        <a
+          class="btn btn-primary btn-wa"
+          href={whatsappUrl('transport', locale)}
+          data-analytics-whatsapp
+          data-analytics-placement="transport_section"
+        >
           <IconWhatsApp size={16} />
           {t.transportCta.action}
         </a>
-        <a class="btn btn-secondary btn-call" href={`tel:${contact.phoneE164}`}>{u.bookCall}</a>
+        <a
+          class="btn btn-secondary btn-call"
+          href={`tel:${contact.phoneE164}`}
+          data-analytics-placement="transport_section"
+        >{u.bookCall}</a>
       </div>
     </div>
   </div>

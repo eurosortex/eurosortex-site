@@ -19,11 +19,16 @@ const phoneHref = `tel:${contact.phoneE164}`;
       <h2>{t.finalCta.title}</h2>
       <p class="final-lead">{t.finalCta.text}</p>
       <div class="final-ctas">
-        <a class="btn btn-inverse final-btn-wa" href={whatsappUrl('general', locale)}>
+        <a
+          class="btn btn-inverse final-btn-wa"
+          href={whatsappUrl('general', locale)}
+          data-analytics-whatsapp
+          data-analytics-placement="final_cta"
+        >
           <IconWhatsApp size={19} />
           {t.common.availability} — WhatsApp
         </a>
-        <a class="btn btn-outline-light final-btn-call" href={phoneHref}>{u.bookCall}</a>
+        <a class="btn btn-outline-light final-btn-call" href={phoneHref} data-analytics-placement="final_cta">{u.bookCall}</a>
       </div>
       <p class="final-micro">{t.hero.note}</p>
     </div>
@@ -37,7 +42,7 @@ const phoneHref = `tel:${contact.phoneE164}`;
       ))}
       <div class="summary-row is-contact">
         <dt class="mono-label">{u.phone}</dt>
-        <dd><a href={phoneHref}>{contact.phoneDisplay}</a></dd>
+        <dd><a href={phoneHref} data-analytics-placement="final_cta">{contact.phoneDisplay}</a></dd>
       </div>
       <div class="summary-row is-contact">
         <dt class="mono-label">E-mail</dt>
