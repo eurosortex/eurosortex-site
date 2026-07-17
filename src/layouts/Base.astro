@@ -3,6 +3,7 @@ import '@fontsource-variable/manrope/index.css';
 import '../styles/global.css';
 import type { Locale } from '../config/locales';
 import { localeConfig, locales } from '../config/locales';
+import { GTM_ID } from '../config/analytics';
 import { ui } from '../i18n/ui';
 
 interface Props {
@@ -20,6 +21,40 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
 <html lang={localeConfig[locale].htmlLang}>
   <head>
     <meta charset="utf-8" />
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        analytics_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        functionality_storage: 'granted',
+        security_storage: 'granted',
+        wait_for_update: 500,
+      });
+
+      // TODO: A future CMP or cookie banner should call this after the visitor makes a choice.
+      window.updateGoogleConsent = function updateGoogleConsent(consent) {
+        gtag('consent', 'update', consent);
+      };
+    </script>
+    <script is:inline define:vars={{ gtmId: GTM_ID }}>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var firstScript = d.getElementsByTagName(s)[0];
+        var script = d.createElement(s);
+        var dataLayerParam = l !== 'dataLayer' ? '&l=' + l : '';
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dataLayerParam;
+        firstScript.parentNode.insertBefore(script, firstScript);
+      })(window, document, 'script', 'dataLayer', gtmId);
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -36,7 +71,20 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
     <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
   </head>
   <body>
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"
+      ></iframe>
+    </noscript>
     <a class="skip-link" href="#tresc">{ui[locale].skip}</a>
     <slot />
+    <script>
+      import { initializeAnalyticsTracking } from '../lib/analytics';
+      initializeAnalyticsTracking();
+    </script>
   </body>
 </html>

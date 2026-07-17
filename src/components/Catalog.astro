@@ -26,6 +26,8 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
           type="button"
           class:list={['filter', { 'is-active': i === 0 }]}
           data-filter={cat}
+          data-analytics-filter-key={cat}
+          data-analytics-filter-label={t.catalog.filters[cat]}
           aria-pressed={i === 0 ? 'true' : 'false'}
         >
           {t.catalog.filters[cat]}
@@ -71,7 +73,16 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
               <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} {t.common.netSuffix}</span>
               <span class="vat">{t.common.vat}</span>
             </div>
-            <a class="btn btn-soft card-cta" href={productWhatsappUrl(p.name, locale)}>
+            <a
+              class="btn btn-soft card-cta"
+              href={productWhatsappUrl(p.name, locale)}
+              data-analytics-whatsapp
+              data-analytics-placement="product_card"
+              data-analytics-product-id={p.id}
+              data-analytics-product-name={p.name}
+              data-analytics-product-category={p.category}
+              data-analytics-product-price={p.netPricePlnPerKg}
+            >
               <IconWhatsApp size={17} />
               {t.common.productQuestion}
             </a>
@@ -90,7 +101,12 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
         <h3>{u.managerTitle}</h3>
         <p>{u.managerText}</p>
       </div>
-      <a class="btn btn-primary manager-cta-btn" href={whatsappUrl('general', locale)}>
+      <a
+        class="btn btn-primary manager-cta-btn"
+        href={whatsappUrl('general', locale)}
+        data-analytics-whatsapp
+        data-analytics-placement="catalog_help"
+      >
         <IconWhatsApp size={17} />
         <span>{u.managerAction}</span>
       </a>

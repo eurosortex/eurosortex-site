@@ -20,11 +20,16 @@ const phoneHref = `tel:${contact.phoneE164}`;
       <h1>{t.hero.title}</h1>
       <p class="hero-lead">{t.hero.text}</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary hero-cta-main" href={whatsappUrl('general', locale)}>
+        <a
+          class="btn btn-primary hero-cta-main"
+          href={whatsappUrl('general', locale)}
+          data-analytics-whatsapp
+          data-analytics-placement="hero"
+        >
           <IconWhatsApp size={19} />
           {t.common.availability} — WhatsApp
         </a>
-        <a class="btn btn-secondary hero-cta-alt" href={phoneHref}>{u.bookCall}</a>
+        <a class="btn btn-secondary hero-cta-alt" href={phoneHref} data-analytics-placement="hero">{u.bookCall}</a>
       </div>
       <p class="hero-micro">{t.hero.note}</p>
     </div>

@@ -30,7 +30,7 @@ const nav = [
       </nav>
       <div class="footer-contact">
         <span class="mono-label">{t.footer.contact}</span>
-        <a href={`tel:${contact.phoneE164}`}>tel. {contact.phoneDisplay}</a>
+        <a href={`tel:${contact.phoneE164}`} data-analytics-placement="footer">tel. {contact.phoneDisplay}</a>
         <a href={`mailto:${contact.email}`}>{contact.email}</a>
         <span class="footer-address">{t.footer.dispatch} · {t.footer.legalPlaceholder}</span>
       </div>
@@ -45,6 +45,8 @@ const nav = [
             lang={item}
             aria-current={item === locale ? 'page' : undefined}
             class:list={{ 'is-current': item === locale }}
+            data-analytics-language-to={item}
+            data-analytics-placement="footer"
           >
             {localeConfig[item].label}
           </a>

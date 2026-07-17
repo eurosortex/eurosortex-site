@@ -11,11 +11,16 @@ const t = content[locale];
 ---
 
 <div class="sticky-bar">
-  <a class="btn btn-primary bar-wa" href={whatsappUrl('general', locale)}>
+  <a
+    class="btn btn-primary bar-wa"
+    href={whatsappUrl('general', locale)}
+    data-analytics-whatsapp
+    data-analytics-placement="mobile_sticky"
+  >
     <IconWhatsApp size={18} />
     WhatsApp
   </a>
-  <a class="btn btn-secondary bar-call" href={`tel:${contact.phoneE164}`}>
+  <a class="btn btn-secondary bar-call" href={`tel:${contact.phoneE164}`} data-analytics-placement="mobile_sticky">
     <IconPhone size={16} />
     {t.common.call}
   </a>

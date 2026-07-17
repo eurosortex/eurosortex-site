@@ -47,7 +47,13 @@ const waGeneral = whatsappUrl('general', locale);
         </button>
         <div class="lang-menu" hidden>
           {locales.map((item) => (
-            <a href={localeConfig[item].path} lang={item} aria-current={item === locale ? 'page' : undefined}>
+            <a
+              href={localeConfig[item].path}
+              lang={item}
+              aria-current={item === locale ? 'page' : undefined}
+              data-analytics-language-to={item}
+              data-analytics-placement="header"
+            >
               {localeConfig[item].label}
               {item === locale && <span aria-hidden="true" class="lang-check">✓</span>}
             </a>
@@ -55,9 +61,14 @@ const waGeneral = whatsappUrl('general', locale);
         </div>
       </div>
 
-      <a class="header-phone" href={phoneHref}>tel. {contact.phoneDisplay}</a>
+      <a class="header-phone" href={phoneHref} data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
 
-      <a class="header-cta btn btn-primary" href={waGeneral}>
+      <a
+        class="header-cta btn btn-primary"
+        href={waGeneral}
+        data-analytics-whatsapp
+        data-analytics-placement="header"
+      >
         <IconWhatsApp size={16} />
         {t.common.availability}
       </a>
@@ -85,8 +96,13 @@ const waGeneral = whatsappUrl('general', locale);
       {nav.map((item) => <a href={item.href}>{item.label}</a>)}
     </nav>
     <div class="menu-contact">
-      <a href={phoneHref} class="menu-phone">tel. {contact.phoneDisplay}</a>
-      <a class="btn btn-primary menu-cta" href={waGeneral}>
+      <a href={phoneHref} class="menu-phone" data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
+      <a
+        class="btn btn-primary menu-cta"
+        href={waGeneral}
+        data-analytics-whatsapp
+        data-analytics-placement="header"
+      >
         <IconWhatsApp size={17} />
         {t.common.availability}
       </a>
