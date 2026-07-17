@@ -1,0 +1,42 @@
+---
+import '@fontsource-variable/manrope/index.css';
+import '../styles/global.css';
+import type { Locale } from '../config/locales';
+import { localeConfig, locales } from '../config/locales';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  locale: Locale;
+}
+
+const { title, description, locale } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA', en: 'en_GB' };
+---
+
+<!doctype html>
+<html lang={localeConfig[locale].htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocales[locale]} />
+    {locales.map((item) => (
+      <link rel="alternate" hreflang={localeConfig[item].htmlLang} href={new URL(localeConfig[item].path, Astro.site)} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#tresc">{ui[locale].skip}</a>
+    <slot />
+  </body>
+</html>

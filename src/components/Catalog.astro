@@ -1,0 +1,567 @@
+---
+import IconWhatsApp from './IconWhatsApp.astro';
+import type { Locale } from '../config/locales';
+import { productWhatsappUrl, whatsappUrl } from '../config/contact';
+import { products, formatPrice } from '../data/products';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'] as const;
+---
+
+<section class="catalog" id="oferta">
+  <div class="container">
+    <span class="kicker">{t.catalog.eyebrow}</span>
+    <h2>{t.catalog.title}</h2>
+    <p class="catalog-intro">{t.catalog.text}</p>
+    <p class="catalog-vat">{t.catalog.taxNote}</p>
+
+    <div class="filters" role="group" aria-label={u.filterCatalog}>
+      {categories.map((cat, i) => (
+        <button
+          type="button"
+          class:list={['filter', { 'is-active': i === 0 }]}
+          data-filter={cat}
+          aria-pressed={i === 0 ? 'true' : 'false'}
+        >
+          {t.catalog.filters[cat]}
+        </button>
+      ))}
+    </div>
+
+    <ul class="products">
+      {products.map((p) => (
+        <li class="card" data-cat={p.category}>
+          <div class="card-image" role="img" aria-label={`${u.photo}: ${p.name}`}>
+            <span aria-hidden="true">[{u.photo.toUpperCase()}: {p.name}]</span>
+          </div>
+          <div class="card-body">
+            <div class="card-head">
+              <h3>{p.name}</h3>
+              <span class="badge">{p.grade} {t.common.grade.toUpperCase()}</span>
+            </div>
+            <p class="card-desc">{p.description[locale]}</p>
+            <div class="pspec">
+              {p.composition && (
+                <div class="pspec-row">
+                  <span class="mono-label">{t.common.approxComposition}</span>
+                  <span class="pspec-value">{p.composition[locale]}</span>
+                </div>
+              )}
+              <div class="pspec-row">
+                <span class="mono-label">{t.common.branded}</span>
+                <span class="pspec-value">{p.brandedShareApprox[locale]}</span>
+              </div>
+              {p.disposalShareMax && (
+                <div class="pspec-row">
+                  <span class="mono-label">{t.common.disposal}</span>
+                  <span class="pspec-value">{p.disposalShareMax[locale]}</span>
+                </div>
+              )}
+              <div class="pspec-row is-inline">
+                <span class="mono-label">{t.common.minimumOrder}</span>
+                <strong>20 kg</strong>
+              </div>
+            </div>
+            <div class="card-price">
+              <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} {t.common.netSuffix}</span>
+              <span class="vat">{t.common.vat}</span>
+            </div>
+            <a class="btn btn-soft card-cta" href={productWhatsappUrl(p.name, locale)}>
+              <IconWhatsApp size={17} />
+              {t.common.productQuestion}
+            </a>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="disclaimers">
+      <span><strong>{t.catalog.disclaimer}</strong></span>
+      <span>{u.wholesaleMinimum}</span>
+    </div>
+
+    <div class="manager-cta">
+      <div class="manager-cta-text">
+        <h3>{u.managerTitle}</h3>
+        <p>{u.managerText}</p>
+      </div>
+      <a class="btn btn-primary manager-cta-btn" href={whatsappUrl('general', locale)}>
+        <IconWhatsApp size={17} />
+        <span>{u.managerAction}</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .catalog {
+    padding-block: 32px;
+  }
+
+  h2 {
+    margin: 10px 0 8px;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .catalog-intro {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text-soft);
+  }
+
+  .catalog-vat {
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  /* filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0 20px;
+  }
+
+  .filter {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 15px;
+    border-radius: 7px;
+    font-size: 14.5px;
+    font-weight: 700;
+    border: 1.5px solid var(--border-input);
+    background: #fff;
+    color: var(--text-mid);
+  }
+
+  .filter:hover {
+    border-color: var(--green);
+  }
+
+  .filter.is-active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  /* product grid */
+  .products {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card[hidden] {
+    display: none;
+  }
+
+  .card-image {
+    height: 160px;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--ph-stripe-a),
+      var(--ph-stripe-a) 14px,
+      var(--ph-stripe-b) 14px,
+      var(--ph-stripe-b) 28px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-image span {
+    font: 11px var(--font-mono);
+    color: var(--text-faint);
+    background: var(--surface);
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-strong);
+  }
+
+  .card-body {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-head h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .badge {
+    flex: none;
+    font: 600 10.5px var(--font-mono);
+    letter-spacing: 1px;
+    color: var(--green);
+    background: var(--green-soft);
+    padding: 4px 9px;
+    border-radius: 5px;
+  }
+
+  .card-desc {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  /* card specification rows (label above value at every breakpoint) */
+  .pspec {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .pspec-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .pspec-row:last-child {
+    border-bottom: 0;
+  }
+
+  .pspec-row.is-inline {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pspec-value {
+    font-size: 14px;
+    line-height: 1.45;
+    font-weight: 600;
+    color: var(--text-mid);
+  }
+
+  .pspec-row.is-inline strong {
+    font-size: 14px;
+    color: var(--text-strong);
+  }
+
+  .card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 2px;
+  }
+
+  .price {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .vat {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .card-cta {
+    height: 50px;
+    font-size: 15.5px;
+    gap: 8px;
+  }
+
+  /* disclaimers */
+  .disclaimers {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .disclaimers span {
+    border-left: 2px solid var(--border-strong);
+    padding-left: 10px;
+  }
+
+  .disclaimers strong {
+    color: var(--text-soft);
+  }
+
+  /* manager CTA strip */
+  .manager-cta {
+    margin-top: 22px;
+    background: var(--surface-cream);
+    border: 1px solid var(--border-cream);
+    border-radius: 12px;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .manager-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .manager-cta h3 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.25;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .manager-cta p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  .manager-cta-btn {
+    width: 100%;
+    min-height: 56px;
+    height: auto;
+    padding: 12px 14px;
+    font-size: 15px;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .manager-cta-btn span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---- tablet ---- */
+  @media (min-width: 768px) {
+    .catalog {
+      padding-block: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .catalog-intro {
+      font-size: 16px;
+      max-width: 70ch;
+    }
+
+    .filters {
+      margin: 20px 0 22px;
+    }
+
+    .filter {
+      min-height: 44px;
+      padding: 0 16px;
+    }
+
+    .products {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card-body {
+      padding: 18px 20px;
+    }
+
+    .card-head h3 {
+      font-size: 19px;
+    }
+
+    .card-cta {
+      height: auto;
+      min-height: 48px;
+      font-size: 15px;
+    }
+
+    .manager-cta {
+      margin-top: 24px;
+      padding: 24px 28px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .manager-cta-text {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .manager-cta h3 {
+      font-size: 21px;
+    }
+
+    .manager-cta-btn {
+      width: auto;
+      height: auto;
+      min-height: 50px;
+      padding: 0 22px;
+    }
+  }
+
+  /* ---- desktop ---- */
+  @media (min-width: 1024px) {
+    .catalog {
+      padding-block: 56px;
+      border-top: 0;
+    }
+
+    h2 {
+      margin: 12px 0 10px;
+      font-size: 32px;
+    }
+
+    .catalog-intro {
+      line-height: 1.6;
+      max-width: 78ch;
+    }
+
+    .catalog-vat {
+      font-size: 15px;
+    }
+
+    .filters {
+      gap: 10px;
+      margin: 22px 0 26px;
+    }
+
+    .filter {
+      min-height: 0;
+      padding: 9px 16px;
+    }
+
+    .products {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .card-image {
+      height: 150px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card-desc {
+      font-size: 15px;
+    }
+
+    .card-cta {
+      min-height: 46px;
+    }
+
+    .disclaimers {
+      gap: 4px;
+    }
+
+    .disclaimers span {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .manager-cta {
+      margin-top: 28px;
+      padding: 28px 32px;
+      gap: 32px;
+      flex-wrap: nowrap;
+    }
+
+    .manager-cta h3 {
+      font-size: 22px;
+    }
+
+    .manager-cta p {
+      font-size: 15.5px;
+      line-height: 1.55;
+    }
+
+    .manager-cta-btn {
+      font-size: 16px;
+      padding: 14px 24px;
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card {
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+      animation: card-in 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(43, 43, 40, 0.08);
+    }
+
+    @keyframes card-in {
+      from {
+        opacity: 0;
+      }
+    }
+  }
+</style>
+
+<script>
+  const filterButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.catalog [data-filter]'),
+  );
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.catalog [data-cat]'));
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const selected = btn.dataset.filter;
+      filterButtons.forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+      cards.forEach((card) => {
+        const shouldShow = selected === 'all' || card.dataset.cat === selected;
+        card.hidden = !shouldShow;
+      });
+    });
+  });
+</script>

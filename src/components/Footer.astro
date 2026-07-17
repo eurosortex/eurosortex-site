@@ -1,0 +1,242 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig, locales } from '../config/locales';
+import { contact } from '../config/contact';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+const nav = [
+  { href: '#oferta', label: t.nav.offer },
+  { href: '#jakosc', label: t.nav.quality },
+  { href: '#jak-zamowic', label: t.nav.process },
+  { href: '#dostawa', label: t.nav.terms },
+  { href: '#faq', label: t.nav.faq },
+];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="/images/logo.png" alt="EuroSortex Group" class="footer-logo" width="160" height="36" />
+        <p>{t.footer.description}</p>
+      </div>
+      <nav class="footer-nav" aria-label={u.footerNav}>
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      </nav>
+      <div class="footer-contact">
+        <span class="mono-label">{t.footer.contact}</span>
+        <a href={`tel:${contact.phoneE164}`}>tel. {contact.phoneDisplay}</a>
+        <a href={`mailto:${contact.email}`}>{contact.email}</a>
+        <span class="footer-address">{t.footer.dispatch} · {t.footer.legalPlaceholder}</span>
+      </div>
+    </div>
+
+    <div class="footer-lang">
+      <span class="mono-label">{u.language}</span>
+      {locales.map((item, i) => (
+        <>
+          <a
+            href={localeConfig[item].path}
+            lang={item}
+            aria-current={item === locale ? 'page' : undefined}
+            class:list={{ 'is-current': item === locale }}
+          >
+            {localeConfig[item].label}
+          </a>
+          {i < locales.length - 1 && <span class="dot" aria-hidden="true">·</span>}
+        </>
+      ))}
+    </div>
+
+    <div class="footer-legal">
+      <span>© EuroSortex Group</span>
+      <span>{t.footer.privacyPlaceholder}</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding-block: 28px 24px;
+  }
+
+  .footer-top {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+    align-self: flex-start;
+  }
+
+  .footer-brand p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  .footer-nav {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text-mid);
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .footer-nav a:last-child {
+    border-bottom: 0;
+  }
+
+  .footer-nav a:hover {
+    color: var(--green);
+  }
+
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+  }
+
+  .footer-contact a {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-contact a:hover {
+    color: var(--green);
+  }
+
+  .footer-address {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .footer-lang {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    font-size: 14px;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+    margin-top: 18px;
+  }
+
+  .footer-lang a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-weight: 600;
+    color: var(--text-soft);
+  }
+
+  .footer-lang a:hover {
+    color: var(--green);
+  }
+
+  .footer-lang a.is-current {
+    font-weight: 800;
+    color: var(--green);
+  }
+
+  .dot {
+    color: var(--border-input);
+  }
+
+  .footer-legal {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 14px;
+    margin-top: 18px;
+    font-size: 13.5px;
+    color: var(--text-faint);
+  }
+
+  @media (min-width: 768px) {
+    .site-footer {
+      padding-block: 32px 24px;
+    }
+
+    .footer-top {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .footer-brand {
+      flex: 1.2;
+      min-width: 260px;
+    }
+
+    .footer-logo {
+      height: 38px;
+    }
+
+    .footer-nav {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .footer-nav a {
+      font-size: 15px;
+    }
+
+    .footer-contact {
+      flex: 1;
+      min-width: 220px;
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .footer-lang {
+      margin-top: 20px;
+    }
+
+    .footer-legal {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .site-footer {
+      padding-block: 36px 30px;
+    }
+  }
+</style>

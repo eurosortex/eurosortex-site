@@ -210,3 +210,4 @@ const en: SiteContent = {
 };
 
 export const content: Record<Locale, SiteContent> = { pl, ru, uk, en };
+

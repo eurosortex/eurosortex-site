@@ -1,0 +1,128 @@
+---
+import type { Locale } from '../config/locales';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+---
+
+<section class="delivery" id="dostawa">
+  <div class="container">
+    <span class="kicker">{t.terms.eyebrow}</span>
+    <h2>{t.terms.title}</h2>
+    <div class="delivery-grid">
+      <div class="delivery-card">
+        <h3>{t.terms.delivery.title}</h3>
+        <div class="spec">
+          {t.terms.delivery.rows.map((row, index) => (
+            <div class="spec-row">
+              <span class="mono-label">{row.label}</span>
+              <strong class:list={{ 'is-green': index !== 1 }}>{row.value}</strong>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="delivery-card">
+        <h3>{t.terms.payment.title}</h3>
+        <div class="spec">
+          {t.terms.payment.rows.map((row, index) => (
+            <div class="spec-row">
+              <span class="mono-label">{row.label}</span>
+              <strong class:list={{ 'is-green': index !== 1 }}>{row.value}</strong>
+            </div>
+          ))}
+        </div>
+        <p class="delivery-note">{u.paymentPhotoNote}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .delivery {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding-block: 32px;
+  }
+
+  h2 {
+    margin: 10px 0 20px;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .delivery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .delivery-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .delivery-note {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 768px) {
+    .delivery {
+      padding-block: 40px;
+    }
+
+    .delivery-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .delivery-card {
+      padding: 20px 22px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .delivery {
+      padding-block: 56px;
+    }
+
+    h2 {
+      margin: 12px 0 28px;
+      font-size: 32px;
+    }
+
+    .delivery-grid {
+      gap: 28px;
+    }
+
+    .delivery-card {
+      padding: 26px 28px;
+      gap: 14px;
+    }
+
+    h3 {
+      font-size: 20px;
+    }
+  }
+</style>

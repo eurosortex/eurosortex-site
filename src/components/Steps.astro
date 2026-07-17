@@ -1,0 +1,266 @@
+---
+import type { Locale } from '../config/locales';
+import { content } from '../i18n/content';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const icons = ['whatsapp', 'chat', 'offer', 'card', 'truck'];
+const steps = t.process.steps.map((step, index) => ({ ...step, icon: icons[index], strong: index === 0 || index === 4 }));
+---
+
+<section class="steps-section" id="jak-zamowic">
+  <div class="container">
+    <span class="kicker">{t.process.eyebrow}</span>
+    <h2>{t.process.title}</h2>
+    <p class="steps-intro">{t.process.text}</p>
+    <div class="steps">
+      <div class="steps-line" aria-hidden="true"></div>
+      <ol class="steps-list">
+        {steps.map((s, i) => (
+          <li class:list={['step', { 'is-strong': s.strong }]}>
+            <span class="step-num" aria-hidden="true">{i + 1}</span>
+            <div class="step-body">
+              <div class="step-title">
+                {s.icon === 'whatsapp' && (
+                  <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.8"></path>
+                  </svg>
+                )}
+                {s.icon === 'chat' && (
+                  <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M5 5h14v10H9l-4 4V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                  </svg>
+                )}
+                {s.icon === 'offer' && (
+                  <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M7 4h10a1 1 0 0 1 1 1v15l-3-2-3 2-3-2-3 2V5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                    <path d="M9 9h6M9 12.5h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  </svg>
+                )}
+                {s.icon === 'card' && (
+                  <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
+                    <path d="M3 10h18" stroke="currentColor" stroke-width="1.8"></path>
+                  </svg>
+                )}
+                {s.icon === 'truck' && (
+                  <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M3 16V7h11v9" stroke="currentColor" stroke-width="1.8"></path>
+                    <path d="M14 10h4l3 3v3h-2" stroke="currentColor" stroke-width="1.8"></path>
+                    <circle cx="7" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
+                    <circle cx="17" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
+                  </svg>
+                )}
+                <span class="step-name">{s.title}</span>
+              </div>
+              <p class="step-desc">{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .steps-section {
+    padding-block: 32px;
+  }
+
+  h2 {
+    margin: 10px 0 6px;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .steps-intro {
+    margin: 0 0 20px;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text-soft);
+  }
+
+  .steps {
+    position: relative;
+  }
+
+  /* connecting line: vertical on mobile, horizontal on desktop, hidden on tablet */
+  .steps-line {
+    position: absolute;
+    left: 19px;
+    top: 20px;
+    bottom: 20px;
+    width: 1px;
+    background: var(--border-strong);
+  }
+
+  .steps-list {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--green);
+    font-size: 16px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    border: 2px solid var(--border-input);
+  }
+
+  .step.is-strong .step-num {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .step-body {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 2px;
+  }
+
+  .step-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green);
+  }
+
+  .step-icon {
+    display: none;
+    flex: none;
+  }
+
+  .step-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .step.is-strong .step-name {
+    color: var(--green);
+  }
+
+  .step-desc {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text-muted);
+  }
+
+  .step-desc :global(strong) {
+    color: var(--text-soft);
+  }
+
+  /* ---- tablet: 2-column card grid, 5th spans ---- */
+  @media (min-width: 768px) {
+    .steps-section {
+      padding-block: 40px;
+    }
+
+    .steps-line {
+      display: none;
+    }
+
+    .steps-intro {
+      max-width: 70ch;
+    }
+
+    .steps-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+
+    .step:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* ---- desktop: horizontal timeline with icons ---- */
+  @media (min-width: 1024px) {
+    .steps-section {
+      padding-block: 56px;
+    }
+
+    h2 {
+      margin: 12px 0 8px;
+      font-size: 32px;
+    }
+
+    .steps-intro {
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .steps-line {
+      display: block;
+      left: 20px;
+      right: 20px;
+      top: 20px;
+      bottom: auto;
+      width: auto;
+      height: 1px;
+    }
+
+    .steps-list {
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px;
+    }
+
+    .step {
+      background: none;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .step:last-child {
+      grid-column: auto;
+    }
+
+    .step-body {
+      gap: 10px;
+      padding-top: 0;
+    }
+
+    .step-icon {
+      display: block;
+    }
+
+    .step-desc {
+      line-height: 1.5;
+    }
+  }
+</style>

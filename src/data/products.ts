@@ -150,3 +150,4 @@ export function formatPrice(value: number, locale: Locale): string {
     maximumFractionDigits: 2,
   }).format(value);
 }
+

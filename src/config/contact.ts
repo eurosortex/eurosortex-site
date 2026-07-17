@@ -47,3 +47,4 @@ export function productWhatsappUrl(productName: string, locale: Locale): string 
   };
   return whatsappUrl(text[locale], locale);
 }
+

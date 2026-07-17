@@ -16,3 +16,4 @@ export const localeConfig: Record<
 export function isLocale(value: string): value is Locale {
   return locales.includes(value as Locale);
 }
+
