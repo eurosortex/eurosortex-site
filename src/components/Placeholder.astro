@@ -1,0 +1,86 @@
+---
+/**
+ * Striped stand-in for photography that hasn't been delivered yet.
+ * Fills its parent element; swap each instance for a real <img>
+ * (same wrapper, same tag badge) once the warehouse photos arrive.
+ */
+interface Props {
+  label: string;
+  tag?: string;
+  imageWord?: string;
+}
+const { label, tag, imageWord = 'PHOTO' } = Astro.props;
+---
+
+<div class="ph">
+  <div class="ph-canvas" role="img" aria-label={label}>
+    <span class="ph-label" aria-hidden="true">[{imageWord.toUpperCase()}: {label}]</span>
+  </div>
+  {tag && <span class="ph-tag" aria-hidden="true">{tag}</span>}
+</div>
+
+<style>
+  .ph {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ph-canvas {
+    flex: 1;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: repeating-linear-gradient(
+      45deg,
+      var(--ph-stripe-a),
+      var(--ph-stripe-a) 14px,
+      var(--ph-stripe-b) 14px,
+      var(--ph-stripe-b) 28px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ph-label {
+    font: 11px var(--font-mono);
+    color: var(--text-faint);
+    background: var(--surface);
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid var(--border-strong);
+    text-align: center;
+  }
+
+  .ph-tag {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    font: 600 10px var(--font-mono);
+    letter-spacing: 1px;
+    background: var(--green);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  @media (min-width: 1024px) {
+    .ph-canvas {
+      border-radius: 12px;
+    }
+
+    .ph-label {
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 6px;
+    }
+
+    .ph-tag {
+      left: 16px;
+      bottom: 16px;
+      font-size: 11px;
+      padding: 6px 12px;
+    }
+  }
+</style>

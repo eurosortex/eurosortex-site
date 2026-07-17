@@ -1,0 +1,147 @@
+---
+import IconWhatsApp from './IconWhatsApp.astro';
+import type { Locale } from '../config/locales';
+import { contact, whatsappUrl } from '../config/contact';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+---
+
+<section class="order-cta">
+  <div class="container">
+    <div class="strip">
+      <div class="strip-text">
+        <h3>{t.transportCta.title}</h3>
+        <p>{t.transportCta.text}</p>
+      </div>
+      <div class="strip-actions">
+        <a class="btn btn-primary btn-wa" href={whatsappUrl('transport', locale)}>
+          <IconWhatsApp size={16} />
+          {t.transportCta.action}
+        </a>
+        <a class="btn btn-secondary btn-call" href={`tel:${contact.phoneE164}`}>{u.bookCall}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .order-cta {
+    padding-top: 24px;
+  }
+
+  .strip {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .strip-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  p {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .strip-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn-wa {
+    height: 50px;
+    font-size: 15.5px;
+    border-radius: 9px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .btn-call {
+    height: 48px;
+    font-size: 15.5px;
+    border-radius: 9px;
+  }
+
+  @media (min-width: 768px) {
+    .strip {
+      padding: 20px 24px;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .strip-text {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .strip-actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+    .btn-wa {
+      height: auto;
+      min-height: 48px;
+      padding: 0 20px;
+      font-size: 15px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-call {
+      height: auto;
+      min-height: 46px;
+      padding: 0 20px;
+      font-size: 15px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .order-cta {
+      padding-top: 36px;
+    }
+
+    .strip {
+      padding: 22px 28px;
+      gap: 28px;
+      flex-wrap: nowrap;
+    }
+
+    .btn-wa {
+      padding: 12px 20px;
+      min-height: 0;
+    }
+
+    .btn-call {
+      padding: 11px 20px;
+      min-height: 0;
+    }
+  }
+</style>

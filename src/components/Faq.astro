@@ -1,0 +1,190 @@
+---
+import type { Locale } from '../config/locales';
+import { content } from '../i18n/content';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+---
+
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="faq-inner">
+      <span class="kicker">{t.faq.eyebrow}</span>
+      <h2>{t.faq.title}</h2>
+      <div class="faq-list">
+        {t.faq.items.map((f, i) => (
+          <div class="faq-item">
+            <h3 class="faq-heading">
+              <button
+                type="button"
+                class="faq-q"
+                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-controls={`faq-a-${i}`}
+              >
+                <span class="faq-q-text">{f.question}</span>
+                <span class="faq-mark" aria-hidden="true">{i === 0 ? '−' : '+'}</span>
+              </button>
+            </h3>
+            <div
+              class:list={['faq-a', { 'is-open': i === 0 }]}
+              id={`faq-a-${i}`}
+              aria-hidden={i === 0 ? 'false' : 'true'}
+            >
+              <div class="faq-a-inner">
+                <p>{f.answer}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: 32px;
+  }
+
+  h2 {
+    margin: 10px 0 8px;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq-heading {
+    margin: 0;
+  }
+
+  .faq-q {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    min-height: 52px;
+    padding: 8px 2px;
+    text-align: left;
+  }
+
+  .faq-q:hover {
+    background: var(--surface-cream);
+  }
+
+  .faq-q-text {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-strong);
+    line-height: 1.35;
+  }
+
+  .faq-mark {
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--green);
+    width: 24px;
+    text-align: center;
+    flex: none;
+  }
+
+  .faq-a {
+    display: grid;
+    grid-template-rows: 0fr;
+  }
+
+  .faq-a-inner {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .faq-a.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .faq-a {
+      transition: grid-template-rows 0.22s ease;
+    }
+  }
+
+  .faq-a p {
+    margin: 0;
+    padding: 0 28px 16px 2px;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--text-soft);
+  }
+
+  @media (min-width: 768px) {
+    .faq {
+      padding-block: 40px;
+    }
+
+    .faq-inner {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .faq {
+      padding-block: 56px;
+    }
+
+    .faq-inner {
+      max-width: 840px;
+    }
+
+    h2 {
+      margin: 12px 0 20px;
+      font-size: 32px;
+    }
+
+    .faq-q {
+      min-height: 0;
+      padding: 19px 4px;
+      gap: 20px;
+    }
+
+    .faq-q-text {
+      font-size: 17px;
+    }
+
+    .faq-a p {
+      padding: 0 40px 20px 4px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+  }
+</style>
+
+<script>
+  const items = Array.from(document.querySelectorAll<HTMLElement>('.faq-item'));
+
+  const parts = items.map((item) => ({
+    btn: item.querySelector<HTMLButtonElement>('.faq-q')!,
+    panel: item.querySelector<HTMLElement>('.faq-a')!,
+    mark: item.querySelector<HTMLElement>('.faq-mark')!,
+  }));
+
+  function setOpen(part: (typeof parts)[number], open: boolean) {
+    part.btn.setAttribute('aria-expanded', String(open));
+    part.panel.classList.toggle('is-open', open);
+    part.panel.setAttribute('aria-hidden', String(!open));
+    part.mark.textContent = open ? '−' : '+';
+  }
+
+  parts.forEach((part) => {
+    part.btn.addEventListener('click', () => {
+      const wasOpen = part.btn.getAttribute('aria-expanded') === 'true';
+      parts.forEach((p) => setOpen(p, false));
+      if (!wasOpen) setOpen(part, true);
+    });
+  });
+</script>

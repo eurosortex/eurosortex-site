@@ -1,0 +1,215 @@
+---
+import Placeholder from './Placeholder.astro';
+import type { Locale } from '../config/locales';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+---
+
+<section class="quality" id="jakosc">
+  <div class="container quality-grid">
+    <div class="quality-intro">
+      <span class="kicker">{t.quality.eyebrow}</span>
+      <h2>{t.quality.title}</h2>
+      <p>{t.quality.text}</p>
+    </div>
+
+    <div class="quality-image">
+      <Placeholder label={t.quality.imageAlt} tag={t.quality.eyebrow} imageWord={u.photo} />
+    </div>
+
+    <ol class="quality-points">
+      {t.quality.principles.map((p, i) => (
+        <li>
+          <span class="point-num" aria-hidden="true">{i + 1}</span>
+          <div class="point-body">
+            <span class="point-title">{p.title}</span>
+            <span class="point-desc">{p.text}</span>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .quality {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .quality-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-block: 32px;
+  }
+
+  .quality-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: var(--text-strong);
+    text-wrap: pretty;
+  }
+
+  .quality-intro p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text-soft);
+  }
+
+  .quality-image {
+    display: flex;
+    height: 200px;
+  }
+
+  .quality-points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .quality-points li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .quality-points li:last-child {
+    border-bottom: 0;
+  }
+
+  .point-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .point-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .point-title {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--text-strong);
+  }
+
+  .point-desc {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text-muted);
+  }
+
+  /* ---- tablet ---- */
+  @media (min-width: 768px) {
+    .quality-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      grid-template-areas:
+        'image intro'
+        'image points';
+      column-gap: 32px;
+      row-gap: 14px;
+      align-items: start;
+      padding-block: 40px;
+    }
+
+    .quality-intro {
+      grid-area: intro;
+    }
+
+    .quality-image {
+      grid-area: image;
+      height: auto;
+      min-height: 300px;
+      align-self: stretch;
+    }
+
+    .quality-points {
+      grid-area: points;
+    }
+
+    .quality-points li {
+      padding: 13px 16px;
+    }
+  }
+
+  /* ---- desktop ---- */
+  @media (min-width: 1024px) {
+    .quality-grid {
+      column-gap: 56px;
+      row-gap: 18px;
+      padding-block: 56px;
+      align-items: center;
+    }
+
+    .quality-intro {
+      gap: 18px;
+    }
+
+    h2 {
+      font-size: 32px;
+    }
+
+    .quality-intro p {
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .quality-image {
+      min-height: 0;
+      height: 380px;
+      align-self: center;
+    }
+
+    .quality-points li {
+      gap: 14px;
+      padding: 16px 18px;
+    }
+
+    .point-body {
+      gap: 3px;
+    }
+
+    .point-title {
+      font-size: 16px;
+    }
+
+    .point-desc {
+      line-height: 1.5;
+    }
+  }
+</style>

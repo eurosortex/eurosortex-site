@@ -1,0 +1,40 @@
+---
+import type { Locale } from '../config/locales';
+import { content } from '../i18n/content';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Benefits from './Benefits.astro';
+import Catalog from './Catalog.astro';
+import Quality from './Quality.astro';
+import PhotoCta from './PhotoCta.astro';
+import Steps from './Steps.astro';
+import Delivery from './Delivery.astro';
+import OrderCta from './OrderCta.astro';
+import Faq from './Faq.astro';
+import FinalCta from './FinalCta.astro';
+import Footer from './Footer.astro';
+import StickyBar from './StickyBar.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+---
+
+<Base title={t.meta.title} description={t.meta.description} locale={locale}>
+  <Header locale={locale} />
+  <main id="tresc">
+    <Hero locale={locale} />
+    <Benefits locale={locale} />
+    <Catalog locale={locale} />
+    <Quality locale={locale} />
+    <PhotoCta locale={locale} />
+    <Steps locale={locale} />
+    <Delivery locale={locale} />
+    <OrderCta locale={locale} />
+    <Faq locale={locale} />
+    <FinalCta locale={locale} />
+  </main>
+  <Footer locale={locale} />
+  <StickyBar locale={locale} />
+</Base>

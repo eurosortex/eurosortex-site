@@ -1,0 +1,272 @@
+---
+import IconWhatsApp from './IconWhatsApp.astro';
+import Placeholder from './Placeholder.astro';
+import type { Locale } from '../config/locales';
+import { contact, whatsappUrl } from '../config/contact';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = content[locale];
+const u = ui[locale];
+const phoneHref = `tel:${contact.phoneE164}`;
+---
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="kicker">{t.hero.eyebrow}</span>
+      <h1>{t.hero.title}</h1>
+      <p class="hero-lead">{t.hero.text}</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary hero-cta-main" href={whatsappUrl('general', locale)}>
+          <IconWhatsApp size={19} />
+          {t.common.availability} — WhatsApp
+        </a>
+        <a class="btn btn-secondary hero-cta-alt" href={phoneHref}>{u.bookCall}</a>
+      </div>
+      <p class="hero-micro">{t.hero.note}</p>
+    </div>
+
+    <div class="hero-image">
+      <Placeholder label={t.hero.imageAlt} tag={t.hero.imageLabel} imageWord={u.photo} />
+    </div>
+
+    <dl class="hero-facts">
+      {t.hero.facts.map((fact) => (
+        <div class="fact">
+          <dt class="mono-label">{fact.label}</dt>
+          <dd>{fact.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-block: 28px 32px;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 35px;
+    line-height: 1.12;
+    font-weight: 800;
+    color: var(--text-strong);
+    text-wrap: pretty;
+  }
+
+  .hero-lead {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text-soft);
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-cta-main {
+    height: 52px;
+    font-size: 17px;
+    gap: 10px;
+  }
+
+  .hero-cta-alt {
+    height: 50px;
+    font-size: 17px;
+  }
+
+  .hero-micro {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .hero-micro strong {
+    color: var(--text-soft);
+  }
+
+  .hero-image {
+    display: flex;
+    height: 210px;
+  }
+
+  .hero-facts {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .fact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .fact:last-child {
+    border-bottom: 0;
+  }
+
+  .fact dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-strong);
+  }
+
+  /* ---- tablet ---- */
+  @media (min-width: 768px) {
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-areas:
+        'content image'
+        'facts facts';
+      column-gap: 32px;
+      row-gap: 24px;
+      align-items: center;
+      padding-block: 40px;
+    }
+
+    .hero-content {
+      grid-area: content;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.15;
+    }
+
+    .hero-ctas {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-cta-main {
+      height: auto;
+      min-height: 50px;
+      padding: 0 20px;
+      font-size: 16px;
+    }
+
+    .hero-cta-alt {
+      height: auto;
+      min-height: 48px;
+      padding: 0 20px;
+      font-size: 16px;
+    }
+
+    .hero-image {
+      grid-area: image;
+      height: auto;
+      min-height: 320px;
+      align-self: stretch;
+    }
+
+    .hero-facts {
+      grid-area: facts;
+      flex-direction: row;
+    }
+
+    .fact {
+      flex: 1;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 14px 18px;
+      border-bottom: 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .fact:last-child {
+      border-right: 0;
+    }
+  }
+
+  /* ---- desktop ---- */
+  @media (min-width: 1024px) {
+    .hero-grid {
+      grid-template-areas:
+        'content image'
+        'facts image';
+      column-gap: 56px;
+      row-gap: 28px;
+      padding-block: 64px 52px;
+    }
+
+    .hero-content {
+      gap: 22px;
+    }
+
+    h1 {
+      font-size: 44px;
+      line-height: 1.15;
+    }
+
+    .hero-lead {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 56ch;
+    }
+
+    .hero-ctas {
+      gap: 14px;
+      align-items: center;
+    }
+
+    .hero-cta-main {
+      min-height: 0;
+      padding: 15px 26px;
+      font-size: 17px;
+    }
+
+    .hero-cta-alt {
+      min-height: 0;
+      padding: 14px 24px;
+      font-size: 17px;
+    }
+
+    .hero-image {
+      min-height: 0;
+      height: 480px;
+      align-self: center;
+    }
+
+    .fact {
+      gap: 4px;
+      padding: 16px 18px;
+    }
+
+    .fact dd {
+      font-size: 16px;
+    }
+  }
+</style>
