@@ -38,9 +38,15 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     <ul class="products">
       {products.map((p) => (
         <li class="card" data-cat={p.category}>
-          <div class="card-image" role="img" aria-label={`${u.photo}: ${p.name}`}>
-            <span aria-hidden="true">[{u.photo.toUpperCase()}: {p.name}]</span>
-          </div>
+          <img
+            class="card-image"
+            src={p.image}
+            alt={`${u.photo}: ${p.name}`}
+            width="960"
+            height="640"
+            loading="lazy"
+            decoding="async"
+          />
           <div class="card-body">
             <div class="card-head">
               <h3>{p.name}</h3>
@@ -196,27 +202,12 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
   }
 
   .card-image {
-    height: 160px;
-    background: repeating-linear-gradient(
-      45deg,
-      var(--ph-stripe-a),
-      var(--ph-stripe-a) 14px,
-      var(--ph-stripe-b) 14px,
-      var(--ph-stripe-b) 28px
-    );
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    object-position: center;
     border-bottom: 1px solid var(--border);
-  }
-
-  .card-image span {
-    font: 11px var(--font-mono);
-    color: var(--text-faint);
-    background: var(--surface);
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid var(--border-strong);
   }
 
   .card-body {
@@ -494,7 +485,7 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     }
 
     .card-image {
-      height: 150px;
+      height: 190px;
     }
 
     .card-body {

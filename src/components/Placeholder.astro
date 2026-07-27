@@ -8,14 +8,29 @@ interface Props {
   label: string;
   tag?: string;
   imageWord?: string;
+  src?: string;
+  loading?: 'eager' | 'lazy';
 }
-const { label, tag, imageWord = 'PHOTO' } = Astro.props;
+const { label, tag, imageWord = 'PHOTO', src, loading = 'lazy' } = Astro.props;
 ---
 
 <div class="ph">
-  <div class="ph-canvas" role="img" aria-label={label}>
-    <span class="ph-label" aria-hidden="true">[{imageWord.toUpperCase()}: {label}]</span>
-  </div>
+  {src ? (
+    <img
+      class="ph-canvas ph-photo"
+      src={src}
+      alt={label}
+      width="1600"
+      height="1200"
+      loading={loading}
+      fetchpriority={loading === 'eager' ? 'high' : 'auto'}
+      decoding="async"
+    />
+  ) : (
+    <div class="ph-canvas" role="img" aria-label={label}>
+      <span class="ph-label" aria-hidden="true">[{imageWord.toUpperCase()}: {label}]</span>
+    </div>
+  )}
   {tag && <span class="ph-tag" aria-hidden="true">{tag}</span>}
 </div>
 
@@ -29,6 +44,8 @@ const { label, tag, imageWord = 'PHOTO' } = Astro.props;
 
   .ph-canvas {
     flex: 1;
+    min-width: 0;
+    min-height: 0;
     border-radius: 10px;
     border: 1px solid var(--border-strong);
     background: repeating-linear-gradient(
@@ -41,6 +58,15 @@ const { label, tag, imageWord = 'PHOTO' } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .ph-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    background: var(--surface-cream);
   }
 
   .ph-label {

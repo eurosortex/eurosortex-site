@@ -5,6 +5,7 @@ export type ProductCategory = 'mix' | 'sweatshirts' | 'children' | 'pants' | 'to
 export interface Product {
   id: string;
   name: string;
+  image: string;
   category: ProductCategory;
   grade: 1 | 2;
   netPricePlnPerKg: number;
@@ -25,6 +26,7 @@ export const products: Product[] = [
   {
     id: 'summer-assortment',
     name: 'Summer Assortment',
+    image: '/images/catalog/summer-assortment.jpg',
     category: 'mix',
     grade: 1,
     netPricePlnPerKg: 27.21,
@@ -36,6 +38,7 @@ export const products: Product[] = [
   {
     id: 'mix-standart',
     name: 'Mix Standart',
+    image: '/images/catalog/mix-standart.jpg',
     category: 'mix',
     grade: 2,
     netPricePlnPerKg: 15.5,
@@ -47,6 +50,7 @@ export const products: Product[] = [
   {
     id: 'sweatshirts-mix',
     name: 'Sweatshirts Mix',
+    image: '/images/catalog/sweatshirts-mix.jpg',
     category: 'sweatshirts',
     grade: 2,
     netPricePlnPerKg: 21.35,
@@ -57,6 +61,7 @@ export const products: Product[] = [
   {
     id: 'casual-sweatshirts',
     name: 'Casual Sweatshirts',
+    image: '/images/catalog/casual-sweatshirts.jpg',
     category: 'sweatshirts',
     grade: 2,
     netPricePlnPerKg: 17.91,
@@ -67,6 +72,7 @@ export const products: Product[] = [
   {
     id: 'kids-wear',
     name: 'Kids Wear',
+    image: '/images/catalog/kids-wear.jpg',
     category: 'children',
     grade: 2,
     netPricePlnPerKg: 21.35,
@@ -77,6 +83,7 @@ export const products: Product[] = [
   {
     id: 'children-summer',
     name: 'Children Summer',
+    image: '/images/catalog/children-summer.jpg',
     category: 'children',
     grade: 1,
     netPricePlnPerKg: 34.44,
@@ -87,6 +94,7 @@ export const products: Product[] = [
   {
     id: 'sport-pants',
     name: 'Sport Pants',
+    image: '/images/catalog/sport-pants.jpg',
     category: 'pants',
     grade: 2,
     netPricePlnPerKg: 22.39,
@@ -97,6 +105,7 @@ export const products: Product[] = [
   {
     id: 'extra-sport-pants',
     name: 'Extra Sport Pants',
+    image: '/images/catalog/extra-sport-pants.jpg',
     category: 'pants',
     grade: 1,
     netPricePlnPerKg: 25.83,
@@ -107,6 +116,7 @@ export const products: Product[] = [
   {
     id: 't-shirt-standart',
     name: 'T-shirt Standart',
+    image: '/images/catalog/t-shirt-standart.jpg',
     category: 'tops',
     grade: 2,
     netPricePlnPerKg: 19.84,
@@ -117,6 +127,7 @@ export const products: Product[] = [
   {
     id: 'blouses-mix',
     name: 'Blouses Mix',
+    image: '/images/catalog/blouses-mix.jpg',
     category: 'tops',
     grade: 2,
     netPricePlnPerKg: 19.84,
@@ -126,6 +137,7 @@ export const products: Product[] = [
   {
     id: 'ladies-blouses',
     name: 'Ladies Blouses',
+    image: '/images/catalog/ladies-blouses.jpg',
     category: 'tops',
     grade: 1,
     netPricePlnPerKg: 39.6,
@@ -135,6 +147,7 @@ export const products: Product[] = [
   {
     id: 'season-shoes',
     name: 'Season Shoes',
+    image: '/images/catalog/season-shoes.jpg',
     category: 'shoes',
     grade: 1,
     netPricePlnPerKg: 51.66,
@@ -150,4 +163,3 @@ export function formatPrice(value: number, locale: Locale): string {
     maximumFractionDigits: 2,
   }).format(value);
 }
-

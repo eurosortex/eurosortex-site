@@ -35,7 +35,13 @@ const phoneHref = `tel:${contact.phoneE164}`;
     </div>
 
     <div class="hero-image">
-      <Placeholder label={t.hero.imageAlt} tag={t.hero.imageLabel} imageWord={u.photo} />
+      <Placeholder
+        label={t.hero.imageAlt}
+        tag={t.hero.imageLabel}
+        imageWord={u.photo}
+        src="/images/warehouse-hero.jpg"
+        loading="eager"
+      />
     </div>
 
     <dl class="hero-facts">
