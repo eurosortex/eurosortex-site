@@ -1,21 +1,25 @@
 ---
 import type { Locale } from '../config/locales';
 import { localeConfig, locales } from '../config/locales';
-import { contact } from '../config/contact';
+import { getLegalPath } from '../config/legal';
+import { company, contact } from '../config/contact';
 import { content } from '../i18n/content';
+import { consentCopy } from '../i18n/consent';
 import { ui } from '../i18n/ui';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = content[locale];
 const u = ui[locale];
+const consent = consentCopy[locale];
 const nav = [
-  { href: '#oferta', label: t.nav.offer },
-  { href: '#jakosc', label: t.nav.quality },
-  { href: '#jak-zamowic', label: t.nav.process },
-  { href: '#dostawa', label: t.nav.terms },
-  { href: '#faq', label: t.nav.faq },
+  { href: `${localeConfig[locale].path}#oferta`, label: t.nav.offer },
+  { href: `${localeConfig[locale].path}#jakosc`, label: t.nav.quality },
+  { href: `${localeConfig[locale].path}#jak-zamowic`, label: t.nav.process },
+  { href: `${localeConfig[locale].path}#dostawa`, label: t.nav.terms },
+  { href: `${localeConfig[locale].path}#faq`, label: t.nav.faq },
 ];
+const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
@@ -31,10 +35,59 @@ const nav = [
       <div class="footer-contact">
         <span class="mono-label">{t.footer.contact}</span>
         <a href={`tel:${contact.phoneE164}`} data-analytics-placement="footer">tel. {contact.phoneDisplay}</a>
-        <a href={`mailto:${contact.email}`}>{contact.email}</a>
-        <span class="footer-address">{t.footer.dispatch} · {t.footer.legalPlaceholder}</span>
+        <a href={`mailto:${contact.email}`} data-analytics-placement="footer">{contact.email}</a>
       </div>
     </div>
+
+    <section class="footer-company" aria-labelledby="company-details">
+      <div class="footer-company-heading">
+        <span class="mono-label" id="company-details">{t.footer.companyDetails}</span>
+        <strong>{company.legalName}</strong>
+      </div>
+
+      <div class="footer-company-grid">
+        <div class="footer-detail">
+          <span class="detail-label">{t.footer.registeredOffice}</span>
+          <address>
+            {company.registeredOffice.street}<br />
+            {company.registeredOffice.postalCode} {company.registeredOffice.city}
+          </address>
+        </div>
+
+        <dl class="footer-identifiers">
+          <div><dt>NIP</dt><dd>{company.identifiers.nip}</dd></div>
+          <div><dt>KRS</dt><dd>{company.identifiers.krs}</dd></div>
+          <div><dt>REGON</dt><dd>{company.identifiers.regon}</dd></div>
+        </dl>
+
+        <div class="footer-detail">
+          <span class="detail-label">{t.footer.warehouse}</span>
+          <address>
+            {company.warehouse.street}<br />
+            {company.warehouse.postalCode} {company.warehouse.city}
+          </address>
+        </div>
+
+        <div class="footer-detail footer-registry">
+          <span class="detail-label">{t.footer.registryCourt}</span>
+          <span>{company.registryCourt}</span>
+        </div>
+
+        <div class="footer-detail">
+          <span class="detail-label">{t.footer.shareCapital}</span>
+          <span>{company.shareCapital}</span>
+        </div>
+      </div>
+    </section>
+
+    <nav class="footer-documents" aria-label={t.footer.legalDocuments}>
+      <span class="mono-label">{t.footer.legalDocuments}</span>
+      <div class="footer-document-links">
+        <a href={getLegalPath(locale, 'privacy')}>{t.footer.privacy}</a>
+        <a href={getLegalPath(locale, 'electronicServices')}>{t.footer.electronicServices}</a>
+        <a href={getLegalPath(locale, 'salesTerms')}>{t.footer.salesTerms}</a>
+      </div>
+    </nav>
 
     <div class="footer-lang">
       <span class="mono-label">{u.language}</span>
@@ -56,8 +109,9 @@ const nav = [
     </div>
 
     <div class="footer-legal">
-      <span>© EuroSortex Group</span>
-      <span>{t.footer.privacyPlaceholder}</span>
+      <span>© {year} {company.brandName}</span>
+      <span>{company.legalName}</span>
+      <button type="button" data-consent-open>{consent.reopen}</button>
     </div>
   </div>
 </footer>
@@ -139,9 +193,108 @@ const nav = [
     color: var(--green);
   }
 
-  .footer-address {
-    font-size: 14px;
-    color: var(--text-muted);
+  .footer-company {
+    border-top: 1px solid var(--border-soft);
+    padding-top: 18px;
+    margin-top: 20px;
+  }
+
+  .footer-company-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .footer-company-heading strong {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  .footer-company-grid {
+    display: grid;
+    gap: 16px;
+  }
+
+  .footer-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  .detail-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .footer-detail address {
+    font: inherit;
+  }
+
+  .footer-identifiers {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  .footer-identifiers div {
+    display: flex;
+    gap: 8px;
+  }
+
+  .footer-identifiers dt {
+    min-width: 46px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+  }
+
+  .footer-identifiers dd {
+    margin: 0;
+  }
+
+  .footer-registry {
+    max-width: 460px;
+  }
+
+  .footer-documents {
+    display: grid;
+    gap: 10px;
+    border-top: 1px solid var(--border-soft);
+    padding-top: 16px;
+    margin-top: 18px;
+  }
+
+  .footer-document-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .footer-document-links a {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    width: fit-content;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--text-soft);
+  }
+
+  .footer-document-links a:hover {
+    color: var(--green);
   }
 
   .footer-lang {
@@ -187,6 +340,19 @@ const nav = [
     color: var(--text-faint);
   }
 
+  .footer-legal button {
+    align-self: flex-start;
+    min-height: 32px;
+    color: var(--text-muted);
+    font-size: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .footer-legal button:hover {
+    color: var(--green);
+  }
+
   @media (min-width: 768px) {
     .site-footer {
       padding-block: 32px 24px;
@@ -227,6 +393,22 @@ const nav = [
       margin-top: 20px;
     }
 
+    .footer-company-grid {
+      grid-template-columns: repeat(2, minmax(0, max-content));
+      justify-content: start;
+      gap: 20px 32px;
+    }
+
+    .footer-registry {
+      grid-column: span 2;
+    }
+
+    .footer-document-links {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 6px 24px;
+    }
+
     .footer-legal {
       flex-direction: row;
       flex-wrap: wrap;
@@ -239,6 +421,15 @@ const nav = [
   @media (min-width: 1024px) {
     .site-footer {
       padding-block: 36px 30px;
+    }
+
+    .footer-company-grid {
+      grid-template-columns: repeat(3, minmax(0, max-content));
+      gap: 20px 48px;
+    }
+
+    .footer-registry {
+      grid-column: span 2;
     }
   }
 </style>

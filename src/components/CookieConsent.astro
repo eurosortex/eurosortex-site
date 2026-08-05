@@ -1,0 +1,359 @@
+---
+import type { Locale } from '../config/locales';
+import { CONSENT_COOKIE } from '../config/analytics';
+import { getLegalPath } from '../config/legal';
+import { content } from '../i18n/content';
+import { consentCopy } from '../i18n/consent';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const t = consentCopy[locale];
+const privacyLabel = content[locale].footer.privacy;
+---
+
+<aside
+  class="consent"
+  data-consent-banner
+  data-cookie-name={CONSENT_COOKIE.name}
+  data-cookie-version={CONSENT_COOKIE.version}
+  data-cookie-max-age={CONSENT_COOKIE.maxAgeSeconds}
+  aria-labelledby="consent-title"
+  aria-live="polite"
+  hidden
+>
+  <div class="consent-summary" data-consent-summary>
+    <div class="consent-copy">
+      <h2 id="consent-title">{t.title}</h2>
+      <p>{t.description}</p>
+      <a class="consent-policy" href={getLegalPath(locale, 'privacy')}>{privacyLabel}</a>
+    </div>
+    <div class="consent-actions">
+      <button class="consent-btn consent-btn-primary" type="button" data-consent-accept>
+        {t.acceptAll}
+      </button>
+      <button class="consent-btn consent-btn-secondary" type="button" data-consent-reject>
+        {t.rejectOptional}
+      </button>
+      <button class="consent-link" type="button" data-consent-customise>{t.settings}</button>
+    </div>
+  </div>
+
+  <div class="consent-details" data-consent-details hidden>
+    <div class="consent-details-head">
+      <h2>{t.settingsTitle}</h2>
+      <button class="consent-close" type="button" data-consent-close aria-label={t.close}>×</button>
+    </div>
+
+    <div class="consent-options">
+      <div class="consent-option">
+        <div>
+          <strong>{t.necessaryTitle}</strong>
+          <p>{t.necessaryDescription}</p>
+        </div>
+        <span>{t.alwaysActive}</span>
+      </div>
+
+      <label class="consent-option">
+        <div>
+          <strong>{t.analyticsTitle}</strong>
+          <p>{t.analyticsDescription}</p>
+        </div>
+        <input type="checkbox" data-consent-analytics />
+      </label>
+
+      <label class="consent-option">
+        <div>
+          <strong>{t.advertisingTitle}</strong>
+          <p>{t.advertisingDescription}</p>
+        </div>
+        <input type="checkbox" data-consent-advertising />
+      </label>
+    </div>
+
+    <button class="consent-btn consent-btn-primary consent-save" type="button" data-consent-save>
+      {t.save}
+    </button>
+  </div>
+</aside>
+
+<style>
+  .consent {
+    position: fixed;
+    z-index: 1000;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    max-width: 760px;
+    margin-inline: auto;
+    padding: 18px;
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 18px 54px rgb(35 35 31 / 20%);
+  }
+
+  .consent[hidden],
+  .consent-details[hidden],
+  .consent-summary[hidden] {
+    display: none;
+  }
+
+  .consent h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--text-strong);
+  }
+
+  .consent p {
+    margin: 6px 0 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  .consent-policy {
+    display: inline-flex;
+    margin-top: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .consent-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .consent-btn {
+    min-height: 42px;
+    padding: 9px 14px;
+    border: 1px solid var(--border-input);
+    border-radius: 8px;
+    background: #fff;
+    font-size: 13.5px;
+    font-weight: 750;
+  }
+
+  .consent-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .consent-btn-primary {
+    border-color: var(--green);
+    background: var(--green);
+    color: #fff;
+  }
+
+  .consent-btn-primary:hover {
+    border-color: var(--green-hover);
+    background: var(--green-hover);
+    color: #fff;
+  }
+
+  .consent-btn-secondary {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .consent-link {
+    min-height: 42px;
+    padding-inline: 8px;
+    font-size: 13.5px;
+    font-weight: 750;
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .consent-details-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .consent-close {
+    width: 40px;
+    height: 40px;
+    flex: none;
+    border-radius: 8px;
+    font-size: 25px;
+    line-height: 1;
+    color: var(--text-soft);
+  }
+
+  .consent-close:hover {
+    background: var(--green-soft);
+    color: var(--green);
+  }
+
+  .consent-options {
+    display: grid;
+    gap: 0;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .consent-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px;
+    border-bottom: 1px solid var(--border-soft);
+    background: #fff;
+  }
+
+  .consent-option:last-child {
+    border-bottom: 0;
+  }
+
+  .consent-option strong {
+    display: block;
+    font-size: 13.5px;
+    color: var(--text-strong);
+  }
+
+  .consent-option p {
+    margin-top: 3px;
+    font-size: 12.5px;
+  }
+
+  .consent-option span {
+    flex: none;
+    font-size: 11px;
+    font-weight: 750;
+    color: var(--text-muted);
+  }
+
+  .consent-option input {
+    width: 21px;
+    height: 21px;
+    flex: none;
+    accent-color: var(--green);
+  }
+
+  .consent-save {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .consent {
+      right: 24px;
+      bottom: 24px;
+      left: 24px;
+      padding: 22px;
+    }
+
+    .consent-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .consent-actions {
+      justify-content: flex-end;
+      max-width: 330px;
+      margin-top: 0;
+    }
+
+    .consent-save {
+      width: auto;
+      min-width: 180px;
+      margin-left: auto;
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  type ConsentSelection = { analytics: boolean; advertising: boolean };
+
+  const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+
+  if (banner && banner.dataset.initialized !== 'true') {
+    banner.dataset.initialized = 'true';
+
+    const summary = banner.querySelector<HTMLElement>('[data-consent-summary]');
+    const details = banner.querySelector<HTMLElement>('[data-consent-details]');
+    const analyticsInput = banner.querySelector<HTMLInputElement>('[data-consent-analytics]');
+    const advertisingInput = banner.querySelector<HTMLInputElement>('[data-consent-advertising]');
+    const cookieName = banner.dataset.cookieName || 'eurosortex_consent';
+    const cookieVersion = banner.dataset.cookieVersion || '1';
+    const maxAge = banner.dataset.cookieMaxAge || '15552000';
+
+    const getSelection = (): ConsentSelection =>
+      window.__eurosortexConsentChoice || { analytics: false, advertising: false };
+
+    const setInputs = (selection: ConsentSelection) => {
+      if (analyticsInput) analyticsInput.checked = selection.analytics;
+      if (advertisingInput) advertisingInput.checked = selection.advertising;
+    };
+
+    const showSummary = () => {
+      if (summary) summary.hidden = false;
+      if (details) details.hidden = true;
+    };
+
+    const showDetails = () => {
+      setInputs(getSelection());
+      if (summary) summary.hidden = true;
+      if (details) details.hidden = false;
+    };
+
+    const persist = (selection: ConsentSelection) => {
+      const value = encodeURIComponent(
+        `${cookieVersion}.${selection.analytics ? '1' : '0'}.${selection.advertising ? '1' : '0'}`,
+      );
+      const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `${cookieName}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax${secure}`;
+    };
+
+    const apply = (selection: ConsentSelection, source: string) => {
+      persist(selection);
+      window.updateGoogleConsent?.(selection, source);
+      banner.hidden = true;
+    };
+
+    banner.querySelector('[data-consent-accept]')?.addEventListener('click', () => {
+      apply({ analytics: true, advertising: true }, 'accept_all');
+    });
+
+    banner.querySelector('[data-consent-reject]')?.addEventListener('click', () => {
+      apply({ analytics: false, advertising: false }, 'reject_optional');
+    });
+
+    banner.querySelector('[data-consent-customise]')?.addEventListener('click', showDetails);
+    banner.querySelector('[data-consent-close]')?.addEventListener('click', showSummary);
+    banner.querySelector('[data-consent-save]')?.addEventListener('click', () => {
+      apply(
+        {
+          analytics: analyticsInput?.checked ?? false,
+          advertising: advertisingInput?.checked ?? false,
+        },
+        'custom_selection',
+      );
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-consent-open]').forEach((button) => {
+      button.addEventListener('click', () => {
+        banner.hidden = false;
+        showDetails();
+      });
+    });
+
+    setInputs(getSelection());
+    banner.hidden = window.__eurosortexConsentChoice !== null;
+  }
+</script>

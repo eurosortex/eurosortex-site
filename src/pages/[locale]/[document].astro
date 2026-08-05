@@ -1,0 +1,26 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+import { getLegalSlug, legalDocumentKeys, type LegalDocumentKey } from '../../config/legal';
+import type { Locale } from '../../config/locales';
+
+type TranslatedLocale = Exclude<Locale, 'pl'>;
+
+export function getStaticPaths() {
+  const translatedLocales = ['ru', 'uk', 'en'] as const;
+  return translatedLocales.flatMap((locale) =>
+    legalDocumentKeys.map((document) => ({
+      params: { locale, document: getLegalSlug(locale, document) },
+      props: { locale, document },
+    })),
+  );
+}
+
+interface Props {
+  locale: TranslatedLocale;
+  document: LegalDocumentKey;
+}
+
+const { locale, document } = Astro.props;
+---
+
+<LegalPage locale={locale} document={document} />

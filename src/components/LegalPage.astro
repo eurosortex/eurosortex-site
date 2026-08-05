@@ -1,0 +1,329 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig, locales } from '../config/locales';
+import type { LegalDocumentKey } from '../config/legal';
+import { getLegalAlternates, getLegalPath } from '../config/legal';
+import { legalContent, legalUi } from '../data/legal';
+import Base from '../layouts/Base.astro';
+import Footer from './Footer.astro';
+
+interface Props {
+  locale: Locale;
+  document: LegalDocumentKey;
+}
+
+const { locale, document } = Astro.props;
+const current = legalContent[locale][document];
+const labels = legalUi[locale];
+const alternates = getLegalAlternates(document);
+const documentLinks: Array<{ key: LegalDocumentKey; label: string }> = [
+  { key: 'privacy', label: labels.privacy },
+  { key: 'electronicServices', label: labels.electronicServices },
+  { key: 'salesTerms', label: labels.salesTerms },
+];
+---
+
+<Base
+  title={`${current.title} | EuroSortex Group`}
+  description={current.metaDescription}
+  locale={locale}
+  alternatePaths={alternates}
+  pageType="legal_document"
+>
+  <header class="legal-header">
+    <div class="container legal-header-inner">
+      <a href={localeConfig[locale].path} class="legal-logo" aria-label={labels.backHome}>
+        <img src="/images/logo.png" alt="EuroSortex Group" width="160" height="36" />
+      </a>
+      <a href={localeConfig[locale].path} class="back-link">
+        <span aria-hidden="true">←</span>
+        {labels.backHome}
+      </a>
+    </div>
+  </header>
+
+  <main id="tresc" class="legal-main">
+    <div class="container legal-shell">
+      <aside class="legal-sidebar" aria-label={labels.documents}>
+        <div class="sidebar-group">
+          <span class="mono-label">{labels.documents}</span>
+          <nav class="document-nav">
+            {documentLinks.map((item) => (
+              <a
+                href={getLegalPath(locale, item.key)}
+                aria-current={item.key === document ? 'page' : undefined}
+                class:list={{ 'is-current': item.key === document }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div class="sidebar-group">
+          <span class="mono-label">{labels.language}</span>
+          <nav class="language-nav" aria-label={labels.language}>
+            {locales.map((item) => (
+              <a
+                href={getLegalPath(item, document)}
+                lang={item}
+                hreflang={localeConfig[item].htmlLang}
+                aria-current={item === locale ? 'page' : undefined}
+                class:list={{ 'is-current': item === locale }}
+              >
+                {localeConfig[item].label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </aside>
+
+      <article class="legal-article">
+        <header class="legal-intro">
+          <span class="kicker">{current.eyebrow}</span>
+          <h1>{current.title}</h1>
+          <p class="effective-date">{current.effectiveDateLabel}: <strong>{current.effectiveDate}</strong></p>
+          <p class="lead">{current.intro}</p>
+          {labels.translationNotice && document !== 'privacy' && (
+            <p class="translation-notice">{labels.translationNotice}</p>
+          )}
+        </header>
+
+        <div class="legal-content">
+          {current.sections.map((section) => (
+            <section>
+              <h2>{section.title}</h2>
+              {section.blocks.map((block) => {
+                if (block.type === 'paragraph') return <p>{block.text}</p>;
+                if (block.type === 'heading') return <h3>{block.text}</h3>;
+                if (block.type === 'note') return <p class="legal-note">{block.text}</p>;
+                if (block.type === 'list' && block.ordered) {
+                  return <ol>{block.items.map((item) => <li>{item}</li>)}</ol>;
+                }
+                if (block.type === 'list') {
+                  return <ul>{block.items.map((item) => <li>{item}</li>)}</ul>;
+                }
+                return null;
+              })}
+            </section>
+          ))}
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer locale={locale} />
+</Base>
+
+<style>
+  .legal-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgb(253 252 249 / 94%);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .legal-header-inner {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .legal-logo,
+  .legal-logo img {
+    display: block;
+  }
+
+  .legal-logo img {
+    width: 138px;
+    height: auto;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 42px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-mid);
+  }
+
+  .legal-main {
+    padding-block: 42px 72px;
+  }
+
+  .legal-shell {
+    display: grid;
+    gap: 40px;
+  }
+
+  .legal-sidebar {
+    display: grid;
+    gap: 26px;
+    align-content: start;
+  }
+
+  .sidebar-group {
+    display: grid;
+    gap: 10px;
+  }
+
+  .document-nav,
+  .language-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .document-nav a,
+  .language-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 38px;
+    padding: 8px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-soft);
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .document-nav a:hover,
+  .language-nav a:hover,
+  .document-nav a.is-current,
+  .language-nav a.is-current {
+    border-color: var(--green-soft-border);
+    background: var(--green-soft);
+    color: var(--green-deep);
+  }
+
+  .legal-article {
+    min-width: 0;
+  }
+
+  .legal-intro {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 30px;
+    margin-bottom: 36px;
+  }
+
+  .legal-intro h1 {
+    max-width: 820px;
+    margin: 12px 0 14px;
+    color: var(--text-strong);
+    font-size: clamp(32px, 6vw, 54px);
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+  }
+
+  .effective-date {
+    margin: 0 0 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  .lead {
+    max-width: 780px;
+    margin: 0;
+    color: var(--text-mid);
+    font-size: 17px;
+    line-height: 1.72;
+  }
+
+  .translation-notice,
+  .legal-note {
+    border-left: 3px solid var(--green-outline);
+    background: var(--green-soft);
+    padding: 13px 15px;
+    color: var(--text-mid);
+    font-size: 13.5px;
+  }
+
+  .translation-notice {
+    max-width: 780px;
+    margin: 22px 0 0;
+  }
+
+  .legal-content {
+    max-width: 840px;
+  }
+
+  .legal-content section {
+    margin-bottom: 38px;
+    scroll-margin-top: 96px;
+  }
+
+  .legal-content h2 {
+    margin: 0 0 16px;
+    color: var(--text-strong);
+    font-size: 22px;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+
+  .legal-content h3 {
+    margin: 24px 0 10px;
+    font-size: 17px;
+    color: var(--text-strong);
+  }
+
+  .legal-content p,
+  .legal-content li {
+    color: var(--text-soft);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .legal-content p {
+    margin: 0 0 13px;
+  }
+
+  .legal-content ul,
+  .legal-content ol {
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+
+  .legal-content li {
+    padding-left: 4px;
+    margin-bottom: 8px;
+  }
+
+  .legal-content .legal-note {
+    margin-top: 18px;
+  }
+
+  @media (min-width: 900px) {
+    .legal-main {
+      padding-block: 58px 92px;
+    }
+
+    .legal-shell {
+      grid-template-columns: 250px minmax(0, 1fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    .legal-sidebar {
+      position: sticky;
+      top: 100px;
+    }
+
+    .document-nav,
+    .language-nav {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .document-nav a,
+    .language-nav a {
+      width: 100%;
+    }
+  }
+</style>

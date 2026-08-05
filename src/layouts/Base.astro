@@ -3,16 +3,19 @@ import '@fontsource-variable/manrope/index.css';
 import '../styles/global.css';
 import type { Locale } from '../config/locales';
 import { localeConfig, locales } from '../config/locales';
-import { GTM_ID } from '../config/analytics';
+import { CONSENT_COOKIE, GTM_ID } from '../config/analytics';
 import { ui } from '../i18n/ui';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title: string;
   description: string;
   locale: Locale;
+  alternatePaths?: Partial<Record<Locale, string>>;
+  pageType?: 'landing_page' | 'legal_document';
 }
 
-const { title, description, locale } = Astro.props;
+const { title, description, locale, alternatePaths, pageType = 'landing_page' } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA', en: 'en_GB' };
 ---
@@ -21,8 +24,24 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
 <html lang={localeConfig[locale].htmlLang}>
   <head>
     <meta charset="utf-8" />
-    <script is:inline>
+    <script
+      is:inline
+      define:vars={{
+        consentCookieName: CONSENT_COOKIE.name,
+        consentVersion: CONSENT_COOKIE.version,
+        pageLocale: locale,
+        pageLanguage: localeConfig[locale].htmlLang,
+        analyticsPageType: pageType,
+      }}
+    >
       window.dataLayer = window.dataLayer || [];
+
+      window.dataLayer.push({
+        page_locale: pageLocale,
+        page_language: pageLanguage,
+        page_type: analyticsPageType,
+        business_model: 'b2b_wholesale',
+      });
 
       function gtag() {
         window.dataLayer.push(arguments);
@@ -38,10 +57,61 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
         wait_for_update: 500,
       });
 
-      // TODO: A future CMP or cookie banner should call this after the visitor makes a choice.
-      window.updateGoogleConsent = function updateGoogleConsent(consent) {
+      document.documentElement.dataset.analyticsConsent = 'denied';
+      document.documentElement.dataset.advertisingConsent = 'denied';
+
+      gtag('set', 'ads_data_redaction', true);
+      gtag('set', 'url_passthrough', true);
+
+      function readStoredConsent() {
+        var prefix = consentCookieName + '=';
+        var row = document.cookie.split('; ').find(function (item) {
+          return item.indexOf(prefix) === 0;
+        });
+
+        if (!row) return null;
+
+        try {
+          var parts = decodeURIComponent(row.slice(prefix.length)).split('.');
+          if (parts.length !== 3 || parts[0] !== consentVersion) return null;
+          if (!['0', '1'].includes(parts[1]) || !['0', '1'].includes(parts[2])) return null;
+
+          return {
+            analytics: parts[1] === '1',
+            advertising: parts[2] === '1',
+          };
+        } catch (_error) {
+          return null;
+        }
+      }
+
+      window.updateGoogleConsent = function updateGoogleConsent(selection, source) {
+        var consent = {
+          analytics_storage: selection.analytics ? 'granted' : 'denied',
+          ad_storage: selection.advertising ? 'granted' : 'denied',
+          ad_user_data: selection.advertising ? 'granted' : 'denied',
+          ad_personalization: selection.advertising ? 'granted' : 'denied',
+        };
+
         gtag('consent', 'update', consent);
+        window.__eurosortexConsentChoice = {
+          analytics: Boolean(selection.analytics),
+          advertising: Boolean(selection.advertising),
+        };
+        document.documentElement.dataset.analyticsConsent = consent.analytics_storage;
+        document.documentElement.dataset.advertisingConsent = consent.ad_storage;
+        window.dataLayer.push({
+          event: 'consent_update',
+          analytics_consent: consent.analytics_storage,
+          advertising_consent: consent.ad_storage,
+          consent_source: source || 'api',
+        });
       };
+
+      window.__eurosortexConsentChoice = readStoredConsent();
+      if (window.__eurosortexConsentChoice) {
+        window.updateGoogleConsent(window.__eurosortexConsentChoice, 'stored_choice');
+      }
     </script>
     <script is:inline define:vars={{ gtmId: GTM_ID }}>
       (function (w, d, s, l, i) {
@@ -59,16 +129,19 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocales[locale]} />
-    {locales.map((item) => (
-      <link rel="alternate" hreflang={localeConfig[item].htmlLang} href={new URL(localeConfig[item].path, Astro.site)} />
-    ))}
-    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
+    {locales.map((item) => {
+      const path = alternatePaths?.[item] ?? localeConfig[item].path;
+      return <link rel="alternate" hreflang={localeConfig[item].htmlLang} href={new URL(path, Astro.site)} />;
+    })}
+    <link rel="alternate" hreflang="x-default" href={new URL(alternatePaths?.pl ?? '/', Astro.site)} />
   </head>
   <body>
     <noscript>
@@ -82,6 +155,7 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
     </noscript>
     <a class="skip-link" href="#tresc">{ui[locale].skip}</a>
     <slot />
+    <CookieConsent locale={locale} />
     <script>
       import { initializeAnalyticsTracking } from '../lib/analytics';
       initializeAnalyticsTracking();

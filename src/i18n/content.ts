@@ -55,7 +55,20 @@ export interface SiteContent {
   transportCta: { title: string; text: string; action: string };
   faq: { eyebrow: string; title: string; items: Array<{ question: string; answer: string }> };
   finalCta: { eyebrow: string; title: string; text: string; summary: Array<{ label: string; value: string }> };
-  footer: { description: string; navigation: string; contact: string; dispatch: string; legalPlaceholder: string; privacyPlaceholder: string };
+  footer: {
+    description: string;
+    navigation: string;
+    contact: string;
+    companyDetails: string;
+    registeredOffice: string;
+    warehouse: string;
+    registryCourt: string;
+    shareCapital: string;
+    legalDocuments: string;
+    privacy: string;
+    electronicServices: string;
+    salesTerms: string;
+  };
 }
 
 const pl: SiteContent = {
@@ -149,7 +162,7 @@ const pl: SiteContent = {
       { label: 'PŁATNOŚĆ', value: '100% przedpłaty, przelew na fakturę' },
     ],
   },
-  footer: { description: 'Hurtownia sortowanej odzieży używanej z Europy. Współpraca wyłącznie B2B.', navigation: 'Nawigacja', contact: 'Kontakt', dispatch: 'Wysyłka: Warszawa', legalPlaceholder: 'Adres i dane rejestrowe: [DO UZUPEŁNIENIA]', privacyPlaceholder: 'Polityka prywatności: [DO UZUPEŁNIENIA]' },
+  footer: { description: 'Hurtownia sortowanej odzieży używanej z Europy. Współpraca wyłącznie B2B.', navigation: 'Nawigacja', contact: 'Kontakt', companyDetails: 'Dane firmy', registeredOffice: 'Siedziba', warehouse: 'Magazyn', registryCourt: 'Sąd rejestrowy', shareCapital: 'Kapitał zakładowy', legalDocuments: 'Dokumenty prawne', privacy: 'Polityka prywatności', electronicServices: 'Regulamin usług elektronicznych', salesTerms: 'Ogólne Warunki Sprzedaży B2B' },
 };
 
 const ru: SiteContent = {
@@ -168,7 +181,7 @@ const ru: SiteContent = {
   transportCta: { title: 'Есть вопрос по заказу или транспорту?', text: 'Обсудите условия партии напрямую с менеджером.', action: 'Обсудить заказ в WhatsApp' },
   faq: { eyebrow: '06 / FAQ', title: 'Частые вопросы', items: [{ question: 'Вы продаёте в розницу?', answer: 'Нет. Мы работаем только оптом B2B — с магазинами second-hand, аутлетами и оптовиками.' }, { question: 'Можно купить товар онлайн?', answer: 'Нет корзины и онлайн-оплаты. Заказ согласовывается с менеджером в WhatsApp и по телефону.' }, { question: 'Как увидеть товар до заказа?', answer: 'Мы отправим фото или видео доступной партии с указанием сорта и примерного состава.' }, { question: 'Какой срок доставки?', answer: 'Обычно 1–3 недели после зачисления полной предоплаты. Отправка из Варшавы только по Польше.' }, { question: 'Кто оплачивает транспорт?', answer: 'Транспорт оплачивает покупатель. Мы можем помочь организовать перевозку; также возможен свой перевозчик или самовывоз.' }, { question: 'Какие условия оплаты?', answer: '100% предоплата банковским переводом по фактуре до отправки.' }, { question: 'Какой минимальный заказ?', answer: 'Минимальный заказ для каждой позиции — 20 кг.' }] },
   finalCta: { eyebrow: '07 / КОНТАКТ', title: 'Уточните актуальное наличие товара', text: 'Напишите в WhatsApp — менеджер ответит, отправит фото доступных партий и подготовит индивидуальное предложение.', summary: [{ label: 'МОДЕЛЬ', value: 'Только оптовые продажи B2B' }, { label: 'ДОСТАВКА', value: '1–3 недели после полной предоплаты' }, { label: 'ТРАНСПОРТ', value: 'Оплачивает покупатель, помогаем организовать' }, { label: 'ОПЛАТА', value: '100% предоплата по фактуре' }] },
-  footer: { description: 'Оптовый склад сортированной одежды second-hand из Европы. Только B2B.', navigation: 'Навигация', contact: 'Контакты', dispatch: 'Отправка: Варшава', legalPlaceholder: 'Адрес и регистрационные данные: [ДОПОЛНИТЬ]', privacyPlaceholder: 'Политика конфиденциальности: [ДОПОЛНИТЬ]' },
+  footer: { description: 'Оптовый склад сортированной одежды second-hand из Европы. Только B2B.', navigation: 'Навигация', contact: 'Контакты', companyDetails: 'Данные компании', registeredOffice: 'Юридический адрес', warehouse: 'Склад', registryCourt: 'Регистрационный суд', shareCapital: 'Уставный капитал', legalDocuments: 'Юридические документы', privacy: 'Политика конфиденциальности', electronicServices: 'Правила электронных услуг', salesTerms: 'Условия продаж B2B' },
 };
 
 const uk: SiteContent = {
@@ -187,7 +200,7 @@ const uk: SiteContent = {
   transportCta: { title: 'Є питання щодо замовлення чи транспорту?', text: 'Обговоріть умови партії безпосередньо з менеджером.', action: 'Обговорити замовлення у WhatsApp' },
   faq: { eyebrow: '06 / FAQ', title: 'Часті запитання', items: [{ question: 'Ви продаєте вроздріб?', answer: 'Ні. Ми працюємо лише оптом B2B — з магазинами second-hand, аутлетами й оптовиками.' }, { question: 'Чи можна купити товар онлайн?', answer: 'Немає кошика й онлайн-оплати. Замовлення узгоджується з менеджером у WhatsApp і телефоном.' }, { question: 'Як побачити товар до замовлення?', answer: 'Ми надішлемо фото або відео доступної партії із зазначенням ґатунку й орієнтовного складу.' }, { question: 'Який строк доставки?', answer: 'Зазвичай 1–3 тижні після зарахування повної передплати. Відправлення з Варшави лише Польщею.' }, { question: 'Хто оплачує транспорт?', answer: 'Транспорт оплачує покупець. Ми можемо допомогти з організацією; можливий власний перевізник або самовивіз.' }, { question: 'Які умови оплати?', answer: '100% передплата банківським переказом за фактурою до відправлення.' }, { question: 'Яке мінімальне замовлення?', answer: 'Мінімальне замовлення для кожної позиції — 20 кг.' }] },
   finalCta: { eyebrow: '07 / КОНТАКТ', title: 'Уточніть актуальну наявність товару', text: 'Напишіть у WhatsApp — менеджер відповість, надішле фото доступних партій і підготує індивідуальну пропозицію.', summary: [{ label: 'МОДЕЛЬ', value: 'Лише оптові продажі B2B' }, { label: 'ДОСТАВКА', value: '1–3 тижні після повної передплати' }, { label: 'ТРАНСПОРТ', value: 'Оплачує покупець, допомагаємо організувати' }, { label: 'ОПЛАТА', value: '100% передплата за фактурою' }] },
-  footer: { description: 'Оптовий склад сортованого одягу second-hand з Європи. Лише B2B.', navigation: 'Навігація', contact: 'Контакти', dispatch: 'Відправлення: Варшава', legalPlaceholder: 'Адреса й реєстраційні дані: [ДОПОВНИТИ]', privacyPlaceholder: 'Політика конфіденційності: [ДОПОВНИТИ]' },
+  footer: { description: 'Оптовий склад сортованого одягу second-hand з Європи. Лише B2B.', navigation: 'Навігація', contact: 'Контакти', companyDetails: 'Дані компанії', registeredOffice: 'Юридична адреса', warehouse: 'Склад', registryCourt: 'Реєстраційний суд', shareCapital: 'Статутний капітал', legalDocuments: 'Юридичні документи', privacy: 'Політика конфіденційності', electronicServices: 'Правила електронних послуг', salesTerms: 'Умови продажу B2B' },
 };
 
 const en: SiteContent = {
@@ -206,7 +219,7 @@ const en: SiteContent = {
   transportCta: { title: 'A question about your order or transport?', text: 'Discuss the batch terms directly with a manager.', action: 'Discuss the order on WhatsApp' },
   faq: { eyebrow: '06 / FAQ', title: 'Frequently asked questions', items: [{ question: 'Do you sell retail?', answer: 'No. We sell wholesale B2B only — to second-hand shops, outlets and wholesalers.' }, { question: 'Can I buy online?', answer: 'There is no cart or online payment. You agree the order with a manager on WhatsApp and by phone.' }, { question: 'How can I see the goods before ordering?', answer: 'We send photos or video of available batches with the grade and an approximate description.' }, { question: 'What is the delivery time?', answer: 'Usually 1–3 weeks after full prepayment is credited. Dispatch is from Warsaw and delivery is within Poland only.' }, { question: 'Who pays for transport?', answer: 'The buyer pays transport. We can help arrange it; you may also use your own carrier or collect the goods.' }, { question: 'What are the payment terms?', answer: '100% prepayment by bank transfer against invoice before dispatch.' }, { question: 'What is the minimum order?', answer: 'The minimum order is 20 kg for each assortment line.' }] },
   finalCta: { eyebrow: '07 / CONTACT', title: 'Check current product availability', text: 'Message us on WhatsApp — the manager will reply, send current batch photos and prepare an individual offer.', summary: [{ label: 'MODEL', value: 'Wholesale B2B only' }, { label: 'DELIVERY', value: '1–3 weeks after full prepayment' }, { label: 'TRANSPORT', value: 'Paid by buyer; we help arrange it' }, { label: 'PAYMENT', value: '100% prepayment against invoice' }] },
-  footer: { description: 'Wholesale European sorted second-hand clothing. B2B cooperation only.', navigation: 'Navigation', contact: 'Contact', dispatch: 'Dispatch: Warsaw', legalPlaceholder: 'Address and registration data: [TO BE COMPLETED]', privacyPlaceholder: 'Privacy policy: [TO BE COMPLETED]' },
+  footer: { description: 'Wholesale European sorted second-hand clothing. B2B cooperation only.', navigation: 'Navigation', contact: 'Contact', companyDetails: 'Company details', registeredOffice: 'Registered office', warehouse: 'Warehouse', registryCourt: 'Registry court', shareCapital: 'Share capital', legalDocuments: 'Legal documents', privacy: 'Privacy Policy', electronicServices: 'Electronic Services Terms', salesTerms: 'B2B Sales Terms' },
 };
 
 export const content: Record<Locale, SiteContent> = { pl, ru, uk, en };
