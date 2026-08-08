@@ -35,14 +35,7 @@ export type WhatsappMessage = 'general' | 'photos' | 'transport';
 
 const messages: Record<Locale, Record<WhatsappMessage, string>> = {
   pl: {
-    general: `Dzień dobry! Proszę o ofertę hurtową EuroSortex.
-
-Towar / asortyment: [wpisz]
-Planowana ilość (kg): [wpisz]
-Firma / sklep: [wpisz]
-Miejscowość dostawy: [wpisz]
-
-Proszę o informację o dostępności i aktualnej cenie.`,
+    general: 'Dzień dobry, proszę o aktualną ofertę i zdjęcia dostępnych partii',
     photos: `Dzień dobry! Proszę o zdjęcia aktualnie dostępnej partii.
 
 Towar / asortyment: [wpisz]

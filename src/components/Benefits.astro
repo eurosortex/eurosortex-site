@@ -6,7 +6,12 @@ interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = content[locale];
 const icons = ['box', 'photo', 'list', 'truck'];
-const benefits = t.benefits.items.map((item, index) => ({ ...item, icon: icons[index] }));
+const targets = ['#oferta', '#jakosc', '#jakosc', '#dostawa'];
+const benefits = t.benefits.items.map((item, index) => ({
+  ...item,
+  icon: icons[index],
+  href: targets[index],
+}));
 ---
 
 <section class="benefits" aria-labelledby="benefits-label">
@@ -15,35 +20,37 @@ const benefits = t.benefits.items.map((item, index) => ({ ...item, icon: icons[i
     <ul class="benefits-grid">
       {benefits.map((b) => (
         <li class="benefit">
-          {b.icon === 'box' && (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
-              <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" stroke="currentColor" stroke-width="1.8"></path>
-            </svg>
-          )}
-          {b.icon === 'photo' && (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3.5" y="5" width="17" height="14" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
-              <circle cx="9" cy="10" r="1.7" stroke="currentColor" stroke-width="1.6"></circle>
-              <path d="M4 17l5-4 4 3 3-2 4 3" stroke="currentColor" stroke-width="1.8"></path>
-            </svg>
-          )}
-          {b.icon === 'list' && (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M5 6h14M5 12h10M5 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-              <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.6"></circle>
-            </svg>
-          )}
-          {b.icon === 'truck' && (
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M3 16V7h11v9" stroke="currentColor" stroke-width="1.8"></path>
-              <path d="M14 10h4l3 3v3h-2" stroke="currentColor" stroke-width="1.8"></path>
-              <circle cx="7" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
-              <circle cx="17" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
-            </svg>
-          )}
-          <span class="benefit-title">{b.title}</span>
-          <span class="benefit-desc">{b.text}</span>
+          <a class="benefit-link" href={b.href}>
+            {b.icon === 'box' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="4" y="7" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
+                <path d="M8 7V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5V7" stroke="currentColor" stroke-width="1.8"></path>
+              </svg>
+            )}
+            {b.icon === 'photo' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3.5" y="5" width="17" height="14" rx="2" stroke="currentColor" stroke-width="1.8"></rect>
+                <circle cx="9" cy="10" r="1.7" stroke="currentColor" stroke-width="1.6"></circle>
+                <path d="M4 17l5-4 4 3 3-2 4 3" stroke="currentColor" stroke-width="1.8"></path>
+              </svg>
+            )}
+            {b.icon === 'list' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 6h14M5 12h10M5 18h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                <circle cx="19" cy="12" r="2" stroke="currentColor" stroke-width="1.6"></circle>
+              </svg>
+            )}
+            {b.icon === 'truck' && (
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 16V7h11v9" stroke="currentColor" stroke-width="1.8"></path>
+                <path d="M14 10h4l3 3v3h-2" stroke="currentColor" stroke-width="1.8"></path>
+                <circle cx="7" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
+                <circle cx="17" cy="17.5" r="1.8" stroke="currentColor" stroke-width="1.6"></circle>
+              </svg>
+            )}
+            <span class="benefit-title">{b.title}</span>
+            <span class="benefit-desc">{b.text}</span>
+          </a>
         </li>
       ))}
     </ul>
@@ -70,11 +77,26 @@ const benefits = t.benefits.items.map((item, index) => ({ ...item, icon: icons[i
 
   .benefit {
     background: var(--surface);
+  }
+
+  .benefit-link {
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     color: var(--green);
+    text-decoration: none;
+    height: 100%;
+    transition: background-color 160ms ease;
+  }
+
+  .benefit-link:hover {
+    background: var(--green-soft);
+  }
+
+  .benefit-link:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: -3px;
   }
 
   .benefit svg {
@@ -99,7 +121,7 @@ const benefits = t.benefits.items.map((item, index) => ({ ...item, icon: icons[i
       padding-block: 40px;
     }
 
-    .benefit {
+    .benefit-link {
       padding: 20px 22px;
     }
 
@@ -122,7 +144,7 @@ const benefits = t.benefits.items.map((item, index) => ({ ...item, icon: icons[i
       margin-top: 18px;
     }
 
-    .benefit {
+    .benefit-link {
       padding: 22px 24px;
       gap: 10px;
     }

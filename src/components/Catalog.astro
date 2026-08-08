@@ -50,7 +50,7 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
           <div class="card-body">
             <div class="card-head">
               <h3>{p.name}</h3>
-              <span class="badge">{p.grade} {t.common.grade.toUpperCase()}</span>
+              <span class="grade-label">{p.grade} {t.common.grade.toUpperCase()}</span>
             </div>
             <p class="card-desc">{p.description[locale]}</p>
             <div class="pspec">
@@ -232,14 +232,12 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     color: var(--text-strong);
   }
 
-  .badge {
+  .grade-label {
     flex: none;
     font: 600 10.5px var(--font-mono);
     letter-spacing: 1px;
-    color: var(--green);
-    background: var(--green-soft);
-    padding: 4px 9px;
-    border-radius: 5px;
+    color: var(--text-muted);
+    white-space: nowrap;
   }
 
   .card-desc {
