@@ -3,7 +3,7 @@ import type { ProductCategory } from '../data/products';
 
 export interface SiteContent {
   meta: { title: string; description: string };
-  nav: { offer: string; quality: string; process: string; terms: string; faq: string };
+  nav: { offer: string; quality: string; process: string; terms: string; faq: string; blog: string };
   languageLabel: string;
   common: {
     whatsapp: string;
@@ -76,7 +76,7 @@ const pl: SiteContent = {
     title: 'Hurtownia sortowanej odzieży używanej B2B | EuroSortex',
     description: 'Sortowana odzież używana z Europy dla sklepów w Polsce. 12 pozycji hurtowych, minimum 20 kg, zdjęcia partii i pomoc w organizacji transportu.',
   },
-  nav: { offer: 'Oferta', quality: 'Jakość', process: 'Jak zamówić', terms: 'Dostawa i płatność', faq: 'FAQ' },
+  nav: { offer: 'Oferta', quality: 'Jakość', process: 'Jak zamówić', terms: 'Dostawa i płatność', faq: 'FAQ', blog: 'Blog' },
   languageLabel: 'Wybierz język',
   common: {
     whatsapp: 'WhatsApp', call: 'Zadzwoń', availability: 'Sprawdź dostępność', grade: 'Gatunek', approxComposition: 'Skład (orient.)', branded: 'Markowe', disposal: 'Utylizacja', minimumOrder: 'Min. zamówienie', netSuffix: 'zł/kg netto', vat: '+ VAT', productQuestion: 'Zapytaj o ten asortyment',
@@ -168,7 +168,7 @@ const pl: SiteContent = {
 const ru: SiteContent = {
   ...pl,
   meta: { title: 'Оптовый склад сортированной одежды second-hand | EuroSortex', description: 'Сортированная одежда second-hand из Европы для магазинов по всей Польше. 12 оптовых позиций, заказ от 20 кг, фото партий и помощь с транспортом.' },
-  nav: { offer: 'Ассортимент', quality: 'Качество', process: 'Как заказать', terms: 'Доставка и оплата', faq: 'FAQ' },
+  nav: { offer: 'Ассортимент', quality: 'Качество', process: 'Как заказать', terms: 'Доставка и оплата', faq: 'FAQ', blog: 'Блог' },
   languageLabel: 'Выберите язык',
   common: { whatsapp: 'WhatsApp', call: 'Позвонить', availability: 'Уточнить наличие', grade: 'Сорт', approxComposition: 'Состав (примерно)', branded: 'Брендовая одежда', disposal: 'Утилизация', minimumOrder: 'Мин. заказ', netSuffix: 'зл/кг нетто', vat: '+ VAT', productQuestion: 'Уточнить эту позицию' },
   hero: { ...pl.hero, eyebrow: 'ОПТОВАЯ ОДЕЖДА SECOND-HAND · ТОЛЬКО B2B', title: 'Оптовый склад сортированной одежды second-hand для магазинов по всей Польше', text: 'Сортированная одежда из Европы: 12 оптовых позиций. Цены нетто, минимальный заказ 20 кг. Уточните наличие, запросите фото партии и условия сотрудничества.', note: 'После короткого разговора подготовим предложение под потребности вашего магазина. Онлайн-продаж нет.', imageAlt: 'Склад EuroSortex с мешками и тюками сортированной одежды', imageLabel: 'СКЛАД / ЕВРОПА', facts: [{ label: 'МОДЕЛЬ', value: 'Только B2B' }, { label: 'ДОСТАВКА', value: '1–3 недели' }, { label: 'ГЕОГРАФИЯ', value: 'Вся Польша' }] },
@@ -187,7 +187,7 @@ const ru: SiteContent = {
 const uk: SiteContent = {
   ...ru,
   meta: { title: 'Оптовий склад сортованого одягу second-hand | EuroSortex', description: 'Сортований одяг second-hand з Європи для магазинів по всій Польщі. 12 оптових позицій, замовлення від 20 кг, фото партій і допомога з транспортом.' },
-  nav: { offer: 'Асортимент', quality: 'Якість', process: 'Як замовити', terms: 'Доставка й оплата', faq: 'FAQ' },
+  nav: { offer: 'Асортимент', quality: 'Якість', process: 'Як замовити', terms: 'Доставка й оплата', faq: 'FAQ', blog: 'Блог' },
   languageLabel: 'Оберіть мову',
   common: { whatsapp: 'WhatsApp', call: 'Зателефонувати', availability: 'Уточнити наявність', grade: 'Ґатунок', approxComposition: 'Склад (орієнтовно)', branded: 'Брендовий одяг', disposal: 'Утилізація', minimumOrder: 'Мін. замовлення', netSuffix: 'зл/кг нетто', vat: '+ VAT', productQuestion: 'Уточнити цю позицію' },
   hero: { ...ru.hero, eyebrow: 'ОПТОВИЙ ОДЯГ SECOND-HAND · ЛИШЕ B2B', title: 'Оптовий склад сортованого одягу second-hand для магазинів по всій Польщі', text: 'Сортований одяг з Європи: 12 оптових позицій. Ціни нетто, мінімальне замовлення 20 кг. Уточніть наявність, запросіть фото партії та умови співпраці.', note: 'Після короткої розмови підготуємо пропозицію для вашого магазину. Онлайн-продажів немає.', imageAlt: 'Склад EuroSortex з мішками й тюками сортованого одягу', imageLabel: 'СКЛАД / ЄВРОПА', facts: [{ label: 'МОДЕЛЬ', value: 'Лише B2B' }, { label: 'ДОСТАВКА', value: '1–3 тижні' }, { label: 'ГЕОГРАФІЯ', value: 'Уся Польща' }] },
@@ -206,7 +206,7 @@ const uk: SiteContent = {
 const en: SiteContent = {
   ...pl,
   meta: { title: 'Wholesale sorted second-hand clothing in Poland | EuroSortex', description: 'European sorted second-hand clothing for shops across Poland. 12 wholesale lines, 20 kg minimum order, batch photos and transport support.' },
-  nav: { offer: 'Offer', quality: 'Quality', process: 'How to order', terms: 'Delivery & payment', faq: 'FAQ' },
+  nav: { offer: 'Offer', quality: 'Quality', process: 'How to order', terms: 'Delivery & payment', faq: 'FAQ', blog: 'Blog' },
   languageLabel: 'Choose language',
   common: { whatsapp: 'WhatsApp', call: 'Call', availability: 'Check availability', grade: 'Grade', approxComposition: 'Composition (approx.)', branded: 'Branded', disposal: 'Unsuitable share', minimumOrder: 'Min. order', netSuffix: 'PLN/kg net', vat: '+ VAT', productQuestion: 'Ask about this line' },
   hero: { ...pl.hero, eyebrow: 'WHOLESALE SECOND-HAND CLOTHING · B2B ONLY', title: 'Wholesale sorted second-hand clothing for shops across Poland', text: 'European sorted second-hand clothing in 12 wholesale lines. Net prices and a 20 kg minimum order. Ask about current availability, batch photos and cooperation terms.', note: 'After a short conversation, we prepare an offer matched to your shop. We do not sell online.', imageAlt: 'EuroSortex warehouse with bags and bales of sorted second-hand clothing', imageLabel: 'WAREHOUSE / EUROPE', facts: [{ label: 'MODEL', value: 'B2B only' }, { label: 'DELIVERY', value: '1–3 weeks' }, { label: 'COVERAGE', value: 'All Poland' }] },

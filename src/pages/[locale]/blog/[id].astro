@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { locales } from '../../../config/locales';
+import BlogArticlePage from '../../../components/BlogArticlePage.astro';
+import { getBlogEntrySlug, getPublishedBlogPosts } from '../../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const translatedLocales = locales.filter((locale) => locale !== 'pl');
+  const pathsByLocale = await Promise.all(translatedLocales.map(async (locale) => {
+    const posts = await getPublishedBlogPosts(locale);
+    return posts.map((post) => ({
+      params: { locale, id: getBlogEntrySlug(post) },
+      props: { post, locale },
+    }));
+  }));
+
+  return pathsByLocale.flat();
+}) satisfies GetStaticPaths;
+
+const { post, locale } = Astro.props;
+---
+
+<BlogArticlePage post={post} locale={locale} />

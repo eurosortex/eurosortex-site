@@ -12,11 +12,26 @@ interface Props {
   description: string;
   locale: Locale;
   alternatePaths?: Partial<Record<Locale, string>>;
-  pageType?: 'landing_page' | 'legal_document';
+  pageType?: 'landing_page' | 'legal_document' | 'blog_index' | 'blog_article';
+  renderAlternates?: boolean;
+  ogType?: 'website' | 'article';
+  image?: string;
+  publishedAt?: Date;
 }
 
-const { title, description, locale, alternatePaths, pageType = 'landing_page' } = Astro.props;
+const {
+  title,
+  description,
+  locale,
+  alternatePaths,
+  pageType = 'landing_page',
+  renderAlternates = true,
+  ogType = 'website',
+  image,
+  publishedAt,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = image ? new URL(image, Astro.site) : undefined;
 const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA', en: 'en_GB' };
 ---
 
@@ -132,16 +147,18 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocales[locale]} />
-    {locales.map((item) => {
+    {socialImage && <meta property="og:image" content={socialImage} />}
+    {publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
+    {renderAlternates && locales.map((item) => {
       const path = alternatePaths?.[item] ?? localeConfig[item].path;
       return <link rel="alternate" hreflang={localeConfig[item].htmlLang} href={new URL(path, Astro.site)} />;
     })}
-    <link rel="alternate" hreflang="x-default" href={new URL(alternatePaths?.pl ?? '/', Astro.site)} />
+    {renderAlternates && <link rel="alternate" hreflang="x-default" href={new URL(alternatePaths?.pl ?? '/', Astro.site)} />}
   </head>
   <body>
     <noscript>

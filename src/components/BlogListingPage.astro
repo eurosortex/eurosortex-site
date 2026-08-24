@@ -1,0 +1,184 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '../config/locales';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import StickyBar from './StickyBar.astro';
+import IconWhatsApp from './IconWhatsApp.astro';
+import { whatsappUrl } from '../config/contact';
+import { blogCopy } from '../i18n/blog';
+import { BLOG_PAGE_SIZE, getBlogArticlePath, getBlogEntrySlug, getBlogPageAlternatePaths, getBlogPagePath } from '../lib/blog';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  locale: Locale;
+  currentPage: number;
+  totalPages: number;
+}
+
+const { posts, locale, currentPage, totalPages } = Astro.props;
+const copy = blogCopy[locale];
+const formatDate = (date: Date) => new Intl.DateTimeFormat(copy.dateLocale, {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+}).format(date);
+const title = currentPage === 1 ? copy.metaTitle : `${copy.metaTitle.replace(' | EuroSortex', '')} — ${copy.pageLabel.toLowerCase()} ${currentPage} | EuroSortex`;
+const description = copy.metaDescription;
+const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+const previousPath = currentPage > 1 ? getBlogPagePath(currentPage - 1, locale) : undefined;
+const nextPath = currentPage < totalPages ? getBlogPagePath(currentPage + 1, locale) : undefined;
+const alternatePaths = getBlogPageAlternatePaths(currentPage);
+const pageUrl = new URL(getBlogPagePath(currentPage, locale), Astro.site).href;
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: currentPage === 1 ? copy.metaTitle.replace(' | EuroSortex', '') : `${copy.metaTitle.replace(' | EuroSortex', '')} — ${copy.pageLabel.toLowerCase()} ${currentPage}`,
+  description,
+  url: pageUrl,
+  inLanguage: locale,
+};
+---
+
+<Base title={title} description={description} locale={locale} pageType="blog_index" alternatePaths={alternatePaths}>
+  <Header locale={locale} linkSectionsToHome currentArea="blog" languagePaths={alternatePaths} />
+  <main id="tresc">
+    <section class="popular-section" id="popularne" aria-labelledby="popular-title">
+      <div class="container">
+        <div class="popular-heading">
+          <span class="kicker">{copy.latest}</span>
+          <h1 id="popular-title">{copy.news}</h1>
+        </div>
+        <div class="popular-grid">
+          {posts.map((post, index) => (
+            <a class="popular-card" href={getBlogArticlePath(locale, getBlogEntrySlug(post))}>
+              <span class="popular-image">
+                <img
+                  src={post.data.image}
+                  alt={post.data.imageAlt}
+                  width="720"
+                  height="450"
+                  loading={currentPage === 1 && index === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+              </span>
+              <span class="popular-index">{String((currentPage - 1) * BLOG_PAGE_SIZE + index + 1).padStart(2, '0')}</span>
+              <span class="popular-meta">
+                <span>{post.data.category}</span>
+                <span aria-hidden="true">·</span>
+                <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+                <span aria-hidden="true">·</span>
+                <span>{post.data.readingTime} {copy.minuteShort}</span>
+              </span>
+              <strong>{post.data.title}</strong>
+              <span class="popular-cta">{copy.readArticle} <span aria-hidden="true">→</span></span>
+            </a>
+          ))}
+        </div>
+
+        {posts.length === 0 && (
+          <div class="empty-state" role="status">
+            <strong>{copy.emptyTitle}</strong>
+            <p>{copy.emptyText}</p>
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <nav class="pagination" aria-label={copy.pagesLabel}>
+            <div class="pagination-pages">
+              {previousPath ? (
+                <a class="pagination-direction" href={previousPath} rel="prev" aria-label={copy.previousPage}><span aria-hidden="true">←</span></a>
+              ) : (
+                <span class="pagination-direction is-disabled" aria-disabled="true" aria-label={copy.noPreviousPage}><span aria-hidden="true">←</span></span>
+              )}
+              {pageNumbers.map((pageNumber) => (
+                <a
+                  class:list={['pagination-page', { 'is-current': pageNumber === currentPage }]}
+                  href={getBlogPagePath(pageNumber, locale)}
+                  aria-current={pageNumber === currentPage ? 'page' : undefined}
+                  aria-label={`${copy.pageLabel} ${pageNumber}`}
+                >{pageNumber}</a>
+              ))}
+              {nextPath ? (
+                <a class="pagination-direction" href={nextPath} rel="next" aria-label={copy.nextPage}><span aria-hidden="true">→</span></a>
+              ) : (
+                <span class="pagination-direction is-disabled" aria-disabled="true" aria-label={copy.noNextPage}><span aria-hidden="true">→</span></span>
+              )}
+            </div>
+          </nav>
+        )}
+      </div>
+    </section>
+
+    <section class="blog-cta">
+      <div class="container">
+        <div class="cta-inner">
+          <div class="cta-copy">
+            <span class="kicker">{copy.offerEyebrow}</span>
+            <h2>{copy.offerTitle}</h2>
+            <p>{copy.offerText}</p>
+          </div>
+          <div class="cta-action">
+            <div class="cta-facts" aria-label={copy.offerFactsLabel}>
+              {copy.offerFacts.map((fact) => <span>{fact}</span>)}
+            </div>
+            <a class="btn btn-primary" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="final_cta">
+              <IconWhatsApp size={18} /> {copy.offerAction}
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer locale={locale} languagePaths={alternatePaths} />
+  <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} />
+</Base>
+
+<style>
+  .popular-heading h1 { margin: 7px 0 0; color: var(--text-strong); font-size: clamp(27px, 3vw, 38px); letter-spacing: -.025em; }
+  .popular-section { padding-block: 42px 66px; scroll-margin-top: 90px; }
+  .popular-heading { padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .popular-grid { display: grid; grid-template-columns: 1fr; }
+  .popular-card { position: relative; padding: 23px 20px; display: flex; flex-direction: column; border-bottom: 1px solid var(--border); }
+  .popular-image { display: block; width: 100%; aspect-ratio: 16 / 9; margin-bottom: 16px; overflow: hidden; border-radius: 12px; background: var(--surface-cream); }
+  .popular-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 260ms ease; }
+  .popular-card:hover .popular-image img { transform: scale(1.035); }
+  .popular-index { color: var(--green); font: 700 11px var(--font-mono); }
+  .popular-meta { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 5px; color: var(--text-faint); font: 600 9.5px var(--font-mono); letter-spacing: .04em; text-transform: uppercase; }
+  .popular-card strong { margin-top: 8px; margin-bottom: 18px; color: var(--text-strong); font-size: 16px; line-height: 1.35; transition: color 180ms ease; }
+  .popular-card:hover strong { color: var(--green); }
+  .popular-cta { margin-top: auto; padding: 11px 14px; display: flex; align-items: center; justify-content: center; gap: 9px; border-radius: 10px; background: var(--green); color: #fff; box-shadow: 0 5px 14px rgb(18 77 50 / 18%); font-size: 12px; font-weight: 800; transition: background 180ms ease, transform 180ms ease; }
+  .popular-cta > span { display: inline-flex; align-items: center; justify-content: center; flex: none; font-size: 17px; transition: transform 180ms ease; }
+  .popular-card:hover .popular-cta { transform: translateY(-1px); }
+  .popular-card:hover .popular-cta > span { transform: translateX(3px); }
+  .empty-state { max-width: 620px; margin: 42px auto 0; padding: 34px 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); text-align: center; }
+  .empty-state strong { display: block; color: var(--text-strong); font-size: clamp(21px, 3vw, 28px); }
+  .empty-state p { margin: 9px 0 0; color: var(--text-soft); }
+  .pagination { width: max-content; margin: 36px auto 0; padding: 5px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); box-shadow: 0 8px 24px rgb(32 45 38 / 7%); }
+  .pagination-direction, .pagination-page { width: 42px; min-height: 42px; display: inline-flex; align-items: center; justify-content: center; border: 0; border-radius: 9px; color: var(--text-mid); font-size: 13px; font-weight: 800; transition: background 160ms ease, color 160ms ease, transform 160ms ease; }
+  .pagination-direction { font-size: 19px; }
+  .pagination-direction:hover, .pagination-page:hover { background: var(--green-soft); color: var(--green-deep); }
+  .pagination-direction:active, .pagination-page:active { transform: scale(.96); }
+  .pagination-direction.is-disabled { color: var(--text-faint); opacity: .5; pointer-events: none; }
+  .pagination-pages { display: flex; gap: 4px; }
+  .pagination-page.is-current { background: var(--green); color: #fff; box-shadow: 0 4px 10px rgb(18 77 50 / 20%); }
+  .blog-cta { padding-bottom: 56px; }
+  .cta-inner { padding: 28px 22px; border: 1px solid var(--border-cream); border-radius: 16px; background: var(--surface-cream); display: flex; flex-direction: column; gap: 24px; }
+  .cta-inner h2 { max-width: 720px; margin: 8px 0 7px; color: var(--text-strong); font-size: clamp(25px, 3vw, 36px); line-height: 1.12; letter-spacing: -.025em; }
+  .cta-inner p { margin: 0; color: var(--text-soft); }
+  .cta-action { display: flex; flex-direction: column; gap: 16px; }
+  .cta-facts { display: flex; flex-wrap: wrap; gap: 7px; }
+  .cta-facts span { padding: 6px 9px; border: 1px solid var(--border-strong); border-radius: 999px; background: var(--surface); color: var(--text-muted); font-size: 11px; font-weight: 700; }
+  .cta-action .btn { min-height: 50px; padding: 0 22px; }
+  @media (min-width: 700px) {
+    .popular-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .popular-card { padding: 25px 36px 25px 0; border-bottom: 0; border-right: 1px solid var(--border); }
+    .popular-card:not(:nth-child(3n + 1)) { padding-left: 24px; }
+    .popular-card:nth-child(3n) { padding-right: 0; border-right: 0; }
+    .popular-card:nth-child(n + 4) { border-top: 1px solid var(--border); }
+    .cta-inner { padding: 36px 38px; flex-direction: row; align-items: center; justify-content: space-between; gap: 36px; }
+    .cta-action { align-items: flex-end; flex: none; }
+  }
+</style>

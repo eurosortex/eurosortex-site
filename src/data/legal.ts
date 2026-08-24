@@ -41,10 +41,10 @@ const registryDetails = `${company.registryCourt}; ${registry}; kapitał zakład
 
 const plPrivacy: LegalDocument = {
   title: 'Polityka prywatności',
-  metaDescription: 'Polityka prywatności serwisu EuroSortex Group: zasady przetwarzania danych, kontakt, WhatsApp oraz informacje o narzędziach Google.',
+  metaDescription: 'Polityka prywatności serwisu EuroSortex Group: przetwarzanie danych, kontakt, WhatsApp, Google oraz Microsoft Clarity.',
   eyebrow: 'DOKUMENTY PRAWNE',
   effectiveDateLabel: 'Obowiązuje od',
-  effectiveDate: '5 sierpnia 2026 r.',
+  effectiveDate: '7 sierpnia 2026 r.',
   intro: 'Niniejsza Polityka wyjaśnia, w jaki sposób przetwarzamy dane osobowe osób odwiedzających serwis eurosortex.com oraz kontaktujących się z nami w sprawach handlowych.',
   sections: [
     {
@@ -84,7 +84,7 @@ const plPrivacy: LegalDocument = {
       title: '4. Odbiorcy danych i transfery poza EOG',
       blocks: [
         { type: 'paragraph', text: 'Dane mogą być udostępniane dostawcom hostingu, obsługi IT, poczty elektronicznej, księgowości, bankom, przewoźnikom, doradcom prawnym i podatkowym oraz organom publicznym, gdy wymagają tego przepisy.' },
-        { type: 'paragraph', text: 'W przypadku kontaktu przez WhatsApp dane są przetwarzane również przez Meta Platforms Ireland Limited. Usługi pocztowe oraz narzędzia Google mogą być świadczone przez Google Ireland Limited. Dostawcy ci mogą korzystać z infrastruktury lub podwykonawców poza Europejskim Obszarem Gospodarczym, stosując odpowiedni mechanizm legalizujący transfer, w szczególności decyzję stwierdzającą odpowiedni stopień ochrony albo standardowe klauzule umowne.' },
+        { type: 'paragraph', text: 'W przypadku kontaktu przez WhatsApp dane są przetwarzane również przez Meta Platforms Ireland Limited. Usługi pocztowe oraz narzędzia Google mogą być świadczone przez Google Ireland Limited, a Microsoft Clarity — przez podmioty z grupy Microsoft. Dostawcy ci mogą korzystać z infrastruktury lub podwykonawców poza Europejskim Obszarem Gospodarczym, stosując odpowiedni mechanizm legalizujący transfer, w szczególności decyzję stwierdzającą odpowiedni stopień ochrony albo standardowe klauzule umowne.' },
       ],
     },
     {
@@ -95,6 +95,7 @@ const plPrivacy: LegalDocument = {
           'dane związane z umową — przez okres wykonywania umowy, a następnie do upływu terminów przedawnienia roszczeń;',
           'dokumenty księgowe i podatkowe — przez okres wymagany przepisami;',
           'logi techniczne — przez okres ustalony przez dostawcę hostingu i nie dłużej, niż jest to potrzebne do zapewnienia bezpieczeństwa i diagnostyki, chyba że konkretny log stanowi dowód incydentu;',
+          'nagrania sesji Microsoft Clarity — co do zasady przez 30 dni; nagrania oznaczone jako ulubione mogą być przechowywane do 9 miesięcy;',
           'dane przetwarzane na podstawie zgody — do jej wycofania lub do ustania celu, w zależności od tego, co nastąpi wcześniej.',
         ] },
       ],
@@ -119,10 +120,11 @@ const plPrivacy: LegalDocument = {
       ],
     },
     {
-      title: '9. Google Tag Manager i pamięć urządzenia',
+      title: '9. Google Tag Manager, Microsoft Clarity i pamięć urządzenia',
       blocks: [
         { type: 'paragraph', text: 'Serwis korzysta z Google Tag Managera do technicznego zarządzania tagami. Google Consent Mode został skonfigurowany domyślnie z odmową dostępu do pamięci reklamowej i analitycznej. Panel ustawień prywatności pozwala zaakceptować wszystkie technologie opcjonalne, odrzucić je albo osobno wybrać analitykę i pomiar reklam. Wybór jest zapisywany w niezbędnym cookie eurosortex_consent przez 180 dni i można go później zmienić za pomocą odnośnika w stopce.' },
-        { type: 'paragraph', text: 'Samo pobranie kodu Google może powodować techniczne połączenie z serwerami Google i przekazanie danych sieciowych, takich jak adres IP i informacje o przeglądarce. Funkcjonalności wymagające przechowywania informacji lub dostępu do informacji na urządzeniu użytkownika powinny zostać uruchomione dopiero po uzyskaniu wymaganej zgody. Administrator okresowo weryfikuje konfigurację kontenera tagów.' },
+        { type: 'paragraph', text: 'Za zgodą na analitykę Microsoft Clarity rejestruje sposób korzystania z serwisu, w tym kliknięcia, przewijanie, odwiedzane sekcje i nagrania sesji, oraz tworzy mapy cieplne. Treści wrażliwe są domyślnie maskowane. Clarity respektuje sygnały Google Consent Mode, dlatego analityczne cookies są używane dopiero po uzyskaniu odpowiedniej zgody.' },
+        { type: 'paragraph', text: 'Pobranie kodu Google lub Microsoft może powodować techniczne połączenie z serwerami dostawcy i przekazanie danych sieciowych, takich jak adres IP i informacje o przeglądarce. Administrator okresowo weryfikuje konfigurację kontenera tagów.' },
         { type: 'note', text: 'W przeglądarce można niezależnie ograniczyć lub usunąć cookies i inne dane stron. Zablokowanie niezbędnej pamięci technicznej może wpłynąć na działanie części serwisu.' },
       ],
     },
@@ -357,10 +359,10 @@ function translatedDocument(
 
 const ruPrivacy = translatedDocument(plPrivacy, {
   title: 'Политика конфиденциальности',
-  metaDescription: 'Политика конфиденциальности EuroSortex Group: обработка данных, обращения, WhatsApp и инструменты Google.',
+  metaDescription: 'Политика конфиденциальности EuroSortex Group: обработка данных, обращения, WhatsApp, Google и Microsoft Clarity.',
   eyebrow: 'ЮРИДИЧЕСКИЕ ДОКУМЕНТЫ',
   effectiveDateLabel: 'Действует с',
-  effectiveDate: '5 августа 2026 г.',
+  effectiveDate: '7 августа 2026 г.',
   intro: 'Настоящая Политика объясняет, как обрабатываются персональные данные посетителей eurosortex.com и лиц, обращающихся к нам по коммерческим вопросам.',
   sections: [
     { title: '1. Администратор данных', blocks: [
@@ -385,13 +387,14 @@ const ruPrivacy = translatedDocument(plPrivacy, {
     ] }] },
     { title: '4. Получатели и передача за пределы ЕЭЗ', blocks: [
       { type: 'paragraph', text: 'Данные могут получать поставщики хостинга, IT, email, бухгалтерии, банки, перевозчики, юридические и налоговые консультанты, а также органы власти в предусмотренных законом случаях.' },
-      { type: 'paragraph', text: 'При использовании WhatsApp данные также обрабатывает Meta Platforms Ireland Limited; почту и инструменты Google может предоставлять Google Ireland Limited. Их инфраструктура или подрядчики могут находиться вне ЕЭЗ. Передача осуществляется на основании применимого решения об адекватности либо стандартных договорных положений.' },
+      { type: 'paragraph', text: 'При использовании WhatsApp данные также обрабатывает Meta Platforms Ireland Limited; почту и инструменты Google может предоставлять Google Ireland Limited, а Microsoft Clarity — компании группы Microsoft. Их инфраструктура или подрядчики могут находиться вне ЕЭЗ. Передача осуществляется на основании применимого решения об адекватности либо стандартных договорных положений.' },
     ] },
     { title: '5. Сроки хранения', blocks: [{ type: 'list', items: [
       'обращения без договора — до завершения вопроса, затем на период, обоснованный возможным продолжением переговоров или защитой требований;',
       'договорные данные — во время исполнения и до истечения сроков давности требований;',
       'бухгалтерские и налоговые документы — в установленные законом сроки;',
       'технические журналы — по срокам хостинг-провайдера и не дольше необходимого для безопасности и диагностики, кроме журналов, являющихся доказательством инцидента;',
+      'записи сессий Microsoft Clarity — как правило, 30 дней; записи, отмеченные как избранные, могут храниться до 9 месяцев;',
       'данные на основании согласия — до его отзыва или прекращения цели.',
     ] }] },
     { title: '6. Права субъектов данных', blocks: [
@@ -400,9 +403,10 @@ const ruPrivacy = translatedDocument(plPrivacy, {
     ] },
     { title: '7. Добровольность предоставления', blocks: [{ type: 'paragraph', text: 'Предоставление данных добровольно, однако контактные сведения и данные заказа необходимы для ответа, предложения или исполнения договора. После сделки сведения, требуемые бухгалтерским и налоговым законодательством, обязательны.' }] },
     { title: '8. WhatsApp и внешние ссылки', blocks: [{ type: 'paragraph', text: 'Кнопка WhatsApp открывает сервис Meta. Подготовленное сообщение не отправляется автоматически. Пользователь сам решает, отправлять ли его. Meta также обрабатывает данные как самостоятельный администратор по собственной политике. Администратор не отвечает за правила конфиденциальности других внешних сайтов.' }] },
-    { title: '9. Google Tag Manager и память устройства', blocks: [
+    { title: '9. Google Tag Manager, Microsoft Clarity и память устройства', blocks: [
       { type: 'paragraph', text: 'Сайт использует Google Tag Manager для технического управления тегами. Google Consent Mode по умолчанию запрещает рекламное и аналитическое хранение. Панель конфиденциальности позволяет принять все необязательные технологии, отклонить их либо отдельно выбрать аналитику и измерение рекламы. Выбор хранится в необходимом cookie eurosortex_consent 180 дней и позднее может быть изменён по ссылке в подвале.' },
-      { type: 'paragraph', text: 'Загрузка кода Google может установить техническое соединение с Google и передать сетевые данные, включая IP и сведения браузера. Функции, требующие записи или чтения данных устройства, должны включаться только после необходимого согласия. Конфигурация контейнера периодически проверяется.' },
+      { type: 'paragraph', text: 'С согласия на аналитику Microsoft Clarity регистрирует использование сайта, включая клики, прокрутку, посещённые разделы и записи сессий, и создаёт тепловые карты. Чувствительное содержимое по умолчанию маскируется. Clarity учитывает сигналы Google Consent Mode, поэтому аналитические cookies используются только после соответствующего согласия.' },
+      { type: 'paragraph', text: 'Загрузка кода Google или Microsoft может установить техническое соединение с серверами поставщика и передать сетевые данные, включая IP и сведения браузера. Конфигурация контейнера периодически проверяется.' },
       { type: 'note', text: 'Пользователь может ограничивать и удалять cookies и данные сайтов в браузере. Блокировка необходимой технической памяти может повлиять на работу сайта.' },
     ] },
     { title: '10. Автоматизированные решения и изменения', blocks: [
@@ -513,10 +517,10 @@ const ruSalesTerms = translatedDocument(plSalesTerms, {
 
 const enPrivacy = translatedDocument(plPrivacy, {
   title: 'Privacy Policy',
-  metaDescription: 'EuroSortex Group Privacy Policy covering enquiries, WhatsApp, technical data and Google tools.',
+  metaDescription: 'EuroSortex Group Privacy Policy covering enquiries, WhatsApp, Google tools and Microsoft Clarity.',
   eyebrow: 'LEGAL DOCUMENTS',
   effectiveDateLabel: 'Effective from',
-  effectiveDate: '5 August 2026',
+  effectiveDate: '7 August 2026',
   intro: 'This Policy explains how we process the personal data of visitors to eurosortex.com and people who contact us about business matters.',
   sections: [
     { title: '1. Data controller', blocks: [
@@ -541,13 +545,14 @@ const enPrivacy = translatedDocument(plPrivacy, {
     ] }] },
     { title: '4. Recipients and transfers outside the EEA', blocks: [
       { type: 'paragraph', text: 'Recipients may include hosting, IT, email and accounting providers, banks, carriers, legal and tax advisers, and public authorities where required by law.' },
-      { type: 'paragraph', text: 'WhatsApp use also involves Meta Platforms Ireland Limited. Email and Google tools may be provided by Google Ireland Limited. Their infrastructure or subcontractors may be outside the EEA. Transfers rely on an applicable adequacy decision or safeguards such as standard contractual clauses.' },
+      { type: 'paragraph', text: 'WhatsApp use also involves Meta Platforms Ireland Limited. Email and Google tools may be provided by Google Ireland Limited, and Microsoft Clarity by Microsoft group entities. Their infrastructure or subcontractors may be outside the EEA. Transfers rely on an applicable adequacy decision or safeguards such as standard contractual clauses.' },
     ] },
     { title: '5. Retention', blocks: [{ type: 'list', items: [
       'enquiries without a contract — until the matter is completed and then for a period justified by possible resumed talks or claims;',
       'contract data — during performance and until relevant limitation periods expire;',
       'accounting and tax records — for the statutory period;',
       'technical logs — under the host’s retention rules and no longer than needed for security and diagnostics, unless a log is evidence of an incident;',
+      'Microsoft Clarity session recordings — normally for 30 days; recordings marked as favorites may be retained for up to 9 months;',
       'consent-based data — until consent is withdrawn or the purpose ends.',
     ] }] },
     { title: '6. Your rights', blocks: [
@@ -556,9 +561,10 @@ const enPrivacy = translatedDocument(plPrivacy, {
     ] },
     { title: '7. Whether data is required', blocks: [{ type: 'paragraph', text: 'Providing data is voluntary, but contact and order details are necessary to reply, prepare an offer or perform a contract. Accounting and tax information becomes mandatory after a transaction.' }] },
     { title: '8. WhatsApp and external links', blocks: [{ type: 'paragraph', text: 'The WhatsApp button opens Meta’s service. A prepared message is not sent automatically; the user chooses whether to send it. Meta also acts as an independent controller under its own policy. The Controller is not responsible for the privacy rules of other external sites.' }] },
-    { title: '9. Google Tag Manager and device storage', blocks: [
+    { title: '9. Google Tag Manager, Microsoft Clarity and device storage', blocks: [
       { type: 'paragraph', text: 'The site uses Google Tag Manager to manage tags. Google Consent Mode denies advertising and analytics storage by default. The privacy panel lets users accept all optional technologies, reject them or select analytics and advertising measurement separately. The choice is stored in the necessary eurosortex_consent cookie for 180 days and can later be changed through the footer link.' },
-      { type: 'paragraph', text: 'Loading Google code may itself establish a technical connection to Google and transfer network data such as IP address and browser information. Any feature that stores or reads information on the user’s device should be enabled only after the required consent. The tag container is reviewed periodically.' },
+      { type: 'paragraph', text: 'With analytics consent, Microsoft Clarity records how the site is used, including clicks, scrolling, visited sections and session recordings, and generates heatmaps. Sensitive content is masked by default. Clarity honors Google Consent Mode signals, so analytics cookies are used only after the relevant consent.' },
+      { type: 'paragraph', text: 'Loading Google or Microsoft code may establish a technical connection to the provider’s servers and transfer network data such as the IP address and browser information. The tag container is reviewed periodically.' },
       { type: 'note', text: 'Browser settings can restrict or delete cookies and other site data. Blocking essential technical storage may affect some features.' },
     ] },
     { title: '10. Automated decisions and changes', blocks: [
@@ -669,10 +675,10 @@ const enSalesTerms = translatedDocument(plSalesTerms, {
 
 const ukPrivacy: LegalDocument = {
   title: 'Політика конфіденційності',
-  metaDescription: 'Політика конфіденційності EuroSortex Group: обробка даних, звернення, WhatsApp та інструменти Google.',
+  metaDescription: 'Політика конфіденційності EuroSortex Group: обробка даних, звернення, WhatsApp, Google та Microsoft Clarity.',
   eyebrow: 'ЮРИДИЧНІ ДОКУМЕНТИ',
   effectiveDateLabel: 'Чинна з',
-  effectiveDate: '5 серпня 2026 р.',
+  effectiveDate: '7 серпня 2026 р.',
   intro: 'Ця Політика пояснює, як обробляються персональні дані відвідувачів eurosortex.com та осіб, які звертаються до нас із комерційних питань.',
   sections: [
     { title: '1. Адміністратор даних', blocks: [
@@ -697,13 +703,14 @@ const ukPrivacy: LegalDocument = {
     ] }] },
     { title: '4. Одержувачі та передавання за межі ЄЕЗ', blocks: [
       { type: 'paragraph', text: 'Дані можуть отримувати постачальники хостингу, IT, електронної пошти й бухгалтерії, банки, перевізники, юридичні та податкові консультанти, а також органи влади у випадках, передбачених законом.' },
-      { type: 'paragraph', text: 'У разі використання WhatsApp дані також обробляє Meta Platforms Ireland Limited; поштові сервіси та інструменти Google може надавати Google Ireland Limited. Їхня інфраструктура або підрядники можуть перебувати поза ЄЕЗ. Передавання ґрунтується на застосовному рішенні про належний рівень захисту або стандартних договірних положеннях.' },
+      { type: 'paragraph', text: 'У разі використання WhatsApp дані також обробляє Meta Platforms Ireland Limited; поштові сервіси та інструменти Google може надавати Google Ireland Limited, а Microsoft Clarity — компанії групи Microsoft. Їхня інфраструктура або підрядники можуть перебувати поза ЄЕЗ. Передавання ґрунтується на застосовному рішенні про належний рівень захисту або стандартних договірних положеннях.' },
     ] },
     { title: '5. Строки зберігання', blocks: [{ type: 'list', items: [
       'звернення без договору — до завершення питання, а далі на строк, обґрунтований можливим продовженням переговорів або захистом вимог;',
       'договірні дані — під час виконання та до спливу строків позовної давності;',
       'бухгалтерські й податкові документи — протягом установлених законом строків;',
       'технічні журнали — за правилами хостинг-провайдера й не довше, ніж потрібно для безпеки та діагностики, крім журналів, що є доказом інциденту;',
+      'записи сесій Microsoft Clarity — зазвичай протягом 30 днів; записи, позначені як вибрані, можуть зберігатися до 9 місяців;',
       'дані на підставі згоди — до її відкликання або припинення відповідної мети.',
     ] }] },
     { title: '6. Права суб’єктів даних', blocks: [
@@ -712,9 +719,10 @@ const ukPrivacy: LegalDocument = {
     ] },
     { title: '7. Добровільність надання', blocks: [{ type: 'paragraph', text: 'Надання даних є добровільним, але контактні відомості та дані замовлення потрібні для відповіді, пропозиції або виконання договору. Після операції відомості, яких вимагає бухгалтерське й податкове законодавство, є обов’язковими.' }] },
     { title: '8. WhatsApp і зовнішні посилання', blocks: [{ type: 'paragraph', text: 'Кнопка WhatsApp відкриває сервіс Meta. Підготовлене повідомлення не надсилається автоматично — користувач сам вирішує, чи надсилати його. Meta також обробляє дані як самостійний адміністратор за власною політикою. Адміністратор не відповідає за правила конфіденційності інших зовнішніх сайтів.' }] },
-    { title: '9. Google Tag Manager і пам’ять пристрою', blocks: [
+    { title: '9. Google Tag Manager, Microsoft Clarity і пам’ять пристрою', blocks: [
       { type: 'paragraph', text: 'Сайт використовує Google Tag Manager для технічного керування тегами. Google Consent Mode за замовчуванням забороняє рекламне й аналітичне зберігання. Панель конфіденційності дає змогу прийняти всі необов’язкові технології, відхилити їх або окремо вибрати аналітику та вимірювання реклами. Вибір зберігається в необхідному cookie eurosortex_consent протягом 180 днів і згодом може бути змінений через посилання у футері.' },
-      { type: 'paragraph', text: 'Завантаження коду Google може встановити технічне з’єднання з Google і передати мережеві дані, зокрема IP та відомості браузера. Функції, що записують або читають інформацію на пристрої, мають вмикатися лише після необхідної згоди. Конфігурація контейнера періодично перевіряється.' },
+      { type: 'paragraph', text: 'За згодою на аналітику Microsoft Clarity реєструє використання сайту, зокрема кліки, прокручування, відвідані розділи й записи сесій, та створює теплові карти. Чутливий вміст за замовчуванням маскується. Clarity враховує сигнали Google Consent Mode, тому аналітичні cookies використовуються лише після відповідної згоди.' },
+      { type: 'paragraph', text: 'Завантаження коду Google або Microsoft може встановити технічне з’єднання із серверами постачальника й передати мережеві дані, зокрема IP та відомості браузера. Конфігурація контейнера періодично перевіряється.' },
       { type: 'note', text: 'У браузері можна обмежити або видалити cookies та інші дані сайтів. Блокування необхідної технічної пам’яті може вплинути на роботу сайту.' },
     ] },
     { title: '10. Автоматизовані рішення та зміни', blocks: [

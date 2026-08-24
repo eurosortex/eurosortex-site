@@ -6,16 +6,24 @@ import { contact, whatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props {
+  locale: Locale;
+  linkSectionsToHome?: boolean;
+  currentArea?: 'home' | 'blog';
+  languagePaths?: Partial<Record<Locale, string>>;
+}
+const { locale, linkSectionsToHome = false, currentArea = 'home', languagePaths } = Astro.props;
 const t = content[locale];
 const u = ui[locale];
+const home = localeConfig[locale].path;
+const sectionHref = (anchor: string) => `${linkSectionsToHome ? home : ''}${anchor}`;
 const nav = [
-  { href: '#oferta', label: t.nav.offer },
-  { href: '#jakosc', label: t.nav.quality },
-  { href: '#jak-zamowic', label: t.nav.process },
-  { href: '#dostawa', label: t.nav.terms },
-  { href: '#faq', label: t.nav.faq },
+  { href: sectionHref('#oferta'), label: t.nav.offer },
+  { href: sectionHref('#jakosc'), label: t.nav.quality },
+  { href: sectionHref('#jak-zamowic'), label: t.nav.process },
+  { href: sectionHref('#dostawa'), label: t.nav.terms },
+  { href: sectionHref('#faq'), label: t.nav.faq },
+  { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog, area: 'blog' },
 ];
 const phoneHref = `tel:${contact.phoneE164}`;
 const waGeneral = whatsappUrl('general', locale);
@@ -28,7 +36,7 @@ const waGeneral = whatsappUrl('general', locale);
     </a>
 
     <nav class="header-nav" aria-label={u.mainNav}>
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      {nav.map((item) => <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>)}
     </nav>
 
     <div class="header-actions">
@@ -48,7 +56,7 @@ const waGeneral = whatsappUrl('general', locale);
         <div class="lang-menu" hidden>
           {locales.map((item) => (
             <a
-              href={localeConfig[item].path}
+              href={languagePaths?.[item] ?? localeConfig[item].path}
               lang={item}
               aria-current={item === locale ? 'page' : undefined}
               data-analytics-language-to={item}
@@ -93,7 +101,7 @@ const waGeneral = whatsappUrl('general', locale);
   <div class="menu-backdrop" hidden></div>
   <div class="menu-panel" id="menu-panel" hidden>
     <nav aria-label={u.menu}>
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      {nav.map((item) => <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>)}
     </nav>
     <div class="menu-contact">
       <a href={phoneHref} class="menu-phone" data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
@@ -140,6 +148,12 @@ const waGeneral = whatsappUrl('general', locale);
 
   .header-nav {
     display: none;
+  }
+
+  .header-nav a[aria-current='page'],
+  .menu-panel nav a[aria-current='page'] {
+    color: var(--green);
+    font-weight: 800;
   }
 
   .header-actions {
@@ -387,13 +401,13 @@ const waGeneral = whatsappUrl('general', locale);
     }
   }
 
-  /* ---- desktop: 1024+ ---- */
-  @media (min-width: 1024px) {
+  /* ---- desktop: 1200+ ---- */
+  @media (min-width: 1200px) {
     .header-inner {
       height: auto;
       padding-block: 12px;
       justify-content: flex-start;
-      gap: 28px;
+      gap: 20px;
     }
 
     .logo {
@@ -402,8 +416,8 @@ const waGeneral = whatsappUrl('general', locale);
 
     .header-nav {
       display: flex;
-      gap: 24px;
-      font-size: 15px;
+      gap: 16px;
+      font-size: 14px;
       font-weight: 600;
       margin-left: 4px;
     }
@@ -418,11 +432,11 @@ const waGeneral = whatsappUrl('general', locale);
 
     .header-actions {
       margin-left: auto;
-      gap: 16px;
+      gap: 10px;
     }
 
     .header-cta {
-      padding: 11px 20px;
+      padding: 11px 16px;
       min-height: 0;
     }
 

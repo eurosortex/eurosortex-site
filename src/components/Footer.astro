@@ -7,8 +7,11 @@ import { content } from '../i18n/content';
 import { consentCopy } from '../i18n/consent';
 import { ui } from '../i18n/ui';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props {
+  locale: Locale;
+  languagePaths?: Partial<Record<Locale, string>>;
+}
+const { locale, languagePaths } = Astro.props;
 const t = content[locale];
 const u = ui[locale];
 const consent = consentCopy[locale];
@@ -18,6 +21,7 @@ const nav = [
   { href: `${localeConfig[locale].path}#jak-zamowic`, label: t.nav.process },
   { href: `${localeConfig[locale].path}#dostawa`, label: t.nav.terms },
   { href: `${localeConfig[locale].path}#faq`, label: t.nav.faq },
+  { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog },
 ];
 const year = new Date().getFullYear();
 ---
@@ -94,7 +98,7 @@ const year = new Date().getFullYear();
       {locales.map((item, i) => (
         <>
           <a
-            href={localeConfig[item].path}
+            href={languagePaths?.[item] ?? localeConfig[item].path}
             lang={item}
             aria-current={item === locale ? 'page' : undefined}
             class:list={{ 'is-current': item === locale }}

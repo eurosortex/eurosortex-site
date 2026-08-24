@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BlogArticlePage from '../../components/BlogArticlePage.astro';
+import { getBlogEntrySlug, getPublishedBlogPosts } from '../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPublishedBlogPosts('pl');
+  return posts.map((post) => ({ params: { id: getBlogEntrySlug(post) }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+---
+
+<BlogArticlePage post={post} locale="pl" />

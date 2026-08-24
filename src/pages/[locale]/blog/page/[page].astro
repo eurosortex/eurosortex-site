@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { locales } from '../../../../config/locales';
+import BlogListingPage from '../../../../components/BlogListingPage.astro';
+import { BLOG_PAGE_SIZE, getPublishedBlogPosts } from '../../../../lib/blog';
+
+export const getStaticPaths = (async () => {
+  const translatedLocales = locales.filter((locale) => locale !== 'pl');
+  const pathsByLocale = await Promise.all(translatedLocales.map(async (locale) => {
+    const posts = await getPublishedBlogPosts(locale);
+    const totalPages = Math.ceil(posts.length / BLOG_PAGE_SIZE);
+
+    return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+      const currentPage = index + 2;
+      const start = (currentPage - 1) * BLOG_PAGE_SIZE;
+      return {
+        params: { locale, page: String(currentPage) },
+        props: { posts: posts.slice(start, start + BLOG_PAGE_SIZE), locale, currentPage, totalPages },
+      };
+    });
+  }));
+
+  return pathsByLocale.flat();
+}) satisfies GetStaticPaths;
+
+const { posts, locale, currentPage, totalPages } = Astro.props;
+---
+
+<BlogListingPage posts={posts} locale={locale} currentPage={currentPage} totalPages={totalPages} />
