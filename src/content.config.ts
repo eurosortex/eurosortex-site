@@ -1,14 +1,9 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { existsSync, readdirSync } from 'node:fs';
-
-const blogDirectory = new URL('./content/blog/', import.meta.url);
-const hasBlogArticles = existsSync(blogDirectory)
-  && readdirSync(blogDirectory, { recursive: true }).some((file) => typeof file === 'string' && file.endsWith('.md'));
 
 const blog = defineCollection({
-  loader: hasBlogArticles ? glob({ base: './src/content/blog', pattern: '**/*.md' }) : async () => [],
+  loader: glob({ base: './src/content/blog', pattern: '**/*.md' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),

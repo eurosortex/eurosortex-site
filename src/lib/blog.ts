@@ -2,16 +2,10 @@ import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../config/locales';
 import { locales } from '../config/locales';
-import { existsSync, readdirSync } from 'node:fs';
 
 export const BLOG_PAGE_SIZE = 6;
-const blogDirectory = new URL('../content/blog/', import.meta.url);
-const hasBlogArticles = existsSync(blogDirectory)
-  && readdirSync(blogDirectory, { recursive: true }).some((file) => typeof file === 'string' && file.endsWith('.md'));
 
 export async function getPublishedBlogPosts(locale: Locale = 'pl') {
-  if (!hasBlogArticles) return [];
-
   return (await getCollection('blog', ({ data }) => !data.draft && data.locale === locale)).sort(
     (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
   );
