@@ -5,8 +5,8 @@ locale: "pl"
 category: "O firmie"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/warehouse-quality.jpg"
-imageAlt: "Bele sortowanej odzieży używanej w magazynie EuroSortex w Warszawie"
+image: "/images/blog/eurosortex-group-o-nas.png"
+imageAlt: "Logo EuroSortex Group na białym tle"
 featured: true
 draft: false
 ---

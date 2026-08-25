@@ -5,8 +5,8 @@ locale: "uk"
 category: "Про компанію"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/warehouse-quality.jpg"
-imageAlt: "Тюки сортованого одягу second-hand на складі EuroSortex у Варшаві"
+image: "/images/blog/eurosortex-group-o-nas.png"
+imageAlt: "Логотип EuroSortex Group на білому тлі"
 featured: true
 draft: false
 ---

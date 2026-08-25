@@ -40,13 +40,14 @@ import Footer from '../components/Footer.astro';
   }
 
   .error-code {
+    display: block;
     color: var(--green);
-    font: 800 13px var(--font-mono);
-    letter-spacing: .14em;
+    font: 800 clamp(64px, 10vw, 108px)/.85 var(--font-mono);
+    letter-spacing: -.07em;
   }
 
   h1 {
-    margin: 14px 0 16px;
+    margin: 24px 0 16px;
     color: var(--text-strong);
     font-size: clamp(34px, 7vw, 58px);
     line-height: 1.08;

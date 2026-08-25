@@ -5,8 +5,8 @@ locale: "en"
 category: "About us"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/warehouse-quality.jpg"
-imageAlt: "Bales of sorted second-hand clothing at the EuroSortex warehouse in Warsaw"
+image: "/images/blog/eurosortex-group-o-nas.png"
+imageAlt: "EuroSortex Group logo on a white background"
 featured: true
 draft: false
 ---
