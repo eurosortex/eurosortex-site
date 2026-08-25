@@ -5,8 +5,8 @@ locale: "pl"
 category: "O firmie"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/blog/eurosortex-group-o-nas.png"
-imageAlt: "Logo EuroSortex Group na białym tle"
+image: "/images/warehouse-quality.jpg"
+imageAlt: "Bele sortowanej odzieży używanej w magazynie EuroSortex w Warszawie"
 featured: true
 draft: false
 ---
@@ -21,7 +21,7 @@ Naszym zadaniem jest połączyć potrzeby konkretnego sklepu z aktualnie dostęp
 
 ## Czym się zajmujemy
 
-Oferujemy hurtowo sortowaną odzież używaną i obuwie pochodzące z europejskich zbiórek i sortowni. W aktualnym katalogu znajduje się 12 pozycji, między innymi miksy odzieży, bluzy, spodnie, odzież dziecięca, T-shirty, bluzki i obuwie sezonowe.
+Oferujemy hurtowo sortowaną odzież używaną i obuwie pochodzące z europejskich zbiórek i sortowni. W [aktualnym katalogu](/#oferta) znajduje się 12 pozycji, między innymi miksy odzieży, bluzy, spodnie, odzież dziecięca, T-shirty, bluzki i obuwie sezonowe.
 
 Nie sprzedajemy anonimowego produktu „z półki”. Przed zamówieniem potwierdzamy z klientem:
 
@@ -44,10 +44,10 @@ Zależy nam na prostych i przejrzystych zasadach: klient powinien wiedzieć, jak
 3. **Ustalamy szczegóły zamówienia.** Potwierdzamy ilość, gatunek, transport i wystawiamy fakturę.
 4. **Realizujemy wysyłkę po przedpłacie.** Standardowy termin dostawy wynosi 1–3 tygodnie od zaksięgowania pełnej płatności.
 
-Transport opłaca kupujący. Możemy pomóc w jego organizacji; możliwy jest również własny przewoźnik albo odbiór z magazynu po wcześniejszym uzgodnieniu.
+Transport opłaca kupujący. Możemy pomóc w jego organizacji; możliwy jest również własny przewoźnik albo odbiór z magazynu po wcześniejszym uzgodnieniu. Szczegóły opisujemy w sekcji [dostawa i płatność](/#dostawa).
 
 ## Dla kogo jest nasza oferta
 
 Współpracujemy wyłącznie z firmami. Oferta jest przeznaczona przede wszystkim dla sklepów second-hand, outletów i hurtowników, którzy chcą regularnie uzupełniać asortyment. Minimalne zamówienie dla jednej pozycji wynosi 20 kg.
 
-Jeżeli prowadzisz sklep i szukasz dostawcy, z którym można omówić konkretną partię przed zakupem, napisz do nas. Prześlemy aktualną ofertę i pokażemy towar dostępny dla Twojego biznesu.
+Jeżeli prowadzisz sklep i szukasz dostawcy, z którym można omówić konkretną partię przed zakupem, [napisz do nas](/#kontakt). Prześlemy aktualną ofertę i pokażemy towar dostępny dla Twojego biznesu.

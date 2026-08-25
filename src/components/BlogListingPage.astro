@@ -1,13 +1,16 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import StickyBar from './StickyBar.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
 import IconWhatsApp from './IconWhatsApp.astro';
 import { whatsappUrl } from '../config/contact';
 import { blogCopy } from '../i18n/blog';
+import { ui } from '../i18n/ui';
 import { BLOG_PAGE_SIZE, getBlogArticlePath, getBlogEntrySlug, getBlogPageAlternatePaths, getBlogPagePath } from '../lib/blog';
 
 interface Props {
@@ -19,6 +22,7 @@ interface Props {
 
 const { posts, locale, currentPage, totalPages } = Astro.props;
 const copy = blogCopy[locale];
+const u = ui[locale];
 const formatDate = (date: Date) => new Intl.DateTimeFormat(copy.dateLocale, {
   day: 'numeric',
   month: 'short',
@@ -34,21 +38,47 @@ const pageUrl = new URL(getBlogPagePath(currentPage, locale), Astro.site).href;
 const collectionJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
+  '@id': `${pageUrl}#blog`,
   name: currentPage === 1 ? copy.metaTitle.replace(' | EuroSortex', '') : `${copy.metaTitle.replace(' | EuroSortex', '')} — ${copy.pageLabel.toLowerCase()} ${currentPage}`,
   description,
   url: pageUrl,
   inLanguage: locale,
+  publisher: { '@id': `${new URL('/', Astro.site).href}#organization` },
+  blogPost: posts.map((post) => ({
+    '@type': 'BlogPosting',
+    '@id': `${new URL(getBlogArticlePath(locale, getBlogEntrySlug(post)), Astro.site).href}#article`,
+    headline: post.data.title,
+    url: new URL(getBlogArticlePath(locale, getBlogEntrySlug(post)), Astro.site).href,
+    datePublished: post.data.publishedAt.toISOString(),
+    image: new URL(post.data.image, Astro.site).href,
+  })),
 };
 ---
 
-<Base title={title} description={description} locale={locale} pageType="blog_index" alternatePaths={alternatePaths}>
+<Base
+  title={title}
+  description={description}
+  locale={locale}
+  pageType="blog_index"
+  alternatePaths={alternatePaths}
+  image="/images/warehouse-quality.jpg"
+  imageAlt={copy.news}
+>
   <Header locale={locale} linkSectionsToHome currentArea="blog" languagePaths={alternatePaths} />
   <main id="tresc">
     <section class="popular-section" id="popularne" aria-labelledby="popular-title">
       <div class="container">
+        <Breadcrumbs
+          label={copy.breadcrumbLabel}
+          items={[
+            { label: u.home, href: localeConfig[locale].path },
+            { label: copy.blogLabel },
+          ]}
+        />
         <div class="popular-heading">
           <span class="kicker">{copy.latest}</span>
           <h1 id="popular-title">{copy.news}</h1>
+          <p>{copy.intro}</p>
         </div>
         <div class="popular-grid">
           {posts.map((post, index) => (
@@ -138,8 +168,9 @@ const collectionJsonLd = {
 
 <style>
   .popular-heading h1 { margin: 7px 0 0; color: var(--text-strong); font-size: clamp(27px, 3vw, 38px); letter-spacing: -.025em; }
+  .popular-heading p { max-width: 760px; margin: 10px 0 0; color: var(--text-soft); font-size: 15.5px; line-height: 1.6; }
   .popular-section { padding-block: 42px 66px; scroll-margin-top: 90px; }
-  .popular-heading { padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+  .popular-heading { margin-top: 22px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
   .popular-grid { display: grid; grid-template-columns: 1fr; }
   .popular-card { position: relative; padding: 23px 20px; display: flex; flex-direction: column; border-bottom: 1px solid var(--border); }
   .popular-image { display: block; width: 100%; aspect-ratio: 16 / 9; margin-bottom: 16px; overflow: hidden; border-radius: 12px; background: var(--surface-cream); }

@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base
+  title="Nie znaleziono strony | EuroSortex"
+  description="Ta strona nie istnieje lub została przeniesiona. Wróć do oferty EuroSortex albo przejdź do bloga."
+  locale="pl"
+  pageType="not_found"
+  renderAlternates={false}
+  noindex
+>
+  <Header locale="pl" linkSectionsToHome />
+  <main id="tresc">
+    <section class="not-found">
+      <div class="container not-found-inner">
+        <span class="error-code">404</span>
+        <h1>Nie znaleźliśmy tej strony</h1>
+        <p>Adres mógł się zmienić albo zawierać błąd. Przejdź do aktualnej oferty lub przeczytaj nasze materiały dla sklepów second-hand.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/#oferta">Zobacz ofertę</a>
+          <a class="btn btn-secondary" href="/blog/">Przejdź do bloga</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer locale="pl" />
+</Base>
+
+<style>
+  .not-found {
+    padding-block: clamp(72px, 12vw, 150px);
+    text-align: center;
+  }
+
+  .not-found-inner {
+    max-width: 720px;
+  }
+
+  .error-code {
+    color: var(--green);
+    font: 800 13px var(--font-mono);
+    letter-spacing: .14em;
+  }
+
+  h1 {
+    margin: 14px 0 16px;
+    color: var(--text-strong);
+    font-size: clamp(34px, 7vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -.03em;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 0 auto;
+    color: var(--text-soft);
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+    margin: 30px auto 0;
+  }
+
+  .actions .btn {
+    min-height: 50px;
+  }
+
+  @media (min-width: 620px) {
+    .actions {
+      max-width: none;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    .actions .btn {
+      min-width: 180px;
+    }
+  }
+</style>

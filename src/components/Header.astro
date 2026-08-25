@@ -1,5 +1,6 @@
 ---
 import IconWhatsApp from './IconWhatsApp.astro';
+import IconInstagram from './IconInstagram.astro';
 import type { Locale } from '../config/locales';
 import { localeConfig, locales } from '../config/locales';
 import { contact, whatsappUrl } from '../config/contact';
@@ -72,6 +73,17 @@ const waGeneral = whatsappUrl('general', locale);
       <a class="header-phone" href={phoneHref} data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
 
       <a
+        class="header-instagram"
+        href={contact.instagramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram — EuroSortex Group"
+        data-analytics-placement="header"
+      >
+        <IconInstagram size={21} />
+      </a>
+
+      <a
         class="header-cta btn btn-primary"
         href={waGeneral}
         data-analytics-whatsapp
@@ -105,6 +117,16 @@ const waGeneral = whatsappUrl('general', locale);
     </nav>
     <div class="menu-contact">
       <a href={phoneHref} class="menu-phone" data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
+      <a
+        href={contact.instagramUrl}
+        class="menu-instagram"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-analytics-placement="header"
+      >
+        <IconInstagram size={20} />
+        Instagram
+      </a>
       <a
         class="btn btn-primary menu-cta"
         href={waGeneral}
@@ -248,6 +270,20 @@ const waGeneral = whatsappUrl('general', locale);
     color: var(--green);
   }
 
+  .header-instagram {
+    display: none;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    color: var(--text-soft);
+  }
+
+  .header-instagram:hover {
+    color: var(--green);
+  }
+
   .header-cta {
     display: none;
     min-height: 44px;
@@ -347,6 +383,20 @@ const waGeneral = whatsappUrl('general', locale);
     padding: 6px 0;
   }
 
+  .menu-instagram {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-soft);
+  }
+
+  .menu-instagram:hover {
+    color: var(--green);
+  }
+
   .menu-cta {
     height: 50px;
     font-size: 16px;
@@ -377,6 +427,10 @@ const waGeneral = whatsappUrl('general', locale);
     }
 
     .header-cta {
+      display: inline-flex;
+    }
+
+    .header-instagram {
       display: inline-flex;
     }
 

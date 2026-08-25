@@ -1,5 +1,6 @@
 ---
 import type { Locale } from '../config/locales';
+import IconInstagram from './IconInstagram.astro';
 import { localeConfig, locales } from '../config/locales';
 import { getLegalPath } from '../config/legal';
 import { company, contact } from '../config/contact';
@@ -40,6 +41,16 @@ const year = new Date().getFullYear();
         <span class="mono-label">{t.footer.contact}</span>
         <a href={`tel:${contact.phoneE164}`} data-analytics-placement="footer">tel. {contact.phoneDisplay}</a>
         <a href={`mailto:${contact.email}`} data-analytics-placement="footer">{contact.email}</a>
+        <a
+          class="footer-instagram"
+          href={contact.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-analytics-placement="footer"
+        >
+          <IconInstagram size={20} />
+          @eurosortexgroup
+        </a>
       </div>
     </div>
 
@@ -195,6 +206,11 @@ const year = new Date().getFullYear();
 
   .footer-contact a:hover {
     color: var(--green);
+  }
+
+  .footer-contact .footer-instagram {
+    gap: 12px;
+    width: fit-content;
   }
 
   .footer-company {

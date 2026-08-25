@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../config/locales';
 import { content } from '../i18n/content';
+import { company, contact } from '../config/contact';
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Hero from './Hero.astro';
@@ -19,9 +20,67 @@ import StickyBar from './StickyBar.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const t = content[locale];
+const siteUrl = new URL('/', Astro.site).href;
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${siteUrl}#organization`,
+  name: company.brandName,
+  legalName: company.legalName,
+  url: siteUrl,
+  description: t.meta.description,
+  logo: {
+    '@type': 'ImageObject',
+    url: new URL('/images/logo.png', Astro.site).href,
+    width: 985,
+    height: 258,
+  },
+  email: contact.email,
+  telephone: contact.phoneE164,
+  sameAs: [contact.instagramUrl],
+  vatID: `PL${company.identifiers.nip}`,
+  taxID: company.identifiers.nip,
+  identifier: [
+    { '@type': 'PropertyValue', propertyID: 'KRS', value: company.identifiers.krs },
+    { '@type': 'PropertyValue', propertyID: 'REGON', value: company.identifiers.regon },
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: company.registeredOffice.street,
+    postalCode: company.registeredOffice.postalCode,
+    addressLocality: company.registeredOffice.city,
+    addressCountry: 'PL',
+  },
+  location: {
+    '@type': 'Place',
+    name: `${company.brandName} — magazyn`,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: company.warehouse.street,
+      postalCode: company.warehouse.postalCode,
+      addressLocality: company.warehouse.city,
+      addressCountry: 'PL',
+    },
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: contact.phoneE164,
+    email: contact.email,
+    contactType: 'sales',
+    areaServed: 'PL',
+    availableLanguage: ['pl', 'ru', 'uk', 'en'],
+  },
+  areaServed: { '@type': 'Country', name: 'Poland' },
+};
 ---
 
-<Base title={t.meta.title} description={t.meta.description} locale={locale}>
+<Base
+  title={t.meta.title}
+  description={t.meta.description}
+  locale={locale}
+  image="/images/warehouse-hero.jpg"
+  imageAlt={t.hero.imageAlt}
+>
   <Header locale={locale} />
   <main id="tresc">
     <Hero locale={locale} />
@@ -37,4 +96,5 @@ const t = content[locale];
   </main>
   <Footer locale={locale} />
   <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
 </Base>

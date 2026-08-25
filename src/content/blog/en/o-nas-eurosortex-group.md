@@ -5,8 +5,8 @@ locale: "en"
 category: "About us"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/blog/eurosortex-group-o-nas.png"
-imageAlt: "EuroSortex Group logo on a white background"
+image: "/images/warehouse-quality.jpg"
+imageAlt: "Bales of sorted second-hand clothing at the EuroSortex warehouse in Warsaw"
 featured: true
 draft: false
 ---
@@ -21,7 +21,7 @@ Our role is to connect the needs of a particular shop with the goods available n
 
 ## What we do
 
-We wholesale sorted second-hand clothing and footwear sourced from European collections and sorting facilities. Our current catalogue contains 12 product lines, including clothing mixes, sweatshirts, trousers, children's clothing, T-shirts, blouses and seasonal footwear.
+We wholesale sorted second-hand clothing and footwear sourced from European collections and sorting facilities. Our [current catalogue](/en/#oferta) contains 12 product lines, including clothing mixes, sweatshirts, trousers, children's clothing, T-shirts, blouses and seasonal footwear.
 
 We do not sell an anonymous, standardised product off the shelf. Before an order, we confirm:
 
@@ -44,10 +44,10 @@ We believe in a simple and transparent approach: customers should know which gra
 3. **We agree the order details.** We confirm the quantity, grade and transport, then issue an invoice.
 4. **We dispatch after prepayment.** The usual delivery time is 1–3 weeks after full payment is credited.
 
-Transport is paid by the buyer. We can help arrange it, or the customer may use their own carrier or collect from our warehouse by prior agreement.
+Transport is paid by the buyer. We can help arrange it, or the customer may use their own carrier or collect from our warehouse by prior agreement. Details are available under [delivery and payment](/en/#dostawa).
 
 ## Who our offer is for
 
 We work exclusively with businesses. The offer is intended primarily for second-hand shops, outlets and wholesalers that need to replenish their assortment regularly. The minimum order for one product line is 20 kg.
 
-If you run a shop and want a supplier with whom you can discuss a specific batch before buying, contact us. We will send the current offer and show you the goods available for your business.
+If you run a shop and want a supplier with whom you can discuss a specific batch before buying, [contact us](/en/#kontakt). We will send the current offer and show you the goods available for your business.

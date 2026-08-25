@@ -3,13 +3,15 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import type { Locale } from '../config/locales';
 import { localeConfig } from '../config/locales';
+import { company, whatsappUrl } from '../config/contact';
+import { ui } from '../i18n/ui';
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import StickyBar from './StickyBar.astro';
 import BlogCard from './BlogCard.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
 import IconWhatsApp from './IconWhatsApp.astro';
-import { whatsappUrl } from '../config/contact';
 import { blogCopy } from '../i18n/blog';
 import { getBlogArticleAlternatePaths, getBlogArticlePath, getBlogEntrySlug, getBlogRoot, getPublishedBlogPosts } from '../lib/blog';
 
@@ -19,6 +21,7 @@ interface Props {
 }
 const { post, locale } = Astro.props;
 const copy = blogCopy[locale];
+const u = ui[locale];
 const slug = getBlogEntrySlug(post);
 const alternatePaths = getBlogArticleAlternatePaths(slug);
 const { Content, headings } = await render(post);
@@ -28,42 +31,68 @@ const allPosts = (await getPublishedBlogPosts(locale))
   .slice(0, 2);
 const date = new Intl.DateTimeFormat(copy.dateLocale, { day: 'numeric', month: 'long', year: 'numeric' }).format(post.data.publishedAt);
 const articleUrl = new URL(getBlogArticlePath(locale, slug), Astro.site).href;
+const siteUrl = new URL('/', Astro.site).href;
+const blogUrl = new URL(getBlogRoot(locale), Astro.site).href;
+const organizationId = `${siteUrl}#organization`;
+const seoTitle = post.data.title.includes('EuroSortex') ? post.data.title : `${post.data.title} | EuroSortex`;
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
+  '@id': `${articleUrl}#article`,
   headline: post.data.title,
   description: post.data.description,
   image: new URL(post.data.image, Astro.site).href,
   datePublished: post.data.publishedAt.toISOString(),
   ...(post.data.updatedAt ? { dateModified: post.data.updatedAt.toISOString() } : {}),
   inLanguage: locale,
-  mainEntityOfPage: articleUrl,
-  publisher: { '@type': 'Organization', name: 'EuroSortex Group', url: new URL('/', Astro.site).href },
+  articleSection: post.data.category,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+  isPartOf: { '@type': 'Blog', '@id': `${blogUrl}#blog`, name: copy.metaTitle.replace(' | EuroSortex', ''), url: blogUrl },
+  author: { '@type': 'Organization', '@id': organizationId, name: company.brandName, url: siteUrl },
+  publisher: {
+    '@type': 'Organization',
+    '@id': organizationId,
+    name: company.brandName,
+    legalName: company.legalName,
+    url: siteUrl,
+    logo: { '@type': 'ImageObject', url: new URL('/images/logo.png', Astro.site).href },
+  },
 };
 ---
 
 <Base
-  title={`${post.data.title} | EuroSortex`}
+  title={seoTitle}
   description={post.data.description}
   locale={locale}
   pageType="blog_article"
   alternatePaths={alternatePaths}
   ogType="article"
   image={post.data.image}
+  imageAlt={post.data.imageAlt}
   publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
 >
   <Header locale={locale} linkSectionsToHome currentArea="blog" languagePaths={alternatePaths} />
   <main id="tresc">
     <article>
       <header class="article-header">
         <div class="container article-header-inner">
-          <a class="back-link" href={getBlogRoot(locale)}><span aria-hidden="true">←</span> {copy.backToArticles}</a>
+          <Breadcrumbs
+            label={copy.breadcrumbLabel}
+            items={[
+              { label: u.home, href: localeConfig[locale].path },
+              { label: copy.blogLabel, href: getBlogRoot(locale) },
+              { label: post.data.title },
+            ]}
+          />
           <div class="article-meta">
             <span>{post.data.category}</span>
             <span aria-hidden="true">·</span>
             <time datetime={post.data.publishedAt.toISOString()}>{date}</time>
             <span aria-hidden="true">·</span>
             <span>{post.data.readingTime} {copy.readingTime}</span>
+            <span aria-hidden="true">·</span>
+            <span>{copy.authorLabel}: <a href={localeConfig[locale].path}>{copy.authorName}</a></span>
           </div>
           <h1>{post.data.title}</h1>
           <p class="lead">{post.data.description}</p>
@@ -71,7 +100,16 @@ const articleJsonLd = {
       </header>
 
       <div class="container article-shell">
-        <img class="article-image" src={post.data.image} alt={post.data.imageAlt} width="1200" height="720" decoding="async" />
+        <img
+          class="article-image"
+          src={post.data.image}
+          alt={post.data.imageAlt}
+          width="1600"
+          height="900"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
 
         {tableOfContents.length > 0 && (
           <details class="mobile-toc">
@@ -132,16 +170,8 @@ const articleJsonLd = {
     padding-block: 34px 42px;
   }
 
-  .back-link {
-    display: inline-flex;
-    gap: 8px;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 800;
-    margin-bottom: 28px;
-  }
-
   .article-meta {
+    margin-top: 28px;
     display: flex;
     flex-wrap: wrap;
     gap: 7px;
@@ -149,6 +179,16 @@ const articleJsonLd = {
     font: 600 10.5px var(--font-mono);
     letter-spacing: 0.06em;
     text-transform: uppercase;
+  }
+
+  .article-meta a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .article-meta a:hover {
+    color: var(--green);
   }
 
   h1 {
@@ -176,6 +216,7 @@ const articleJsonLd = {
   .article-image {
     display: block;
     width: 100%;
+    aspect-ratio: 16 / 9;
     max-height: 510px;
     object-fit: cover;
     border: 1px solid var(--border);

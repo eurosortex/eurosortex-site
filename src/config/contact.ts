@@ -5,6 +5,7 @@ export const contact = {
   phoneE164: '+48787000980',
   whatsappNumber: '48787000980',
   email: 'eurosortexgroup@gmail.com',
+  instagramUrl: 'https://instagram.com/eurosortexgroup/',
   workingHours: '08:00–15:00',
 } as const;
 
