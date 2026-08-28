@@ -1,0 +1,208 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
+import { products } from '../data/products';
+import { getAssortmentAlternates, getProductPath } from '../config/marketing';
+import { assortmentPageCopy } from '../i18n/marketing';
+import { ui } from '../i18n/ui';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Catalog from './Catalog.astro';
+import FinalCta from './FinalCta.astro';
+import StickyBar from './StickyBar.astro';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = assortmentPageCopy[locale];
+const u = ui[locale];
+const alternates = getAssortmentAlternates();
+const home = localeConfig[locale].path;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${pageUrl}#collection`,
+  url: pageUrl,
+  name: c.metaTitle,
+  description: c.metaDescription,
+  inLanguage: localeConfig[locale].htmlLang,
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: products.length,
+    itemListElement: products.map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: product.name,
+      url: new URL(getProductPath(locale, product.id), Astro.site).href,
+    })),
+  },
+};
+---
+
+<Base
+  title={c.metaTitle}
+  description={c.metaDescription}
+  locale={locale}
+  alternatePaths={alternates}
+  pageType="assortment"
+  image="/images/warehouse-hero.jpg"
+  imageAlt={c.title}
+>
+  <Header locale={locale} linkSectionsToHome currentArea="assortment" languagePaths={alternates} />
+  <main id="tresc">
+    <header class="assortment-hero">
+      <div class="container">
+        <Breadcrumbs label={c.breadcrumb} items={[{ label: u.home, href: home }, { label: c.breadcrumb }]} />
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="kicker">{c.eyebrow}</span>
+            <h1>{c.title}</h1>
+            <p>{c.lead}</p>
+          </div>
+          <dl class="hero-facts">
+            {c.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
+          </dl>
+        </div>
+      </div>
+    </header>
+    <Catalog locale={locale} variant="full" eyebrow={c.catalogEyebrow} title={c.catalogTitle} />
+    <FinalCta locale={locale} />
+  </main>
+  <Footer locale={locale} languagePaths={alternates} />
+  <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} />
+</Base>
+
+<style>
+  .assortment-hero {
+    padding-block: 22px 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 28px;
+    margin-top: 24px;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  h1, p {
+    text-wrap: pretty;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 18ch;
+    color: var(--text-strong);
+    font-size: 35px;
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -.025em;
+  }
+
+  .hero-copy p {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--text-soft);
+    font-size: 16px;
+    line-height: 1.62;
+  }
+
+  .hero-facts {
+    display: grid;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+  }
+
+  .hero-facts div {
+    padding: 15px 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .hero-facts div:last-child {
+    border-bottom: 0;
+  }
+
+  .hero-facts dt {
+    color: var(--text-faint);
+    font: 600 10.5px var(--font-mono);
+    letter-spacing: .08em;
+  }
+
+  .hero-facts dd {
+    margin: 4px 0 0;
+    color: var(--text-strong);
+    font-weight: 800;
+  }
+
+  @media (min-width: 768px) {
+    .assortment-hero {
+      padding-block: 26px 44px;
+    }
+
+    .hero-facts {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .hero-facts div {
+      border-right: 1px solid var(--border-soft);
+      border-bottom: 0;
+    }
+
+    .hero-facts div:last-child {
+      border-right: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .assortment-hero {
+      padding-block: 28px 54px;
+    }
+
+    .hero-grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr);
+      align-items: end;
+      gap: 72px;
+      margin-top: 36px;
+    }
+
+    h1 {
+      font-size: 48px;
+    }
+
+    .hero-copy p {
+      font-size: 17px;
+    }
+
+    .hero-facts {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-facts div {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      padding: 16px 18px;
+      border-right: 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .hero-facts dd {
+      margin: 0;
+      text-align: right;
+    }
+  }
+</style>

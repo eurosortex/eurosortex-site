@@ -139,7 +139,7 @@ const plPrivacy: LegalDocument = {
 };
 
 const plElectronicServices: LegalDocument = {
-  title: 'Regulamin świadczenia usług drogą elektroniczną',
+  title: 'Regulamin usług elektronicznych',
   metaDescription: 'Regulamin korzystania z serwisu EuroSortex Group oraz świadczenia usług drogą elektroniczną.',
   eyebrow: 'DOKUMENTY PRAWNE',
   effectiveDateLabel: 'Obowiązuje od',

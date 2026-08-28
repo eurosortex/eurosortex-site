@@ -2,121 +2,133 @@
 import IconWhatsApp from './IconWhatsApp.astro';
 import type { Locale } from '../config/locales';
 import { productWhatsappUrl, whatsappUrl } from '../config/contact';
-import { products, formatPrice } from '../data/products';
+import { products, formatPrice, type Product, type ProductCategory } from '../data/products';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
+import { getAssortmentPath, getCategoryPath, getProductPath } from '../config/marketing';
+import { productPageCopy } from '../i18n/marketing';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props {
+  locale: Locale;
+  variant?: 'preview' | 'full';
+  eyebrow?: string;
+  title?: string;
+  intro?: string;
+  items?: Product[];
+  activeCategory?: ProductCategory | 'all';
+}
+const { locale, variant = 'preview', eyebrow, title, intro, items, activeCategory = 'all' } = Astro.props;
 const t = content[locale];
 const u = ui[locale];
+const productCopy = productPageCopy[locale];
 const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'] as const;
+const isPreview = variant === 'preview';
+const sourceProducts = items ?? products;
+const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProducts;
 ---
 
-<section class="catalog" id="oferta">
+<section class:list={['catalog', { 'catalog-preview': isPreview, 'catalog-full': !isPreview }]} id="oferta">
   <div class="container">
-    <span class="kicker">{t.catalog.eyebrow}</span>
-    <h2>{t.catalog.title}</h2>
-    <p class="catalog-intro">{t.catalog.text}</p>
+    <span class="kicker">{eyebrow ?? t.catalog.eyebrow}</span>
+    <h2>{title ?? t.catalog.title}</h2>
+    <p class="catalog-intro">{intro ?? t.catalog.text}</p>
     <p class="catalog-vat">{t.catalog.taxNote}</p>
 
-    <div class="filters" role="group" aria-label={u.filterCatalog}>
-      {categories.map((cat, i) => (
-        <button
-          type="button"
-          class:list={['filter', { 'is-active': i === 0 }]}
-          data-filter={cat}
-          data-analytics-filter-key={cat}
-          data-analytics-filter-label={t.catalog.filters[cat]}
-          aria-pressed={i === 0 ? 'true' : 'false'}
-        >
-          {t.catalog.filters[cat]}
-        </button>
-      ))}
-    </div>
+    {!isPreview && (
+      <div class="filters" role="group" aria-label={u.filterCatalog}>
+        {categories.map((cat) => (
+          <a
+            href={cat === 'all' ? getAssortmentPath(locale) : getCategoryPath(locale, cat)}
+            class:list={['filter', { 'is-active': cat === activeCategory }]}
+            data-analytics-filter-key={cat}
+            data-analytics-filter-label={t.catalog.filters[cat]}
+            aria-current={cat === activeCategory ? 'page' : undefined}
+          >
+            {t.catalog.filters[cat]}
+          </a>
+        ))}
+      </div>
+    )}
 
-    <ul class="products">
-      {products.map((p) => (
+    <ul class="products" id="product-list">
+      {displayedProducts.map((p) => (
         <li class="card" data-cat={p.category}>
-          <img
-            class="card-image"
-            src={p.image}
-            alt={`${u.photo}: ${p.name}`}
-            width="960"
-            height="640"
-            loading="lazy"
-            decoding="async"
-          />
+          <a class="card-image-link" href={getProductPath(locale, p.id)} aria-label={`${productCopy.relatedAction}: ${p.name}`}>
+            <img
+              class="card-image"
+              src={p.image}
+              alt={`${u.photo}: ${p.name}`}
+              width="960"
+              height="640"
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
           <div class="card-body">
             <div class="card-head">
-              <h3>{p.name}</h3>
+              <h3><a href={getProductPath(locale, p.id)}>{p.name}</a></h3>
               <span class="grade-label">{p.grade} {t.common.grade.toUpperCase()}</span>
             </div>
             <p class="card-desc">{p.description[locale]}</p>
-            <div class="pspec">
-              {p.composition && (
-                <div class="pspec-row">
-                  <span class="mono-label">{t.common.approxComposition}</span>
-                  <span class="pspec-value">{p.composition[locale]}</span>
-                </div>
-              )}
-              <div class="pspec-row">
-                <span class="mono-label">{t.common.branded}</span>
-                <span class="pspec-value">{p.brandedShareApprox[locale]}</span>
-              </div>
-              {p.disposalShareMax && (
-                <div class="pspec-row">
-                  <span class="mono-label">{t.common.disposal}</span>
-                  <span class="pspec-value">{p.disposalShareMax[locale]}</span>
-                </div>
-              )}
-              <div class="pspec-row is-inline">
-                <span class="mono-label">{t.common.minimumOrder}</span>
-                <strong>20 kg</strong>
-              </div>
-            </div>
             <div class="card-price">
               <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} {t.common.netSuffix}</span>
               <span class="vat">{t.common.vat}</span>
             </div>
-            <a
-              class="btn btn-soft card-cta"
-              href={productWhatsappUrl(p.name, locale)}
-              data-analytics-whatsapp
-              data-analytics-placement="product_card"
-              data-analytics-product-id={p.id}
-              data-analytics-product-name={p.name}
-              data-analytics-product-category={p.category}
-              data-analytics-product-price={p.netPricePlnPerKg}
-            >
-              <IconWhatsApp size={17} />
-              {t.common.productQuestion}
-            </a>
+            <div class="card-actions">
+              <a class="btn btn-soft card-details" href={getProductPath(locale, p.id)}>
+                {productCopy.relatedAction} →
+              </a>
+              <a
+                class="card-whatsapp"
+                href={productWhatsappUrl(p.name, locale)}
+                aria-label={`${t.common.productQuestion}: ${p.name}`}
+                title={t.common.productQuestion}
+                data-analytics-whatsapp
+                data-analytics-placement="product_card"
+                data-analytics-product-id={p.id}
+                data-analytics-product-name={p.name}
+                data-analytics-product-category={p.category}
+                data-analytics-product-price={p.netPricePlnPerKg}
+              >
+                <IconWhatsApp size={19} />
+              </a>
+            </div>
           </div>
         </li>
       ))}
     </ul>
 
-    <div class="disclaimers">
-      <span><strong>{t.catalog.disclaimer}</strong></span>
-      <span>{u.wholesaleMinimum}</span>
-    </div>
-
-    <div class="manager-cta">
-      <div class="manager-cta-text">
-        <h3>{u.managerTitle}</h3>
-        <p>{u.managerText}</p>
+    {isPreview ? (
+      <div class="preview-footer">
+        <span>{u.assortmentPreviewNote(products.length)}</span>
+        <a class="btn btn-primary preview-link" href={getAssortmentPath(locale)}>
+          {u.viewFullAssortment} →
+        </a>
       </div>
-      <a
-        class="btn btn-primary manager-cta-btn"
-        href={whatsappUrl('general', locale)}
-        data-analytics-whatsapp
-        data-analytics-placement="catalog_help"
-      >
-        <IconWhatsApp size={17} />
-        <span>{u.managerAction}</span>
-      </a>
-    </div>
+    ) : (
+      <>
+        <div class="disclaimers">
+          <span><strong>{t.catalog.disclaimer}</strong></span>
+          <span>{u.wholesaleMinimum}</span>
+        </div>
+
+        <div class="manager-cta">
+          <div class="manager-cta-text">
+            <h3>{u.managerTitle}</h3>
+            <p>{u.managerText}</p>
+          </div>
+          <a
+            class="btn btn-primary manager-cta-btn"
+            href={whatsappUrl('general', locale)}
+            data-analytics-whatsapp
+            data-analytics-placement="catalog_help"
+          >
+            <IconWhatsApp size={17} />
+            <span>{u.managerAction}</span>
+          </a>
+        </div>
+      </>
+    )}
   </div>
 </section>
 
@@ -201,20 +213,28 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     display: none;
   }
 
+  .card-image-link {
+    display: block;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-cream);
+  }
+
   .card-image {
     display: block;
     width: 100%;
-    height: 180px;
+    height: 100%;
     object-fit: cover;
     object-position: center;
-    border-bottom: 1px solid var(--border);
+    transition: transform 0.25s ease;
   }
 
   .card-body {
     padding: 18px 16px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     flex: 1;
   }
 
@@ -232,6 +252,14 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     color: var(--text-strong);
   }
 
+  .card-head h3 a {
+    color: inherit;
+  }
+
+  .card-head h3 a:hover {
+    color: var(--green);
+  }
+
   .grade-label {
     flex: none;
     font: 600 10.5px var(--font-mono);
@@ -245,44 +273,6 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     font-size: 16px;
     line-height: 1.5;
     color: var(--text-soft);
-  }
-
-  /* card specification rows (label above value at every breakpoint) */
-  .pspec {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .pspec-row {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border-soft);
-  }
-
-  .pspec-row:last-child {
-    border-bottom: 0;
-  }
-
-  .pspec-row.is-inline {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .pspec-value {
-    font-size: 14px;
-    line-height: 1.45;
-    font-weight: 600;
-    color: var(--text-mid);
-  }
-
-  .pspec-row.is-inline strong {
-    font-size: 14px;
-    color: var(--text-strong);
   }
 
   .card-price {
@@ -305,10 +295,55 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     color: var(--text-muted);
   }
 
-  .card-cta {
-    height: 50px;
-    font-size: 15.5px;
-    gap: 8px;
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 46px;
+    gap: 9px;
+    margin-top: 2px;
+  }
+
+  .card-details {
+    min-height: 46px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .card-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    border-radius: 9px;
+    background: var(--green);
+    color: #fff;
+  }
+
+  .card-whatsapp:hover {
+    background: var(--green-hover);
+    color: #fff;
+  }
+
+  .preview-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 20px;
+    padding: 20px 16px;
+    border: 1px solid var(--border-cream);
+    border-radius: 12px;
+    background: var(--surface-cream);
+  }
+
+  .preview-footer span {
+    color: var(--text-soft);
+    font-size: 14.5px;
+    font-weight: 700;
+  }
+
+  .preview-link {
+    min-height: 50px;
+    padding: 0 20px;
   }
 
   /* disclaimers */
@@ -414,10 +449,11 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
       font-size: 19px;
     }
 
-    .card-cta {
-      height: auto;
-      min-height: 48px;
-      font-size: 15px;
+    .preview-footer {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
     }
 
     .manager-cta {
@@ -482,8 +518,8 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
       gap: 22px;
     }
 
-    .card-image {
-      height: 190px;
+    .catalog-preview {
+      padding-bottom: 48px;
     }
 
     .card-body {
@@ -492,10 +528,6 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
 
     .card-desc {
       font-size: 15px;
-    }
-
-    .card-cta {
-      min-height: 46px;
     }
 
     .disclaimers {
@@ -541,6 +573,10 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
       box-shadow: 0 6px 18px rgba(43, 43, 40, 0.08);
     }
 
+    .card:hover .card-image {
+      transform: scale(1.025);
+    }
+
     @keyframes card-in {
       from {
         opacity: 0;
@@ -548,25 +584,3 @@ const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 's
     }
   }
 </style>
-
-<script>
-  const filterButtons = Array.from(
-    document.querySelectorAll<HTMLButtonElement>('.catalog [data-filter]'),
-  );
-  const cards = Array.from(document.querySelectorAll<HTMLElement>('.catalog [data-cat]'));
-
-  filterButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const selected = btn.dataset.filter;
-      filterButtons.forEach((b) => {
-        const active = b === btn;
-        b.classList.toggle('is-active', active);
-        b.setAttribute('aria-pressed', String(active));
-      });
-      cards.forEach((card) => {
-        const shouldShow = selected === 'all' || card.dataset.cat === selected;
-        card.hidden = !shouldShow;
-      });
-    });
-  });
-</script>

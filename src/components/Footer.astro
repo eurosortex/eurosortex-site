@@ -7,6 +7,7 @@ import { company, contact } from '../config/contact';
 import { content } from '../i18n/content';
 import { consentCopy } from '../i18n/consent';
 import { ui } from '../i18n/ui';
+import { getAboutPath, getAssortmentPath } from '../config/marketing';
 
 interface Props {
   locale: Locale;
@@ -17,7 +18,8 @@ const t = content[locale];
 const u = ui[locale];
 const consent = consentCopy[locale];
 const nav = [
-  { href: `${localeConfig[locale].path}#oferta`, label: t.nav.offer },
+  { href: getAssortmentPath(locale), label: t.nav.offer },
+  { href: getAboutPath(locale), label: t.nav.about },
   { href: `${localeConfig[locale].path}#jakosc`, label: t.nav.quality },
   { href: `${localeConfig[locale].path}#jak-zamowic`, label: t.nav.process },
   { href: `${localeConfig[locale].path}#dostawa`, label: t.nav.terms },

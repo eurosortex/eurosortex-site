@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import type { Locale } from '../config/locales';
 import { localeConfig } from '../config/locales';
+import { getAssortmentPath } from '../config/marketing';
 import { company, whatsappUrl } from '../config/contact';
 import { ui } from '../i18n/ui';
 import Base from '../layouts/Base.astro';
@@ -123,7 +124,7 @@ const articleJsonLd = {
             <aside class="desktop-toc" aria-label={copy.toc}>
               <span class="mono-label">{copy.toc.toUpperCase()}</span>
               <ol>{tableOfContents.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol>
-              <a class="toc-offer" href={`${localeConfig[locale].path}#oferta`}>{copy.viewOffer} <span aria-hidden="true">→</span></a>
+              <a class="toc-offer" href={getAssortmentPath(locale)}>{copy.viewOffer} <span aria-hidden="true">→</span></a>
             </aside>
           )}
           <div class="article-content">

@@ -6,11 +6,12 @@ import { localeConfig, locales } from '../config/locales';
 import { contact, whatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
+import { getAboutPath, getAssortmentPath } from '../config/marketing';
 
 interface Props {
   locale: Locale;
   linkSectionsToHome?: boolean;
-  currentArea?: 'home' | 'blog';
+  currentArea?: 'home' | 'assortment' | 'about' | 'blog';
   languagePaths?: Partial<Record<Locale, string>>;
 }
 const { locale, linkSectionsToHome = false, currentArea = 'home', languagePaths } = Astro.props;
@@ -19,11 +20,10 @@ const u = ui[locale];
 const home = localeConfig[locale].path;
 const sectionHref = (anchor: string) => `${linkSectionsToHome ? home : ''}${anchor}`;
 const nav = [
-  { href: sectionHref('#oferta'), label: t.nav.offer },
-  { href: sectionHref('#jakosc'), label: t.nav.quality },
+  { href: getAssortmentPath(locale), label: t.nav.offer, area: 'assortment' },
+  { href: getAboutPath(locale), label: t.nav.about, area: 'about' },
   { href: sectionHref('#jak-zamowic'), label: t.nav.process },
   { href: sectionHref('#dostawa'), label: t.nav.terms },
-  { href: sectionHref('#faq'), label: t.nav.faq },
   { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog, area: 'blog' },
 ];
 const phoneHref = `tel:${contact.phoneE164}`;

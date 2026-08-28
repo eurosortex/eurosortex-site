@@ -1,0 +1,20 @@
+---
+import AssortmentPage from '../../../components/AssortmentPage.astro';
+import { getAssortmentSegment } from '../../../config/marketing';
+import type { Locale } from '../../../config/locales';
+
+type TranslatedLocale = Exclude<Locale, 'pl'>;
+
+export function getStaticPaths() {
+  const translatedLocales = ['ru', 'uk', 'en'] as const;
+  return translatedLocales.map((locale) => ({
+    params: { locale, collection: getAssortmentSegment(locale) },
+    props: { locale },
+  }));
+}
+
+interface Props { locale: TranslatedLocale }
+const { locale } = Astro.props;
+---
+
+<AssortmentPage locale={locale} />

@@ -1,0 +1,35 @@
+---
+import ProductLandingPage from '../../../components/ProductLandingPage.astro';
+import CategoryLandingPage from '../../../components/CategoryLandingPage.astro';
+import { getAssortmentSegment, getCategorySlug } from '../../../config/marketing';
+import { products, type Product, type ProductCategory } from '../../../data/products';
+import type { Locale } from '../../../config/locales';
+
+type TranslatedLocale = Exclude<Locale, 'pl'>;
+
+export function getStaticPaths() {
+  const translatedLocales = ['ru', 'uk', 'en'] as const;
+  const categories: ProductCategory[] = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'];
+  return translatedLocales.flatMap((locale) =>
+    [
+      ...products.map((product) => ({
+        params: { locale, collection: getAssortmentSegment(locale), product: product.id },
+        props: { locale, page: 'product' as const, product },
+      })),
+      ...categories.map((category) => ({
+        params: { locale, collection: getAssortmentSegment(locale), product: getCategorySlug(locale, category) },
+        props: { locale, page: 'category' as const, category },
+      })),
+    ],
+  );
+}
+
+type Props =
+  | { locale: TranslatedLocale; page: 'product'; product: Product }
+  | { locale: TranslatedLocale; page: 'category'; category: ProductCategory };
+const props = Astro.props;
+---
+
+{props.page === 'product'
+  ? <ProductLandingPage locale={props.locale} product={props.product} />
+  : <CategoryLandingPage locale={props.locale} category={props.category} />}

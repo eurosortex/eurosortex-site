@@ -1,0 +1,467 @@
+---
+import type { Locale } from '../config/locales';
+import { company, contact, productWhatsappUrl } from '../config/contact';
+import { getLegalPath } from '../config/legal';
+import { getAssortmentPath, getCategoryPath, getProductAlternates, getProductPath } from '../config/marketing';
+import type { Product } from '../data/products';
+import { formatPrice, products } from '../data/products';
+import { content } from '../i18n/content';
+import { productEnhancementCopy, productPageCopy } from '../i18n/marketing';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import FinalCta from './FinalCta.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import IconWhatsApp from './IconWhatsApp.astro';
+import IconPhone from './IconPhone.astro';
+import StickyBar from './StickyBar.astro';
+
+interface Props { locale: Locale; product: Product }
+const { locale, product } = Astro.props;
+const c = productPageCopy[locale];
+const extra = productEnhancementCopy[locale];
+const t = content[locale];
+const alternates = getProductAlternates(product.id);
+const assortmentPath = getAssortmentPath(locale);
+const categoryPath = getCategoryPath(locale, product.category);
+const faq = c.faq(product);
+const warmSeasonIds = ['summer-assortment', 'children-summer', 't-shirt-standart', 'blouses-mix', 'ladies-blouses'];
+const coolSeasonIds = ['sweatshirts-mix', 'casual-sweatshirts', 'sport-pants', 'extra-sport-pants', 'season-shoes'];
+const seasonKey = warmSeasonIds.includes(product.id) ? 'warm' : coolSeasonIds.includes(product.id) ? 'cool' : 'yearRound';
+const suitabilityItems = [...extra.audiences, { title: extra.seasonTitle, text: extra.seasons[seasonKey] }];
+const privacyPath = getLegalPath(locale, 'privacy');
+const related = [
+  ...products.filter((item) => item.category === product.category && item.id !== product.id),
+  ...products.filter((item) => item.category !== product.category),
+].slice(0, 3);
+const absoluteImage = new URL(product.image, Astro.site).href;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const productJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  '@id': `${pageUrl}#product`,
+  name: product.name,
+  sku: product.id,
+  image: [absoluteImage],
+  description: c.metaDescription(product),
+  category: t.catalog.filters[product.category],
+  brand: { '@type': 'Brand', name: company.brandName },
+  offers: {
+    '@type': 'Offer',
+    url: pageUrl,
+    priceCurrency: 'PLN',
+    price: product.netPricePlnPerKg.toFixed(2),
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: product.netPricePlnPerKg.toFixed(2),
+      priceCurrency: 'PLN',
+      unitCode: 'KGM',
+      unitText: 'kilogram',
+    },
+    eligibleQuantity: { '@type': 'QuantitativeValue', minValue: 20, unitCode: 'KGM' },
+    seller: { '@type': 'Organization', name: company.brandName, url: new URL('/', Astro.site).href },
+  },
+};
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+---
+
+<Base
+  title={c.metaTitle(product.name)}
+  description={c.metaDescription(product)}
+  locale={locale}
+  alternatePaths={alternates}
+  pageType="product_landing"
+  image={product.image}
+  imageAlt={c.imageAlt(product.name)}
+>
+  <Header locale={locale} linkSectionsToHome currentArea="assortment" languagePaths={alternates} />
+  <main id="tresc">
+    <article>
+      <header class="product-hero">
+        <div class="container">
+          <Breadcrumbs
+            label={c.breadcrumb}
+            items={[
+              { label: t.nav.offer, href: assortmentPath },
+              { label: t.catalog.filters[product.category], href: categoryPath },
+              { label: product.name },
+            ]}
+          />
+          <div class="product-hero-grid">
+            <div class="product-hero-copy">
+              <span class="kicker">{c.eyebrow}</span>
+              <h1>{c.title(product.name)}</h1>
+              <p class="product-lead">{c.lead(product)}</p>
+              <div class="product-actions">
+                <a
+                  class="btn btn-primary product-primary"
+                  href={productWhatsappUrl(product.name, locale)}
+                  data-analytics-whatsapp
+                  data-analytics-placement="product_landing_hero"
+                  data-analytics-product-id={product.id}
+                >
+                  <IconWhatsApp size={18} />
+                  {c.enquire}
+                </a>
+                <a class="btn btn-secondary product-secondary" href={assortmentPath}>
+                  {t.nav.offer} →
+                </a>
+              </div>
+              <p class="availability-note">{c.availabilityNote}</p>
+              <dl class="product-facts">
+                <div>
+                  <dt>{c.price}</dt>
+                  <dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd>
+                </div>
+                <div>
+                  <dt>{c.minimum}</dt>
+                  <dd>{c.minimumValue}</dd>
+                </div>
+                <div>
+                  <dt>{t.common.grade}</dt>
+                  <dd>{product.grade}</dd>
+                </div>
+              </dl>
+            </div>
+            <figure class="product-image-wrap">
+              <img src={product.image} alt={c.imageAlt(product.name)} width="960" height="640" fetchpriority="high" />
+              <figcaption>{product.name} · {product.grade} {t.common.grade.toLowerCase()}</figcaption>
+            </figure>
+          </div>
+        </div>
+      </header>
+
+      <section class="product-specs" aria-labelledby="product-data-title">
+        <div class="container product-specs-grid">
+          <div>
+            <span class="kicker">01 / {t.catalog.filters[product.category]}</span>
+            <h2 id="product-data-title">{c.productData}</h2>
+            <div class="product-description">
+              <p>{product.description[locale]}</p>
+              <p>{product.details[locale]}</p>
+            </div>
+          </div>
+          <div class="specs-side">
+            <dl class="product-table">
+              <div><dt>{c.price}</dt><dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd></div>
+              <div><dt>{c.minimum}</dt><dd>{c.minimumValue}</dd></div>
+              {product.composition && <div><dt>{c.composition}</dt><dd>{product.composition[locale]}</dd></div>}
+              <div><dt>{c.branded}</dt><dd>{product.brandedShareApprox[locale]}</dd></div>
+              {product.disposalShareMax && <div><dt>{c.disposal}</dt><dd>{product.disposalShareMax[locale]}</dd></div>}
+            </dl>
+            <p class="vat-note">{c.vatNote}</p>
+            <section class="order-flow" aria-labelledby="order-flow-title">
+              <h3 id="order-flow-title">{extra.orderTitle}</h3>
+              <ol>
+                {extra.orderSteps.map((step, index) => (
+                  <li><span>0{index + 1}</span><p>{step}</p></li>
+                ))}
+              </ol>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="suitability-section">
+        <div class="container">
+          <div class="section-heading">
+            <span class="kicker">{extra.suitabilityEyebrow}</span>
+            <h2>{extra.suitabilityTitle}</h2>
+            <p>{extra.suitabilityText}</p>
+          </div>
+          <div class="suitability-grid">
+            {suitabilityItems.map((item, index) => (
+              <article><span>0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="batch-section">
+        <div class="container">
+          <div class="section-heading">
+            <span class="kicker">03 / {c.batchTitle}</span>
+            <h2>{c.batchTitle}</h2>
+            <p>{c.batchText}</p>
+          </div>
+          <div class="batch-grid">
+            {c.batchPoints.map((point, index) => (
+              <article class="batch-card">
+                <span aria-hidden="true">0{index + 1}</span>
+                <h3>{point.title}</h3>
+                <p>{point.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="product-contact" id="kontakt">
+        <div class="container">
+          <div class="contact-heading">
+            <span class="kicker">{extra.contactEyebrow}</span>
+            <h2>{extra.contactTitle}</h2>
+            <p>{extra.contactText}</p>
+          </div>
+          <div class="contact-layout">
+            <form
+              class="inquiry-form"
+              action={`mailto:${contact.email}`}
+              method="post"
+              enctype="text/plain"
+              data-inquiry-form
+              data-email={contact.email}
+              data-subject={extra.formSubject(product.name)}
+              data-product-label={extra.productLabel}
+              data-name-label={extra.nameLabel}
+              data-reply-label={extra.replyLabel}
+              data-quantity-label={extra.quantityLabel}
+              data-message-label={extra.messageLabel}
+            >
+              <h3>{extra.formTitle}</h3>
+              <input type="hidden" name="product" value={product.name} />
+              <label>
+                <span>{extra.nameLabel}</span>
+                <input name="name" type="text" autocomplete="name" placeholder={extra.namePlaceholder} required />
+              </label>
+              <label>
+                <span>{extra.replyLabel}</span>
+                <input name="reply" type="text" autocomplete="email" placeholder={extra.replyPlaceholder} required />
+              </label>
+              <label>
+                <span>{extra.quantityLabel}</span>
+                <input name="quantity" type="number" min="20" step="1" value="20" inputmode="numeric" required />
+              </label>
+              <label class="message-field">
+                <span>{extra.messageLabel}</span>
+                <textarea name="message" rows="4" placeholder={extra.messagePlaceholder}></textarea>
+              </label>
+              <button class="btn btn-primary form-submit" type="submit">{extra.submitForm} →</button>
+              <p class="form-note">{extra.formNote} <a href={privacyPath}>{extra.privacyLink}</a>.</p>
+            </form>
+
+            <div class="contact-channels">
+              <article class="channel-card">
+                <span class="channel-icon"><IconPhone size={22} /></span>
+                <div><h3>{extra.callTitle}</h3><p>{extra.callText}</p></div>
+                <a class="btn btn-secondary" href={`tel:${contact.phoneE164}`} data-analytics-placement="product_contact">{extra.callAction}</a>
+                <strong>{contact.phoneDisplay}</strong>
+              </article>
+              <article class="channel-card channel-whatsapp">
+                <span class="channel-icon"><IconWhatsApp size={22} /></span>
+                <div><h3>{extra.whatsappTitle}</h3><p>{extra.whatsappText}</p></div>
+                <a class="btn btn-primary" href={productWhatsappUrl(product.name, locale)} data-analytics-whatsapp data-analytics-placement="product_contact" data-analytics-product-id={product.id}>{extra.whatsappAction}</a>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="related-section">
+        <div class="container">
+          <span class="kicker">05 / {c.relatedEyebrow}</span>
+          <h2>{c.relatedTitle}</h2>
+          <div class="related-grid">
+            {related.map((item) => (
+              <a class="related-card" href={getProductPath(locale, item.id)}>
+                <img src={item.image} alt={c.imageAlt(item.name)} width="480" height="320" loading="lazy" />
+                <span class="related-copy">
+                  <strong>{item.name}</strong>
+                  <small>{item.description[locale]}</small>
+                  <span>{c.relatedAction} →</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="product-faq">
+        <div class="container faq-grid">
+          <div><span class="kicker">06 / {c.faqEyebrow}</span><h2>{c.faqTitle}</h2></div>
+          <div class="faq-list">
+            {faq.map((item) => (
+              <details>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </article>
+    <FinalCta locale={locale} />
+  </main>
+  <Footer locale={locale} languagePaths={alternates} />
+  <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</Base>
+
+<style>
+  .product-hero { padding-block: 22px 36px; border-bottom: 1px solid var(--border); }
+  .product-hero-grid { display: grid; gap: 28px; margin-top: 24px; }
+  .product-hero-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 15px; }
+  h1, h2, h3, p { text-wrap: pretty; }
+  h1 { margin: 0; max-width: 20ch; color: var(--text-strong); font-size: 35px; line-height: 1.1; font-weight: 800; letter-spacing: -.025em; }
+  .product-lead { margin: 0; max-width: 60ch; color: var(--text-soft); font-size: 16px; line-height: 1.58; }
+  .product-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .product-primary, .product-secondary { min-height: 52px; padding: 0 20px; white-space: normal; text-align: center; }
+  .availability-note { margin: -4px 0 0; max-width: 56ch; color: var(--text-muted); font-size: 13.5px; }
+  .product-image-wrap { position: relative; align-self: start; width: 100%; aspect-ratio: 3 / 2; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-cream); }
+  .product-image-wrap img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+  .product-image-wrap figcaption { position: absolute; right: 12px; bottom: 12px; padding: 7px 10px; border-radius: 6px; background: rgb(20 55 36 / 88%); color: #fff; font: 600 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
+  .product-facts { display: flex; flex-direction: column; width: 100%; margin: 4px 0 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .product-facts div { display: flex; min-width: 0; justify-content: space-between; align-items: baseline; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--border-soft); }
+  .product-facts div:last-child { border-bottom: 0; }
+  .product-facts dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .product-facts dd { min-width: 0; margin: 0; color: var(--text-strong); font-size: 14px; font-weight: 800; text-align: right; overflow-wrap: anywhere; }
+  .product-specs { padding-block: 40px; background: var(--surface); border-block: 1px solid var(--border); }
+  .product-specs-grid { display: grid; gap: 22px; }
+  .product-specs h2, .suitability-section h2, .batch-section h2, .product-contact h2, .related-section h2, .product-faq h2 { margin: 8px 0 10px; color: var(--text-strong); font-size: 28px; line-height: 1.15; }
+  .product-specs p { margin: 0; color: var(--text-soft); line-height: 1.65; }
+  .product-description { display: grid; gap: 12px; }
+  .specs-side { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
+  .product-table { margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+  .product-table div { display: grid; gap: 4px; padding: 12px 14px; border-bottom: 1px solid var(--border-soft); }
+  .product-table div:last-child { border-bottom: 0; }
+  .product-table dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+  .product-table dd { margin: 0; color: var(--text-strong); font-size: 14.5px; font-weight: 700; }
+  .vat-note { padding-left: 12px; border-left: 2px solid var(--green); font-size: 13.5px; }
+  .order-flow { margin-top: 4px; padding: 18px 16px; border: 1px solid var(--border-cream); border-radius: 10px; background: var(--surface-cream); }
+  .order-flow h3 { margin: 0 0 14px; color: var(--text-strong); font-size: 18px; }
+  .order-flow ol { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+  .order-flow li { display: grid; grid-template-columns: 30px 1fr; align-items: start; gap: 10px; }
+  .order-flow li > span { display: inline-flex; justify-content: center; align-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: #fff; font: 700 10px var(--font-mono); }
+  .order-flow li p { padding-top: 3px; color: var(--text-soft); font-size: 14px; line-height: 1.5; }
+  .suitability-section { padding-block: 44px; }
+  .section-heading { max-width: 720px; }
+  .section-heading p { margin: 0; color: var(--text-soft); line-height: 1.65; }
+  .suitability-grid { display: grid; gap: 1px; margin-top: 24px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--border); }
+  .suitability-grid article { padding: 20px; background: var(--surface); }
+  .suitability-grid article > span { color: var(--green); font: 700 12px var(--font-mono); }
+  .suitability-grid h3 { margin: 18px 0 7px; color: var(--text-strong); font-size: 19px; }
+  .suitability-grid p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
+  .batch-section, .related-section, .product-faq { padding-block: 44px; }
+  .batch-grid { display: grid; gap: 14px; margin-top: 24px; }
+  .batch-grid { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--border); gap: 1px; }
+  .batch-card { padding: 20px; background: var(--surface); }
+  .batch-card > span { color: var(--green); font: 700 12px var(--font-mono); }
+  .batch-card h3 { margin: 18px 0 7px; color: var(--text-strong); font-size: 19px; }
+  .batch-card p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
+  .product-contact { padding-block: 44px; background: var(--green-deep); }
+  .product-contact .kicker { color: var(--green-pale); }
+  .product-contact h2 { color: #fff; }
+  .contact-heading { max-width: 720px; }
+  .contact-heading > p { margin: 0; color: var(--green-pale-text); line-height: 1.65; }
+  .contact-layout { display: grid; gap: 16px; margin-top: 24px; }
+  .inquiry-form { display: grid; gap: 14px; padding: 20px 16px; border-radius: 12px; background: var(--surface); }
+  .inquiry-form h3 { margin: 0 0 2px; color: var(--text-strong); font-size: 21px; }
+  .inquiry-form label { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+  .inquiry-form label > span { color: var(--text-mid); font-size: 13px; font-weight: 800; }
+  .inquiry-form input, .inquiry-form textarea { width: 100%; border: 1.5px solid var(--border-input); border-radius: 8px; background: #fff; color: var(--text); font: 500 15px var(--font-sans); }
+  .inquiry-form input { min-height: 48px; padding: 0 13px; }
+  .inquiry-form textarea { min-height: 108px; padding: 12px 13px; resize: vertical; }
+  .inquiry-form input:focus, .inquiry-form textarea:focus { border-color: var(--green); outline: 2px solid var(--green-soft-border); outline-offset: 1px; }
+  .form-submit { min-height: 50px; padding: 0 18px; }
+  .form-note { margin: -2px 0 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
+  .form-note a { font-weight: 700; }
+  .contact-channels { display: grid; gap: 16px; }
+  .channel-card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; border-radius: 12px; background: var(--surface); }
+  .channel-icon { display: inline-flex; justify-content: center; align-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--green-soft); color: var(--green); }
+  .channel-card h3 { margin: 0 0 6px; color: var(--text-strong); font-size: 20px; }
+  .channel-card p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
+  .channel-card .btn { width: 100%; min-height: 48px; padding: 0 16px; }
+  .channel-card > strong { color: var(--text-strong); font-size: 16px; }
+  .channel-whatsapp { background: var(--green-soft); }
+  .channel-whatsapp .channel-icon { background: var(--green); color: #fff; }
+  .related-section { background: var(--surface-cream); border-block: 1px solid var(--border-cream); }
+  .related-grid { display: grid; gap: 14px; margin-top: 22px; }
+  .related-card { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); }
+  .related-card:hover { border-color: var(--green-outline); color: var(--text); }
+  .related-card img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center; }
+  .related-copy { display: flex; flex-direction: column; gap: 7px; padding: 15px; }
+  .related-copy strong { color: var(--text-strong); font-size: 18px; }
+  .related-copy small { color: var(--text-soft); font-size: 13.5px; line-height: 1.5; }
+  .related-copy > span { margin-top: 3px; color: var(--green); font-size: 13.5px; font-weight: 800; }
+  .faq-grid { display: grid; gap: 22px; }
+  .faq-list { border-top: 1px solid var(--border); }
+  details { border-bottom: 1px solid var(--border); }
+  summary { position: relative; padding: 18px 38px 18px 0; color: var(--text-strong); font-weight: 800; cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: '+'; position: absolute; right: 4px; top: 15px; color: var(--green); font-size: 23px; }
+  details[open] summary::after { content: '−'; }
+  details p { margin: 0; padding: 0 28px 18px 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.65; }
+  @media (min-width: 768px) {
+    .product-hero { padding-block: 28px 56px; }
+    .product-hero-grid { grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); align-items: start; gap: 40px; }
+    .product-actions { flex-direction: row; flex-wrap: wrap; width: auto; }
+    .product-specs-grid { grid-template-columns: .8fr 1.2fr; align-items: start; gap: 40px; }
+    .suitability-grid { grid-template-columns: repeat(2, 1fr); }
+    .batch-grid, .related-grid { grid-template-columns: repeat(3, 1fr); }
+    .contact-layout { grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: 20px; }
+    .inquiry-form { grid-template-columns: 1fr 1fr; padding: 24px; }
+    .inquiry-form h3, .message-field, .form-submit, .form-note { grid-column: 1 / -1; }
+    .form-submit { width: fit-content; }
+    .faq-grid { grid-template-columns: .7fr 1.3fr; gap: 48px; }
+  }
+  @media (min-width: 1024px) {
+    .product-hero { padding-block: 30px 52px; }
+    .product-hero-grid { grid-template-areas: 'copy image'; gap: 56px; margin-top: 30px; }
+    h1 { font-size: 44px; line-height: 1.12; }
+    .product-lead { font-size: 18px; line-height: 1.6; }
+    .product-facts { margin-top: 6px; }
+    .product-specs, .suitability-section, .batch-section, .product-contact, .related-section, .product-faq { padding-block: 64px; }
+    .product-specs h2, .suitability-section h2, .batch-section h2, .product-contact h2, .related-section h2, .product-faq h2 { font-size: 34px; }
+    .product-table div { grid-template-columns: 180px 1fr; gap: 20px; padding: 14px 16px; }
+    .order-flow { padding: 22px; }
+    .order-flow ol { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .order-flow li { grid-template-columns: 1fr; gap: 8px; }
+    .suitability-grid { grid-template-columns: repeat(4, 1fr); }
+    .contact-layout { gap: 24px; }
+    .inquiry-form { padding: 28px; }
+    .channel-card { padding: 24px; }
+  }
+  @media (min-width: 1200px) {
+    .product-facts { flex-direction: row; }
+    .product-facts div { flex: 1; flex-direction: column; align-items: flex-start; gap: 3px; border-right: 1px solid var(--border-soft); border-bottom: 0; }
+    .product-facts div:last-child { border-right: 0; }
+    .product-facts dd { text-align: left; overflow-wrap: normal; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const email = form.dataset.email ?? '';
+      const subject = form.dataset.subject ?? '';
+      const product = String(data.get('product') ?? '');
+      const name = String(data.get('name') ?? '');
+      const reply = String(data.get('reply') ?? '');
+      const quantity = String(data.get('quantity') ?? '');
+      const message = String(data.get('message') ?? '');
+      const body = [
+        `${form.dataset.productLabel ?? 'Product'}: ${product}`,
+        `${form.dataset.nameLabel ?? 'Name'}: ${name}`,
+        `${form.dataset.replyLabel ?? 'Contact'}: ${reply}`,
+        `${form.dataset.quantityLabel ?? 'Quantity'}: ${quantity}`,
+        '',
+        `${form.dataset.messageLabel ?? 'Message'}:`,
+        message,
+      ].join('\n');
+
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    });
+  });
+</script>

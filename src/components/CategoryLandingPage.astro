@@ -1,0 +1,136 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
+import { products, type ProductCategory } from '../data/products';
+import { getAssortmentPath, getCategoryAlternates, getCategoryPath, getProductPath } from '../config/marketing';
+import { categoryPageCopy, categoryPageUi } from '../i18n/marketing';
+import { content } from '../i18n/content';
+import { ui } from '../i18n/ui';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Catalog from './Catalog.astro';
+import FinalCta from './FinalCta.astro';
+import StickyBar from './StickyBar.astro';
+
+interface Props { locale: Locale; category: ProductCategory }
+const { locale, category } = Astro.props;
+const c = categoryPageCopy[locale][category];
+const pageUi = categoryPageUi[locale];
+const t = content[locale];
+const u = ui[locale];
+const categoryProducts = products.filter((product) => product.category === category);
+const alternates = getCategoryAlternates(category);
+const home = localeConfig[locale].path;
+const assortmentPath = getAssortmentPath(locale);
+const pageUrl = new URL(getCategoryPath(locale, category), Astro.site).href;
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${pageUrl}#collection`,
+  url: pageUrl,
+  name: c.metaTitle,
+  description: c.metaDescription,
+  inLanguage: localeConfig[locale].htmlLang,
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: u.home, item: new URL(home, Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: t.nav.offer, item: new URL(assortmentPath, Astro.site).href },
+      { '@type': 'ListItem', position: 3, name: t.catalog.filters[category], item: pageUrl },
+    ],
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: categoryProducts.length,
+    itemListElement: categoryProducts.map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: product.name,
+      url: new URL(getProductPath(locale, product.id), Astro.site).href,
+    })),
+  },
+};
+---
+
+<Base
+  title={c.metaTitle}
+  description={c.metaDescription}
+  locale={locale}
+  alternatePaths={alternates}
+  pageType="assortment"
+  image={categoryProducts[0]?.image}
+  imageAlt={c.title}
+>
+  <Header locale={locale} linkSectionsToHome currentArea="assortment" languagePaths={alternates} />
+  <main id="tresc">
+    <header class="category-hero">
+      <div class="container">
+        <Breadcrumbs
+          label={t.catalog.filters[category]}
+          items={[
+            { label: u.home, href: home },
+            { label: t.nav.offer, href: assortmentPath },
+            { label: t.catalog.filters[category] },
+          ]}
+        />
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="kicker">{pageUi.eyebrow}</span>
+            <h1>{c.title}</h1>
+            <p>{c.lead}</p>
+          </div>
+          <dl class="hero-facts">
+            <div><dt>{pageUi.countLabel}</dt><dd>{pageUi.countValue(categoryProducts.length)}</dd></div>
+            <div><dt>{pageUi.minimumLabel}</dt><dd>{pageUi.minimumValue}</dd></div>
+            <div><dt>{pageUi.deliveryLabel}</dt><dd>{pageUi.deliveryValue}</dd></div>
+          </dl>
+        </div>
+      </div>
+    </header>
+    <Catalog
+      locale={locale}
+      variant="full"
+      items={categoryProducts}
+      activeCategory={category}
+      eyebrow={pageUi.catalogEyebrow}
+      title={c.catalogTitle}
+      intro={pageUi.catalogText}
+    />
+    <FinalCta locale={locale} />
+  </main>
+  <Footer locale={locale} languagePaths={alternates} />
+  <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} />
+</Base>
+
+<style>
+  .category-hero { padding-block: 22px 36px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .hero-grid { display: grid; gap: 28px; margin-top: 24px; }
+  .hero-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 16px; }
+  h1, p { text-wrap: pretty; }
+  h1 { margin: 0; max-width: 20ch; color: var(--text-strong); font-size: 35px; line-height: 1.08; font-weight: 800; letter-spacing: -.025em; }
+  .hero-copy p { margin: 0; max-width: 66ch; color: var(--text-soft); font-size: 16px; line-height: 1.62; }
+  .hero-facts { display: grid; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+  .hero-facts div { display: flex; justify-content: space-between; gap: 20px; padding: 15px 16px; border-bottom: 1px solid var(--border-soft); }
+  .hero-facts div:last-child { border-bottom: 0; }
+  .hero-facts dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; }
+  .hero-facts dd { margin: 0; color: var(--text-strong); font-weight: 800; text-align: right; }
+  @media (min-width: 768px) {
+    .category-hero { padding-block: 26px 44px; }
+    .hero-facts { grid-template-columns: repeat(3, 1fr); }
+    .hero-facts div { flex-direction: column; gap: 3px; border-right: 1px solid var(--border-soft); border-bottom: 0; }
+    .hero-facts div:last-child { border-right: 0; }
+    .hero-facts dd { text-align: left; }
+  }
+  @media (min-width: 1024px) {
+    .category-hero { padding-block: 28px 54px; }
+    .hero-grid { grid-template-columns: minmax(0, 1.25fr) minmax(360px, .75fr); align-items: end; gap: 72px; margin-top: 36px; }
+    h1 { font-size: 48px; }
+    .hero-copy p { font-size: 17px; }
+    .hero-facts { grid-template-columns: 1fr; }
+    .hero-facts div { flex-direction: row; align-items: baseline; padding: 16px 18px; border-right: 0; border-bottom: 1px solid var(--border-soft); }
+    .hero-facts dd { text-align: right; }
+  }
+</style>

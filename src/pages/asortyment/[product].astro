@@ -1,0 +1,29 @@
+---
+import ProductLandingPage from '../../components/ProductLandingPage.astro';
+import CategoryLandingPage from '../../components/CategoryLandingPage.astro';
+import { getCategorySlug } from '../../config/marketing';
+import { products, type Product, type ProductCategory } from '../../data/products';
+
+export function getStaticPaths() {
+  const categories: ProductCategory[] = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'];
+  return [
+    ...products.map((product) => ({
+      params: { product: product.id },
+      props: { page: 'product' as const, product },
+    })),
+    ...categories.map((category) => ({
+      params: { product: getCategorySlug('pl', category) },
+      props: { page: 'category' as const, category },
+    })),
+  ];
+}
+
+type Props =
+  | { page: 'product'; product: Product }
+  | { page: 'category'; category: ProductCategory };
+const props = Astro.props;
+---
+
+{props.page === 'product'
+  ? <ProductLandingPage locale="pl" product={props.product} />
+  : <CategoryLandingPage locale="pl" category={props.category} />}

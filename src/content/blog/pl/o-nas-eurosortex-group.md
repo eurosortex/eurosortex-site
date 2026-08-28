@@ -21,7 +21,7 @@ Naszym zadaniem jest połączyć potrzeby konkretnego sklepu z aktualnie dostęp
 
 ## Czym się zajmujemy
 
-Oferujemy hurtowo sortowaną odzież używaną i obuwie pochodzące z europejskich zbiórek i sortowni. W [aktualnym katalogu](/#oferta) znajduje się 12 pozycji, między innymi miksy odzieży, bluzy, spodnie, odzież dziecięca, T-shirty, bluzki i obuwie sezonowe.
+Oferujemy hurtowo sortowaną odzież używaną i obuwie pochodzące z europejskich zbiórek i sortowni. W [aktualnym katalogu](/asortyment/) znajduje się 12 pozycji, między innymi miksy odzieży, bluzy, spodnie, odzież dziecięca, T-shirty, bluzki i obuwie sezonowe.
 
 Nie sprzedajemy anonimowego produktu „z półki”. Przed zamówieniem potwierdzamy z klientem:
 

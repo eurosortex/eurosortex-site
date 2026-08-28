@@ -21,7 +21,7 @@ Our role is to connect the needs of a particular shop with the goods available n
 
 ## What we do
 
-We wholesale sorted second-hand clothing and footwear sourced from European collections and sorting facilities. Our [current catalogue](/en/#oferta) contains 12 product lines, including clothing mixes, sweatshirts, trousers, children's clothing, T-shirts, blouses and seasonal footwear.
+We wholesale sorted second-hand clothing and footwear sourced from European collections and sorting facilities. Our [current catalogue](/en/wholesale-assortment/) contains 12 product lines, including clothing mixes, sweatshirts, trousers, children's clothing, T-shirts, blouses and seasonal footwear.
 
 We do not sell an anonymous, standardised product off the shelf. Before an order, we confirm:
 

@@ -1,0 +1,172 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
+import { company, contact, whatsappUrl } from '../config/contact';
+import { getAboutAlternates, getAssortmentPath } from '../config/marketing';
+import { content } from '../i18n/content';
+import { aboutCopy } from '../i18n/marketing';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import IconWhatsApp from './IconWhatsApp.astro';
+import FinalCta from './FinalCta.astro';
+import StickyBar from './StickyBar.astro';
+import { ui } from '../i18n/ui';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const c = aboutCopy[locale];
+const t = content[locale];
+const u = ui[locale];
+const alternates = getAboutAlternates();
+const home = localeConfig[locale].path;
+const assortmentPath = getAssortmentPath(locale);
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const aboutJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  '@id': `${pageUrl}#about`,
+  url: pageUrl,
+  name: c.metaTitle,
+  description: c.metaDescription,
+  inLanguage: localeConfig[locale].htmlLang,
+  mainEntity: {
+    '@type': 'Organization',
+    '@id': `${new URL('/', Astro.site).href}#organization`,
+    name: company.brandName,
+    legalName: company.legalName,
+    url: new URL('/', Astro.site).href,
+    email: contact.email,
+    telephone: contact.phoneE164,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: company.registeredOffice.street,
+      postalCode: company.registeredOffice.postalCode,
+      addressLocality: company.registeredOffice.city,
+      addressCountry: 'PL',
+    },
+  },
+};
+---
+
+<Base title={c.metaTitle} description={c.metaDescription} locale={locale} alternatePaths={alternates} pageType="about" image="/images/warehouse-quality.jpg" imageAlt={c.imageAlt}>
+  <Header locale={locale} linkSectionsToHome currentArea="about" languagePaths={alternates} />
+  <main id="tresc">
+    <article>
+      <header class="about-hero">
+        <div class="container">
+          <Breadcrumbs label={c.breadcrumb} items={[{ label: u.home, href: home }, { label: t.nav.about }]} />
+          <div class="about-hero-grid">
+            <div class="about-hero-copy">
+              <span class="kicker">{c.eyebrow}</span>
+              <h1>{c.title}</h1>
+              <p>{c.lead}</p>
+              <a class="btn btn-primary about-cta" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="about_hero">
+                <IconWhatsApp size={18} /> {t.common.availability}
+              </a>
+              <a class="about-offer-link" href={assortmentPath}>{t.nav.offer} →</a>
+            </div>
+            <figure>
+              <img src="/images/warehouse-quality.jpg" alt={c.imageAlt} width="1600" height="1200" fetchpriority="high" />
+            </figure>
+          </div>
+          <dl class="about-facts">
+            {c.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
+          </dl>
+        </div>
+      </header>
+
+      <section class="about-story">
+        <div class="container story-grid">
+          {c.sections.map((section, index) => (
+            <section>
+              <span class="kicker">0{index + 1} / EuroSortex</span>
+              <h2>{section.title}</h2>
+              {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section class="about-values">
+        <div class="container">
+          <span class="kicker">03 / {c.valuesEyebrow}</span>
+          <h2>{c.valuesTitle}</h2>
+          <div class="values-grid">
+            {c.values.map((value, index) => (
+              <article><span>0{index + 1}</span><h3>{value.title}</h3><p>{value.text}</p></article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="about-assortment">
+        <div class="container assortment-box">
+          <div><h2>{c.assortmentTitle}</h2><p>{c.assortmentText}</p></div>
+          <a class="btn btn-inverse assortment-cta" href={assortmentPath}>{c.assortmentAction} →</a>
+        </div>
+      </section>
+    </article>
+    <FinalCta locale={locale} />
+  </main>
+  <Footer locale={locale} languagePaths={alternates} />
+  <StickyBar locale={locale} />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(aboutJsonLd)} />
+</Base>
+
+<style>
+  .about-hero { padding-block: 22px 36px; border-bottom: 1px solid var(--border); }
+  .about-hero-grid { display: grid; gap: 28px; margin-top: 24px; }
+  .about-hero-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  h1, h2, h3, p { text-wrap: pretty; }
+  h1 { margin: 0; max-width: 19ch; color: var(--text-strong); font-size: 35px; line-height: 1.1; font-weight: 800; letter-spacing: -.025em; }
+  .about-hero-copy p { margin: 0; max-width: 58ch; color: var(--text-soft); font-size: 16px; line-height: 1.58; }
+  .about-cta { min-height: 52px; padding: 0 22px; }
+  .about-offer-link { display: inline-flex; align-items: center; min-height: 32px; font-size: 14px; font-weight: 800; }
+  figure { align-self: start; width: 100%; aspect-ratio: 4 / 3; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-cream); }
+  figure img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .about-facts { display: grid; margin: 28px 0 0; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .about-facts div { padding: 14px 16px; border-bottom: 1px solid var(--border-soft); }
+  .about-facts div:last-child { border-bottom: 0; }
+  .about-facts dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; }
+  .about-facts dd { margin: 3px 0 0; color: var(--text-strong); font-weight: 800; }
+  .about-story { padding-block: 44px; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .story-grid { display: grid; gap: 34px; }
+  .story-grid section { max-width: 68ch; }
+  .story-grid h2, .about-values h2, .about-assortment h2 { margin: 8px 0 14px; color: var(--text-strong); font-size: 28px; line-height: 1.15; }
+  .story-grid p { margin: 0 0 13px; color: var(--text-soft); line-height: 1.7; }
+  .story-grid p:last-child { margin-bottom: 0; }
+  .about-values { padding-block: 44px; }
+  .about-values > .container > h2 { margin-top: 8px; max-width: 20ch; }
+  .values-grid { display: grid; gap: 1px; margin-top: 22px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--border); }
+  .values-grid article { padding: 20px; background: var(--surface); }
+  .values-grid article > span { color: var(--green); font: 700 12px var(--font-mono); }
+  .values-grid h3 { margin: 18px 0 7px; color: var(--text-strong); font-size: 19px; }
+  .values-grid p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.6; }
+  .about-assortment { padding-block: 0 44px; }
+  .assortment-box { display: grid; gap: 20px; padding: 24px 16px; border: 1px solid var(--border-cream); border-radius: 12px; background: var(--surface-cream); }
+  .about-assortment p { margin: 0; max-width: 66ch; color: var(--text-soft); line-height: 1.65; }
+  .assortment-cta { min-height: 50px; padding: 0 20px; width: fit-content; background: var(--green); color: #fff; }
+  .assortment-cta:hover { background: var(--green-hover); color: #fff; }
+  @media (min-width: 768px) {
+    .about-hero { padding-block: 28px 56px; }
+    .about-hero-grid { grid-template-columns: 1fr 1fr; align-items: center; gap: 44px; }
+    .about-facts { grid-template-columns: repeat(3, 1fr); }
+    .about-facts div { border-right: 1px solid var(--border-soft); border-bottom: 0; }
+    .about-facts div:last-child { border-right: 0; }
+    .story-grid { grid-template-columns: repeat(2, 1fr); gap: 56px; }
+    .values-grid { grid-template-columns: repeat(3, 1fr); }
+    .assortment-box { grid-template-columns: 1fr auto; align-items: center; gap: 48px; padding: 28px; }
+  }
+  @media (min-width: 1024px) {
+    .about-hero { padding-block: 30px 52px; }
+    .about-hero-grid { gap: 56px; margin-top: 30px; }
+    h1 { font-size: 44px; line-height: 1.12; }
+    .about-hero-copy p { font-size: 18px; line-height: 1.6; }
+    .about-story, .about-values { padding-block: 64px; }
+    .about-assortment { padding-bottom: 64px; }
+    .assortment-box { padding-block: 40px; }
+    .story-grid h2, .about-values h2, .about-assortment h2 { font-size: 34px; }
+  }
+</style>
