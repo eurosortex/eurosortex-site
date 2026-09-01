@@ -214,37 +214,36 @@ const faqJsonLd = {
           <div class="contact-layout">
             <form
               class="inquiry-form"
-              action={`mailto:${contact.email}`}
+              action="/api/inquiry"
               method="post"
-              enctype="text/plain"
               data-inquiry-form
-              data-email={contact.email}
-              data-subject={extra.formSubject(product.name)}
-              data-product-label={extra.productLabel}
-              data-name-label={extra.nameLabel}
-              data-reply-label={extra.replyLabel}
-              data-quantity-label={extra.quantityLabel}
-              data-message-label={extra.messageLabel}
+              data-submit-label={extra.submitForm}
+              data-sending-label={extra.formSending}
+              data-success-label={extra.formSuccess}
+              data-error-label={extra.formError}
             >
               <h3>{extra.formTitle}</h3>
               <input type="hidden" name="product" value={product.name} />
+              <input type="hidden" name="locale" value={locale} />
+              <input class="form-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <label>
                 <span>{extra.nameLabel}</span>
-                <input name="name" type="text" autocomplete="name" placeholder={extra.namePlaceholder} required />
+                <input name="name" type="text" autocomplete="name" maxlength="120" placeholder={extra.namePlaceholder} required />
               </label>
               <label>
                 <span>{extra.replyLabel}</span>
-                <input name="reply" type="text" autocomplete="email" placeholder={extra.replyPlaceholder} required />
+                <input name="reply" type="text" autocomplete="email" maxlength="160" placeholder={extra.replyPlaceholder} required />
               </label>
               <label>
                 <span>{extra.quantityLabel}</span>
-                <input name="quantity" type="number" min="20" step="1" value="20" inputmode="numeric" required />
+                <input name="quantity" type="number" min="20" max="100000" step="1" value="20" inputmode="numeric" required />
               </label>
               <label class="message-field">
                 <span>{extra.messageLabel}</span>
-                <textarea name="message" rows="4" placeholder={extra.messagePlaceholder}></textarea>
+                <textarea name="message" rows="4" maxlength="2000" placeholder={extra.messagePlaceholder}></textarea>
               </label>
-              <button class="btn btn-primary form-submit" type="submit">{extra.submitForm} →</button>
+              <button class="btn btn-primary form-submit" type="submit"><span data-submit-copy>{extra.submitForm}</span> →</button>
+              <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
               <p class="form-note">{extra.formNote} <a href={privacyPath}>{extra.privacyLink}</a>.</p>
             </form>
 
@@ -371,7 +370,13 @@ const faqJsonLd = {
   .inquiry-form input { min-height: 48px; padding: 0 13px; }
   .inquiry-form textarea { min-height: 108px; padding: 12px 13px; resize: vertical; }
   .inquiry-form input:focus, .inquiry-form textarea:focus { border-color: var(--green); outline: 2px solid var(--green-soft-border); outline-offset: 1px; }
+  .inquiry-form .form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
   .form-submit { min-height: 50px; padding: 0 18px; }
+  .form-submit:disabled { opacity: .65; cursor: wait; box-shadow: none; }
+  .form-status { margin: 0; padding: 11px 13px; border-radius: 8px; font-size: 13.5px; font-weight: 700; line-height: 1.5; }
+  .form-status[data-state="pending"] { background: var(--surface-cream); color: var(--text-soft); }
+  .form-status[data-state="success"] { background: var(--green-soft); color: var(--green-deep); }
+  .form-status[data-state="error"] { background: #fff0ed; color: #8f2d1f; }
   .form-note { margin: -2px 0 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
   .form-note a { font-weight: 700; }
   .contact-channels { display: grid; gap: 16px; }
@@ -409,7 +414,7 @@ const faqJsonLd = {
     .batch-grid, .related-grid { grid-template-columns: repeat(3, 1fr); }
     .contact-layout { grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: 20px; }
     .inquiry-form { grid-template-columns: 1fr 1fr; padding: 24px; }
-    .inquiry-form h3, .message-field, .form-submit, .form-note { grid-column: 1 / -1; }
+    .inquiry-form h3, .message-field, .form-submit, .form-status, .form-note { grid-column: 1 / -1; }
     .form-submit { width: fit-content; }
     .faq-grid { grid-template-columns: .7fr 1.3fr; gap: 48px; }
   }
@@ -440,28 +445,55 @@ const faqJsonLd = {
 
 <script>
   document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form) => {
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const data = new FormData(form);
-      const email = form.dataset.email ?? '';
-      const subject = form.dataset.subject ?? '';
-      const product = String(data.get('product') ?? '');
-      const name = String(data.get('name') ?? '');
-      const reply = String(data.get('reply') ?? '');
-      const quantity = String(data.get('quantity') ?? '');
-      const message = String(data.get('message') ?? '');
-      const body = [
-        `${form.dataset.productLabel ?? 'Product'}: ${product}`,
-        `${form.dataset.nameLabel ?? 'Name'}: ${name}`,
-        `${form.dataset.replyLabel ?? 'Contact'}: ${reply}`,
-        `${form.dataset.quantityLabel ?? 'Quantity'}: ${quantity}`,
-        '',
-        `${form.dataset.messageLabel ?? 'Message'}:`,
-        message,
-      ].join('\n');
+      const submit = form.querySelector<HTMLButtonElement>('.form-submit');
+      const submitCopy = form.querySelector<HTMLElement>('[data-submit-copy]');
+      const status = form.querySelector<HTMLElement>('[data-form-status]');
 
-      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      if (!submit || !submitCopy || !status) return;
+
+      submit.disabled = true;
+      submitCopy.textContent = form.dataset.sendingLabel ?? 'Sending…';
+      form.setAttribute('aria-busy', 'true');
+      status.hidden = false;
+      status.dataset.state = 'pending';
+      status.textContent = form.dataset.sendingLabel ?? 'Sending…';
+
+      const payload = {
+        product: String(data.get('product') ?? ''),
+        locale: String(data.get('locale') ?? ''),
+        website: String(data.get('website') ?? ''),
+        name: String(data.get('name') ?? ''),
+        reply: String(data.get('reply') ?? ''),
+        quantity: Number(data.get('quantity')),
+        message: String(data.get('message') ?? ''),
+        pagePath: window.location.pathname,
+      };
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { accept: 'application/json', 'content-type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => null);
+
+        if (!response.ok || !result?.ok) throw new Error('Enquiry request failed');
+
+        form.reset();
+        status.dataset.state = 'success';
+        status.textContent = form.dataset.successLabel ?? 'Thank you! Your enquiry has been sent.';
+      } catch {
+        status.dataset.state = 'error';
+        status.textContent = form.dataset.errorLabel ?? 'We could not send your enquiry. Please try again.';
+      } finally {
+        submit.disabled = false;
+        submitCopy.textContent = form.dataset.submitLabel ?? 'Send enquiry';
+        form.removeAttribute('aria-busy');
+      }
     });
   });
 </script>

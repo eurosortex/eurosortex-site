@@ -58,7 +58,7 @@ const plPrivacy: LegalDocument = {
       title: '2. Jakie dane przetwarzamy',
       blocks: [
         { type: 'list', items: [
-          'dane przekazane w korespondencji e-mail, rozmowie telefonicznej lub wiadomości WhatsApp, w szczególności imię i nazwisko, numer telefonu, adres e-mail, nazwa firmy, NIP i treść zapytania;',
+          'dane przekazane przez formularz serwisu, w korespondencji e-mail, rozmowie telefonicznej lub wiadomości WhatsApp, w szczególności imię i nazwisko, numer telefonu, adres e-mail, nazwa firmy, NIP i treść zapytania;',
           'dane osób reprezentujących klientów lub działających jako ich pracownicy i współpracownicy;',
           'dane dotyczące zapytań, ofert, zamówień, płatności, dostaw, faktur i reklamacji;',
           'dane techniczne związane z korzystaniem z serwisu, takie jak adres IP, typ urządzenia i przeglądarki, czas żądania, odwiedzony adres URL oraz logi bezpieczeństwa;',
@@ -83,7 +83,7 @@ const plPrivacy: LegalDocument = {
     {
       title: '4. Odbiorcy danych i transfery poza EOG',
       blocks: [
-        { type: 'paragraph', text: 'Dane mogą być udostępniane dostawcom hostingu, obsługi IT, poczty elektronicznej, księgowości, bankom, przewoźnikom, doradcom prawnym i podatkowym oraz organom publicznym, gdy wymagają tego przepisy.' },
+        { type: 'paragraph', text: 'Dane mogą być udostępniane dostawcom hostingu, obsługi IT, systemu CRM (Kommo), poczty elektronicznej, księgowości, bankom, przewoźnikom, doradcom prawnym i podatkowym oraz organom publicznym, gdy wymagają tego przepisy.' },
         { type: 'paragraph', text: 'W przypadku kontaktu przez WhatsApp dane są przetwarzane również przez Meta Platforms Ireland Limited. Usługi pocztowe oraz narzędzia Google mogą być świadczone przez Google Ireland Limited, a Microsoft Clarity — przez podmioty z grupy Microsoft. Dostawcy ci mogą korzystać z infrastruktury lub podwykonawców poza Europejskim Obszarem Gospodarczym, stosując odpowiedni mechanizm legalizujący transfer, w szczególności decyzję stwierdzającą odpowiedni stopień ochrony albo standardowe klauzule umowne.' },
       ],
     },
@@ -370,7 +370,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
       { type: 'paragraph', text: `По вопросам персональных данных: ${contact.email}, телефон ${contact.phoneDisplay}.` },
     ] },
     { title: '2. Какие данные обрабатываются', blocks: [{ type: 'list', items: [
-      'данные из email, телефонных разговоров и WhatsApp: имя, телефон, email, компания, NIP и содержание обращения;',
+      'данные из формы сайта, email, телефонных разговоров и WhatsApp: имя, телефон, email, компания, NIP и содержание обращения;',
       'данные представителей, работников и подрядчиков клиентов;',
       'данные обращений, предложений, заказов, оплат, доставок, фактур и рекламаций;',
       'технические данные: IP-адрес, устройство, браузер, время запроса, URL и журналы безопасности;',
@@ -386,7 +386,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
       'аналитика и измерение рекламы — только с предварительного согласия по ст. 6(1)(a) GDPR.',
     ] }] },
     { title: '4. Получатели и передача за пределы ЕЭЗ', blocks: [
-      { type: 'paragraph', text: 'Данные могут получать поставщики хостинга, IT, email, бухгалтерии, банки, перевозчики, юридические и налоговые консультанты, а также органы власти в предусмотренных законом случаях.' },
+      { type: 'paragraph', text: 'Данные могут получать поставщики хостинга, IT, CRM-системы (Kommo), email, бухгалтерии, банки, перевозчики, юридические и налоговые консультанты, а также органы власти в предусмотренных законом случаях.' },
       { type: 'paragraph', text: 'При использовании WhatsApp данные также обрабатывает Meta Platforms Ireland Limited; почту и инструменты Google может предоставлять Google Ireland Limited, а Microsoft Clarity — компании группы Microsoft. Их инфраструктура или подрядчики могут находиться вне ЕЭЗ. Передача осуществляется на основании применимого решения об адекватности либо стандартных договорных положений.' },
     ] },
     { title: '5. Сроки хранения', blocks: [{ type: 'list', items: [
@@ -528,7 +528,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
       { type: 'paragraph', text: `Privacy enquiries may be sent to ${contact.email} or made by phone at ${contact.phoneDisplay}.` },
     ] },
     { title: '2. Data we process', blocks: [{ type: 'list', items: [
-      'data supplied by email, phone or WhatsApp, including name, phone number, email, company, tax number and enquiry content;',
+      'data supplied through the website form, by email, phone or WhatsApp, including name, phone number, email, company, tax number and enquiry content;',
       'data of representatives, employees and contractors of customers;',
       'enquiry, offer, order, payment, delivery, invoice and complaint data;',
       'technical data such as IP address, device and browser type, request time, URL and security logs;',
@@ -544,7 +544,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
       'analytics and advertising measurement — prior consent under Article 6(1)(a) GDPR.',
     ] }] },
     { title: '4. Recipients and transfers outside the EEA', blocks: [
-      { type: 'paragraph', text: 'Recipients may include hosting, IT, email and accounting providers, banks, carriers, legal and tax advisers, and public authorities where required by law.' },
+      { type: 'paragraph', text: 'Recipients may include hosting, IT, CRM (Kommo), email and accounting providers, banks, carriers, legal and tax advisers, and public authorities where required by law.' },
       { type: 'paragraph', text: 'WhatsApp use also involves Meta Platforms Ireland Limited. Email and Google tools may be provided by Google Ireland Limited, and Microsoft Clarity by Microsoft group entities. Their infrastructure or subcontractors may be outside the EEA. Transfers rely on an applicable adequacy decision or safeguards such as standard contractual clauses.' },
     ] },
     { title: '5. Retention', blocks: [{ type: 'list', items: [
@@ -686,7 +686,7 @@ const ukPrivacy: LegalDocument = {
       { type: 'paragraph', text: `З питань персональних даних: ${contact.email}, телефон ${contact.phoneDisplay}.` },
     ] },
     { title: '2. Які дані ми обробляємо', blocks: [{ type: 'list', items: [
-      'дані, надані електронною поштою, телефоном або через WhatsApp: ім’я, номер телефону, email, назва компанії, NIP і зміст звернення;',
+      'дані, надані через форму сайту, електронною поштою, телефоном або через WhatsApp: ім’я, номер телефону, email, назва компанії, NIP і зміст звернення;',
       'дані представників, працівників і підрядників клієнтів;',
       'дані щодо запитів, пропозицій, замовлень, оплат, доставок, фактур і рекламацій;',
       'технічні дані: IP-адреса, пристрій, браузер, час запиту, URL і журнали безпеки;',
@@ -702,7 +702,7 @@ const ukPrivacy: LegalDocument = {
       'аналітика та вимірювання реклами — лише за попередньою згодою відповідно до ст. 6(1)(a) GDPR.',
     ] }] },
     { title: '4. Одержувачі та передавання за межі ЄЕЗ', blocks: [
-      { type: 'paragraph', text: 'Дані можуть отримувати постачальники хостингу, IT, електронної пошти й бухгалтерії, банки, перевізники, юридичні та податкові консультанти, а також органи влади у випадках, передбачених законом.' },
+      { type: 'paragraph', text: 'Дані можуть отримувати постачальники хостингу, IT, CRM-системи (Kommo), електронної пошти й бухгалтерії, банки, перевізники, юридичні та податкові консультанти, а також органи влади у випадках, передбачених законом.' },
       { type: 'paragraph', text: 'У разі використання WhatsApp дані також обробляє Meta Platforms Ireland Limited; поштові сервіси та інструменти Google може надавати Google Ireland Limited, а Microsoft Clarity — компанії групи Microsoft. Їхня інфраструктура або підрядники можуть перебувати поза ЄЕЗ. Передавання ґрунтується на застосовному рішенні про належний рівень захисту або стандартних договірних положеннях.' },
     ] },
     { title: '5. Строки зберігання', blocks: [{ type: 'list', items: [

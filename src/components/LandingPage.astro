@@ -67,10 +67,10 @@ const organizationJsonLd = {
     telephone: contact.phoneE164,
     email: contact.email,
     contactType: 'sales',
-    areaServed: 'PL',
+    areaServed: { '@type': 'AdministrativeArea', name: 'European Union' },
     availableLanguage: ['pl', 'ru', 'uk', 'en'],
   },
-  areaServed: { '@type': 'Country', name: 'Poland' },
+  areaServed: { '@type': 'AdministrativeArea', name: 'European Union' },
 };
 ---
 

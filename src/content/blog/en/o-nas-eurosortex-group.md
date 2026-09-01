@@ -1,6 +1,6 @@
 ---
 title: "EuroSortex Group: who we are and what we do"
-description: "Meet EuroSortex Group, a wholesale supplier of sorted European second-hand clothing for shops throughout Poland."
+description: "Meet EuroSortex Group, a wholesale supplier of sorted European second-hand clothing for shops throughout the EU."
 locale: "en"
 category: "About us"
 publishedAt: 2026-08-24
@@ -11,7 +11,7 @@ featured: true
 draft: false
 ---
 
-EuroSortex Group is a wholesale supplier of sorted second-hand clothing from Europe. We work with second-hand shops, outlets and other business customers throughout Poland. We help match the assortment to each shop, show the batches currently available and agree clear terms before an order is placed.
+EuroSortex Group is a wholesale supplier of sorted second-hand clothing from Europe. We work with second-hand shops, outlets and other business customers throughout the EU. We help match the assortment to each shop, show the batches currently available and agree clear terms before an order is placed.
 
 ## Who we are
 

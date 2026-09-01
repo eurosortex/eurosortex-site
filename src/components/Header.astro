@@ -6,7 +6,8 @@ import { localeConfig, locales } from '../config/locales';
 import { contact, whatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
-import { getAboutPath, getAssortmentPath } from '../config/marketing';
+import type { ProductCategory } from '../data/products';
+import { getAboutPath, getAssortmentPath, getCategoryPath } from '../config/marketing';
 
 interface Props {
   locale: Locale;
@@ -26,6 +27,7 @@ const nav = [
   { href: sectionHref('#dostawa'), label: t.nav.terms },
   { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog, area: 'blog' },
 ];
+const assortmentCategories = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'] satisfies ProductCategory[];
 const phoneHref = `tel:${contact.phoneE164}`;
 const waGeneral = whatsappUrl('general', locale);
 ---
@@ -37,7 +39,29 @@ const waGeneral = whatsappUrl('general', locale);
     </a>
 
     <nav class="header-nav" aria-label={u.mainNav}>
-      {nav.map((item) => <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>)}
+      {nav.map((item) => item.area === 'assortment' ? (
+        <div class="nav-offer">
+          <a
+            class="nav-offer-trigger"
+            href={item.href}
+            aria-current={item.area === currentArea ? 'page' : undefined}
+            aria-haspopup="true"
+          >
+            {item.label}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+          <ul class="assortment-menu" aria-label={u.filterCatalog}>
+            <li class="assortment-menu-all"><a href={item.href}>{u.viewFullAssortment}</a></li>
+            {assortmentCategories.map((category) => (
+              <li><a href={getCategoryPath(locale, category)}>{t.catalog.filters[category]}</a></li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>
+      ))}
     </nav>
 
     <div class="header-actions">
@@ -113,7 +137,29 @@ const waGeneral = whatsappUrl('general', locale);
   <div class="menu-backdrop" hidden></div>
   <div class="menu-panel" id="menu-panel" hidden>
     <nav aria-label={u.menu}>
-      {nav.map((item) => <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>)}
+      {nav.map((item) => item.area === 'assortment' ? (
+        <div class="mobile-offer">
+          <button
+            type="button"
+            class="mobile-offer-trigger"
+            aria-expanded="false"
+            aria-controls="mobile-assortment-menu"
+          >
+            {item.label}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+          <div class="mobile-assortment-menu" id="mobile-assortment-menu" hidden>
+            <a class="mobile-assortment-all" href={item.href}>{u.viewFullAssortment}</a>
+            {assortmentCategories.map((category) => (
+              <a href={getCategoryPath(locale, category)}>{t.catalog.filters[category]}</a>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <a href={item.href} aria-current={item.area === currentArea ? 'page' : undefined}>{item.label}</a>
+      ))}
     </nav>
     <div class="menu-contact">
       <a href={phoneHref} class="menu-phone" data-analytics-placement="header">tel. {contact.phoneDisplay}</a>
@@ -170,6 +216,96 @@ const waGeneral = whatsappUrl('general', locale);
 
   .header-nav {
     display: none;
+  }
+
+  .nav-offer {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-offer-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .nav-offer-trigger svg {
+    transition: transform 0.15s ease;
+  }
+
+  .assortment-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: -18px;
+    z-index: 70;
+    width: 272px;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 12px 24px rgba(43, 43, 40, 0.16);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease,
+      visibility 0.15s ease;
+  }
+
+  .assortment-menu::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    left: 0;
+    height: 13px;
+  }
+
+  .nav-offer:hover .assortment-menu,
+  .nav-offer:focus-within .assortment-menu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-offer:hover .nav-offer-trigger svg,
+  .nav-offer:focus-within .nav-offer-trigger svg {
+    transform: rotate(180deg);
+  }
+
+  .header-nav .assortment-menu a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 8px 11px;
+    border-radius: 7px;
+    color: var(--text-mid);
+    font-size: 14px;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .header-nav .assortment-menu a:hover,
+  .header-nav .assortment-menu a:focus-visible {
+    background: var(--surface-cream);
+    color: var(--green);
+  }
+
+  .assortment-menu-all {
+    margin-bottom: 4px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .header-nav .assortment-menu-all a {
+    color: var(--green);
+    font-weight: 800;
   }
 
   .header-nav a[aria-current='page'],
@@ -350,22 +486,77 @@ const waGeneral = whatsappUrl('general', locale);
     padding: 8px 16px;
   }
 
-  .menu-panel nav a {
+  .menu-panel nav > a,
+  .mobile-offer-trigger {
     display: flex;
     align-items: center;
     min-height: 48px;
+    width: 100%;
     font-size: 17px;
     font-weight: 700;
     color: var(--text-strong);
     border-bottom: 1px solid var(--border-soft);
   }
 
-  .menu-panel nav a:last-child {
+  .menu-panel nav > a:last-child {
     border-bottom: 0;
   }
 
-  .menu-panel nav a:hover {
+  .menu-panel nav > a:hover,
+  .mobile-offer-trigger:hover {
     color: var(--green);
+  }
+
+  .mobile-offer-trigger {
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .mobile-offer-trigger svg {
+    flex: none;
+    transition: transform 0.15s ease;
+  }
+
+  .mobile-offer-trigger[aria-expanded='true'] {
+    color: var(--green);
+    border-bottom-color: transparent;
+  }
+
+  .mobile-offer-trigger[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+
+  .mobile-assortment-menu {
+    display: grid;
+    padding: 0 0 8px 14px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .mobile-assortment-menu[hidden] {
+    display: none;
+  }
+
+  .mobile-assortment-menu a {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 7px 12px;
+    border-radius: 7px;
+    color: var(--text-soft);
+    font-size: 15px;
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .mobile-assortment-menu a:hover,
+  .mobile-assortment-menu a:focus-visible {
+    background: var(--surface-cream);
+    color: var(--green);
+  }
+
+  .mobile-assortment-menu .mobile-assortment-all {
+    color: var(--green);
+    font-weight: 800;
   }
 
   .menu-contact {
@@ -470,6 +661,8 @@ const waGeneral = whatsappUrl('general', locale);
 
     .header-nav {
       display: flex;
+      align-items: center;
+      align-self: stretch;
       gap: 16px;
       font-size: 14px;
       font-weight: 600;
@@ -536,6 +729,13 @@ const waGeneral = whatsappUrl('general', locale);
   const menuTrigger = header.querySelector<HTMLButtonElement>('.menu-trigger')!;
   const menuPanel = header.querySelector<HTMLElement>('.menu-panel')!;
   const menuBackdrop = header.querySelector<HTMLElement>('.menu-backdrop')!;
+  const mobileOfferTrigger = header.querySelector<HTMLButtonElement>('.mobile-offer-trigger')!;
+  const mobileAssortmentMenu = header.querySelector<HTMLElement>('.mobile-assortment-menu')!;
+
+  function setMobileOffer(open: boolean) {
+    mobileAssortmentMenu.hidden = !open;
+    mobileOfferTrigger.setAttribute('aria-expanded', String(open));
+  }
 
   function setLang(open: boolean) {
     langMenu.hidden = !open;
@@ -547,6 +747,7 @@ const waGeneral = whatsappUrl('general', locale);
     menuPanel.hidden = !open;
     menuBackdrop.hidden = !open;
     menuTrigger.setAttribute('aria-expanded', String(open));
+    if (!open) setMobileOffer(false);
     if (open) setLang(false);
   }
 
@@ -555,6 +756,9 @@ const waGeneral = whatsappUrl('general', locale);
 
   langTrigger.addEventListener('click', () => setLang(!langOpen()));
   menuTrigger.addEventListener('click', () => setMenu(!menuOpen()));
+  mobileOfferTrigger.addEventListener('click', () => {
+    setMobileOffer(mobileAssortmentMenu.hasAttribute('hidden'));
+  });
   menuBackdrop.addEventListener('click', () => setMenu(false));
 
   // a tap on a section link should close the menu before scrolling

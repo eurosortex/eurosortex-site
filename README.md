@@ -19,3 +19,9 @@ npm run preview
 - `src/data/site.ts` — products, FAQ and contact links
 - `src/styles/global.css` — design tokens and global styles
 - `public/images/logo.png` — EuroSortex logo
+
+## Kommo enquiry form
+
+The product enquiry form uses a Cloudflare Pages Function and keeps Kommo
+credentials server-side. See [docs/kommo-form-setup.md](docs/kommo-form-setup.md)
+for the one-time integration and deployment setup.

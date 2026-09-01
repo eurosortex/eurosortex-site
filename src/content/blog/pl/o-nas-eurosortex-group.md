@@ -1,6 +1,6 @@
 ---
 title: "EuroSortex Group: kim jesteśmy i czym się zajmujemy"
-description: "Poznaj EuroSortex Group — hurtowego dostawcę sortowanej odzieży używanej z Europy dla sklepów second-hand w całej Polsce."
+description: "Poznaj EuroSortex Group — hurtowego dostawcę sortowanej odzieży używanej z Europy dla sklepów second-hand w całej Unii Europejskiej."
 locale: "pl"
 category: "O firmie"
 publishedAt: 2026-08-24
@@ -11,7 +11,7 @@ featured: true
 draft: false
 ---
 
-EuroSortex Group to hurtowy dostawca sortowanej odzieży używanej z Europy. Współpracujemy ze sklepami second-hand, outletami i innymi odbiorcami biznesowymi w całej Polsce. Pomagamy dobrać asortyment do potrzeb sklepu, pokazujemy dostępne partie i jasno ustalamy warunki przed zamówieniem.
+EuroSortex Group to hurtowy dostawca sortowanej odzieży używanej z Europy. Współpracujemy ze sklepami second-hand, outletami i innymi odbiorcami biznesowymi w całej Unii Europejskiej. Pomagamy dobrać asortyment do potrzeb sklepu, pokazujemy dostępne partie i jasno ustalamy warunki przed zamówieniem.
 
 ## Kim jesteśmy
 
