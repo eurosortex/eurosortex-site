@@ -17,6 +17,8 @@
 - Отдельно управляются согласия на аналитику и рекламное измерение.
 - При отказе включён `ads_data_redaction`; для рекламных идентификаторов включён `url_passthrough`.
 - В `dataLayer` нет телефона, email, текста WhatsApp-сообщения и других персональных данных посетителя.
+- Все страницы используют общий layout, поэтому новые страницы автоматически получают базовый `page_view` и существующие глобальные события.
+- После согласия сайт хранит до 90 дней first-touch и last-touch атрибуцию и передаёт её только в Kommo вместе с добровольно отправленной формой.
 
 ID контейнера можно переопределить при сборке переменной `PUBLIC_GTM_ID`. Если переменная не задана, используется `GTM-WJ29JSMT`.
 
@@ -34,6 +36,7 @@ ID контейнера можно переопределить при сбор�
 | `section_view` | В поле зрения попало не менее 45% раздела | `section_id`, `page_language` |
 | `scroll_depth` | Достигнуты 25%, 50%, 75% или 90% страницы | `percent_scrolled`, `page_language` |
 | `outbound_click` | Переход на внешний домен, кроме WhatsApp | `link_domain`, `placement`, `page_language` |
+| `generate_lead` | Kommo успешно создал заявку из формы товара | `form_id`, `placement`, `product_id`, `product_name`, `page_language` |
 
 До загрузки GTM также задаются постоянные параметры страницы: `page_locale`, `page_language`, `page_type` (`landing_page` или `legal_document`) и `business_model=b2b_wholesale`.
 
@@ -57,11 +60,12 @@ ID контейнера можно переопределить при сбор�
    - `section_id`
    - `percent_scrolled`
    - `link_domain`
+   - `form_id`
    - `item_id`, `item_name`, `item_category`, `price`, `currency`, `value`, `item_list_id`, `item_list_name`, `items`
 5. Создать Custom Event trigger с выражением:
 
    ```text
-   ^(whatsapp_click|phone_click|email_click|catalog_filter|language_change|section_view|scroll_depth|outbound_click)$
+   ^(whatsapp_click|phone_click|email_click|catalog_filter|language_change|section_view|scroll_depth|outbound_click|generate_lead)$
    ```
 
 6. Создать GA4 Event tag:
@@ -73,6 +77,8 @@ ID контейнера можно переопределить при сбор�
 
 В GA4 → Admin → Custom definitions создать event-scoped dimensions минимум для `placement`, `contact_method`, `page_language`, `product_id`, `filter_key` и `section_id`.
 
+Событие `generate_lead` отметить в GA4 как key event. Оно отправляется только после успешного ответа серверной функции, поэтому клик по кнопке без созданной заявки конверсией не считается.
+
 ## 4. Конверсии и Google Ads
 
 Для текущего сайта контакт происходит вне сайта, поэтому измеряется намерение связаться, а не подтверждённая продажа.
@@ -81,6 +87,7 @@ ID контейнера можно переопределить при сбор�
 
 | Событие | Роль на старте | Google Ads Count |
 | --- | --- | --- |
+| `generate_lead` | Primary conversion | One |
 | `whatsapp_click` | Primary conversion | One |
 | `phone_click` | Primary при достаточном объёме, иначе Secondary | One |
 | `email_click` | Secondary | One |
@@ -94,9 +101,27 @@ ID контейнера можно переопределить при сбор�
 5. Создать Conversion Linker с триггером `All Pages`.
 6. Не учитывать одну и ту же конверсию одновременно через импорт GA4 и отдельный Google Ads Conversion tag как две Primary-конверсии — это задвоит результат.
 
-Когда появится CRM-процесс, следующая ступень качества — сохранять `gclid`/`wbraid`/`gbraid` вместе с лидом и импортировать офлайн-статусы `qualify_lead` и `close_convert_lead`. Именно подтверждённые квалифицированные лиды лучше всего подходят для Smart Bidding.
+Сайт уже сохраняет `gclid`/`wbraid`/`gbraid` и другие рекламные идентификаторы после соответствующего согласия и передаёт их в примечание сделки Kommo. Следующая ступень качества — импортировать из CRM офлайн-статусы `qualify_lead` и `close_convert_lead`. Именно подтверждённые квалифицированные лиды лучше всего подходят для Smart Bidding.
 
-## 5. Meta Ads и другие рекламные системы
+## 5. UTM-разметка входящих ссылок
+
+UTM добавляются к ссылкам в рекламе, социальных сетях, email-рассылках и партнёрских размещениях. Внутренние ссылки сайта размечать UTM нельзя: это заменяет исходную кампанию и искажает атрибуцию.
+
+Использовать нижний регистр и единый словарь значений:
+
+```text
+https://eurosortex.com/asortyment/sport-pants/?utm_source=instagram&utm_medium=paid_social&utm_campaign=wholesale_september&utm_content=video_1
+```
+
+```text
+https://eurosortex.com/ru/assortiment/sport-pants/?utm_source=facebook&utm_medium=paid_social&utm_campaign=wholesale_september&utm_content=carousel_sport_pants
+```
+
+Минимальный набор: `utm_source`, `utm_medium`, `utm_campaign`. Для различения объявлений использовать `utm_content`, для ключевого слова — `utm_term`, для стабильного идентификатора кампании — `utm_id`.
+
+Для Google Ads включить auto-tagging. Сайт принимает и передаёт в Kommo `gclid`, `wbraid`, `gbraid`, `fbclid`, `msclkid` и `ttclid`.
+
+## 6. Meta Ads и другие рекламные системы
 
 После получения Pixel ID можно установить официальный/проверенный GTM template и сопоставить:
 
@@ -105,7 +130,7 @@ ID контейнера можно переопределить при сбор�
 
 Для сторонних шаблонов и Custom HTML обязательно добавить consent requirements для рекламного хранения и рекламных пользовательских данных. Не передавать email, телефон или содержимое сообщения в `dataLayer` без отдельной реализации enhanced conversions и юридической проверки.
 
-## 6. Аудитории
+## 7. Аудитории
 
 Полезный стартовый набор в GA4:
 
@@ -118,7 +143,7 @@ ID контейнера можно переопределить при сбор�
 
 Публиковать аудитории в Google Ads следует после связывания продуктов и проверки consent signals.
 
-## 7. Проверка перед публикацией GTM
+## 8. Проверка перед публикацией GTM
 
 В GTM Preview / Tag Assistant проверить четыре сценария в чистом профиле браузера:
 
@@ -128,3 +153,5 @@ ID контейнера можно переопределить при сбор�
 4. Принять все: все четыре сигнала становятся `granted`; GA4 события видны в DebugView.
 
 Дополнительно проверить, что один клик WhatsApp создаёт ровно одно `whatsapp_click`, а Google Ads не получает две одинаковые Primary-конверсии.
+
+Для формы проверить отдельный сценарий: успешная заявка создаёт ровно одно событие `generate_lead`, а ошибка API не создаёт это событие. В примечании сделки Kommo должны присутствовать блоки «Первое касание» и «Последнее касание».

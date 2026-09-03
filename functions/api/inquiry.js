@@ -7,6 +7,10 @@ const JSON_HEADERS = {
 const DEFAULT_KOMMO_SUBDOMAIN = 'anydayspl';
 const DEFAULT_PIPELINE_ID = 14241439;
 const MAX_BODY_LENGTH = 12_000;
+const ATTRIBUTION_KEYS = [
+  'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id',
+  'gclid', 'wbraid', 'gbraid', 'fbclid', 'msclkid', 'ttclid',
+];
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: JSON_HEADERS });
@@ -33,6 +37,37 @@ function validReply(value) {
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phone = /^[+()\d\s.-]{6,30}$/;
   return email.test(value) || phone.test(value);
+}
+
+function cleanAttributionTouch(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+
+  const touch = {
+    landing_page: clean(value.landing_page, 500),
+    referrer: clean(value.referrer, 500),
+    captured_at: clean(value.captured_at, 50),
+  };
+
+  ATTRIBUTION_KEYS.forEach((key) => {
+    const field = clean(value[key], key.endsWith('clid') || key === 'wbraid' || key === 'gbraid' ? 500 : 300);
+    if (field) touch[key] = field;
+  });
+
+  return Object.values(touch).some(Boolean) ? touch : undefined;
+}
+
+function attributionLines(label, touch) {
+  if (!touch) return [`${label}: —`];
+
+  return [
+    `${label}:`,
+    `  Страница входа: ${touch.landing_page || '—'}`,
+    `  Referrer: ${touch.referrer || '—'}`,
+    ...ATTRIBUTION_KEYS
+      .filter((key) => touch[key])
+      .map((key) => `  ${key}: ${touch[key]}`),
+    `  Зафиксировано: ${touch.captured_at || '—'}`,
+  ];
 }
 
 async function kommoRequest(url, token, body) {
@@ -93,10 +128,13 @@ async function handleInquiry({ request, env }) {
   const name = clean(input.name, 120);
   const reply = clean(input.reply, 160);
   const product = clean(input.product, 160);
+  const productId = clean(input.productId, 160);
   const message = clean(input.message, 2_000);
   const locale = ['pl', 'ru', 'uk', 'en'].includes(input.locale) ? input.locale : 'pl';
   const pagePath = clean(input.pagePath, 300);
   const quantity = Number(input.quantity);
+  const firstTouch = cleanAttributionTouch(input.attribution?.first_touch);
+  const lastTouch = cleanAttributionTouch(input.attribution?.last_touch);
 
   if (!name || !validReply(reply) || !product || !Number.isFinite(quantity) || quantity < 20 || quantity > 100_000) {
     return json({ ok: false, error: 'validation_failed' }, 400);
@@ -151,12 +189,17 @@ async function handleInquiry({ request, env }) {
     `Страница: ${pagePath || '/'}`,
     `Язык: ${locale.toUpperCase()}`,
     `Ассортимент: ${product}`,
+    `ID ассортимента: ${productId || '—'}`,
     `Имя / компания: ${name}`,
     `Контакт: ${reply}`,
     `Количество: ${quantity} кг`,
     '',
     'Сообщение:',
     message || '—',
+    '',
+    'Маркетинговая атрибуция:',
+    ...attributionLines('Первое касание', firstTouch),
+    ...attributionLines('Последнее касание', lastTouch),
   ].join('\n');
 
   try {

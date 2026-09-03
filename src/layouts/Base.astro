@@ -128,6 +128,7 @@ const ogLocales: Record<Locale, string> = { pl: 'pl_PL', ru: 'ru_RU', uk: 'uk_UA
           advertising_consent: consent.ad_storage,
           consent_source: source || 'api',
         });
+        window.dispatchEvent(new CustomEvent('eurosortex:consent-update'));
       };
 
       window.__eurosortexConsentChoice = readStoredConsent();

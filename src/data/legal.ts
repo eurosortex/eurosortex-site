@@ -44,7 +44,7 @@ const plPrivacy: LegalDocument = {
   metaDescription: 'Polityka prywatności serwisu EuroSortex Group: przetwarzanie danych, kontakt, WhatsApp, Google oraz Microsoft Clarity.',
   eyebrow: 'DOKUMENTY PRAWNE',
   effectiveDateLabel: 'Obowiązuje od',
-  effectiveDate: '7 sierpnia 2026 r.',
+  effectiveDate: '3 września 2026 r.',
   intro: 'Niniejsza Polityka wyjaśnia, w jaki sposób przetwarzamy dane osobowe osób odwiedzających serwis eurosortex.com oraz kontaktujących się z nami w sprawach handlowych.',
   sections: [
     {
@@ -61,7 +61,7 @@ const plPrivacy: LegalDocument = {
           'dane przekazane przez formularz serwisu, w korespondencji e-mail, rozmowie telefonicznej lub wiadomości WhatsApp, w szczególności imię i nazwisko, numer telefonu, adres e-mail, nazwa firmy, NIP i treść zapytania;',
           'dane osób reprezentujących klientów lub działających jako ich pracownicy i współpracownicy;',
           'dane dotyczące zapytań, ofert, zamówień, płatności, dostaw, faktur i reklamacji;',
-          'dane techniczne związane z korzystaniem z serwisu, takie jak adres IP, typ urządzenia i przeglądarki, czas żądania, odwiedzony adres URL oraz logi bezpieczeństwa;',
+          'dane techniczne związane z korzystaniem z serwisu, takie jak adres IP, typ urządzenia i przeglądarki, czas żądania, odwiedzony adres URL oraz logi bezpieczeństwa; po uzyskaniu odpowiedniej zgody także parametry kampanii UTM, identyfikatory kliknięć reklamowych, strona wejścia i referrer;',
           'informacje o działaniach w serwisie zapisywane lokalnie w warstwie danych, np. kliknięcie numeru telefonu, WhatsApp, filtra katalogu lub zmiana języka; dane te mogą zostać przekazane do narzędzi pomiarowych wyłącznie zgodnie z opisem w punkcie 9.',
         ] },
       ],
@@ -95,6 +95,7 @@ const plPrivacy: LegalDocument = {
           'dane związane z umową — przez okres wykonywania umowy, a następnie do upływu terminów przedawnienia roszczeń;',
           'dokumenty księgowe i podatkowe — przez okres wymagany przepisami;',
           'logi techniczne — przez okres ustalony przez dostawcę hostingu i nie dłużej, niż jest to potrzebne do zapewnienia bezpieczeństwa i diagnostyki, chyba że konkretny log stanowi dowód incydentu;',
+          'dane atrybucji marketingowej zapisane w pamięci przeglądarki — do 90 dni, nie dłużej niż do wycofania odpowiedniej zgody;',
           'nagrania sesji Microsoft Clarity — co do zasady przez 30 dni; nagrania oznaczone jako ulubione mogą być przechowywane do 9 miesięcy;',
           'dane przetwarzane na podstawie zgody — do jej wycofania lub do ustania celu, w zależności od tego, co nastąpi wcześniej.',
         ] },
@@ -124,6 +125,7 @@ const plPrivacy: LegalDocument = {
       blocks: [
         { type: 'paragraph', text: 'Serwis korzysta z Google Tag Managera do technicznego zarządzania tagami. Google Consent Mode został skonfigurowany domyślnie z odmową dostępu do pamięci reklamowej i analitycznej. Panel ustawień prywatności pozwala zaakceptować wszystkie technologie opcjonalne, odrzucić je albo osobno wybrać analitykę i pomiar reklam. Wybór jest zapisywany w niezbędnym cookie eurosortex_consent przez 180 dni i można go później zmienić za pomocą odnośnika w stopce.' },
         { type: 'paragraph', text: 'Za zgodą na analitykę Microsoft Clarity rejestruje sposób korzystania z serwisu, w tym kliknięcia, przewijanie, odwiedzane sekcje i nagrania sesji, oraz tworzy mapy cieplne. Treści wrażliwe są domyślnie maskowane. Clarity respektuje sygnały Google Consent Mode, dlatego analityczne cookies są używane dopiero po uzyskaniu odpowiedniej zgody.' },
+        { type: 'paragraph', text: 'Po uzyskaniu zgody na analitykę lub pomiar reklam serwis może zapisać przez maksymalnie 90 dni dane pierwszego i ostatniego kontaktu z kampanią: parametry UTM, identyfikatory kliknięć reklamowych, stronę wejścia, referrer i czas kontaktu. Dane te są dołączane do dobrowolnie wysłanego zapytania i przekazywane do systemu CRM, aby ustalić źródło zapytania i mierzyć skuteczność działań marketingowych. Wycofanie obu zgód usuwa zapis z pamięci przeglądarki.' },
         { type: 'paragraph', text: 'Pobranie kodu Google lub Microsoft może powodować techniczne połączenie z serwerami dostawcy i przekazanie danych sieciowych, takich jak adres IP i informacje o przeglądarce. Administrator okresowo weryfikuje konfigurację kontenera tagów.' },
         { type: 'note', text: 'W przeglądarce można niezależnie ograniczyć lub usunąć cookies i inne dane stron. Zablokowanie niezbędnej pamięci technicznej może wpłynąć na działanie części serwisu.' },
       ],
@@ -362,7 +364,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
   metaDescription: 'Политика конфиденциальности EuroSortex Group: обработка данных, обращения, WhatsApp, Google и Microsoft Clarity.',
   eyebrow: 'ЮРИДИЧЕСКИЕ ДОКУМЕНТЫ',
   effectiveDateLabel: 'Действует с',
-  effectiveDate: '7 августа 2026 г.',
+  effectiveDate: '3 сентября 2026 г.',
   intro: 'Настоящая Политика объясняет, как обрабатываются персональные данные посетителей eurosortex.com и лиц, обращающихся к нам по коммерческим вопросам.',
   sections: [
     { title: '1. Администратор данных', blocks: [
@@ -373,7 +375,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
       'данные из формы сайта, email, телефонных разговоров и WhatsApp: имя, телефон, email, компания, NIP и содержание обращения;',
       'данные представителей, работников и подрядчиков клиентов;',
       'данные обращений, предложений, заказов, оплат, доставок, фактур и рекламаций;',
-      'технические данные: IP-адрес, устройство, браузер, время запроса, URL и журналы безопасности;',
+      'технические данные: IP-адрес, устройство, браузер, время запроса, URL и журналы безопасности; после получения соответствующего согласия также UTM-параметры, рекламные идентификаторы кликов, страница входа и referrer;',
       'события интерфейса, сохранённые в локальном слое данных, например клики по телефону, WhatsApp, фильтрам и смене языка; передача в измерительные системы возможна только согласно разделу 9.',
     ] }] },
     { title: '3. Цели и правовые основания', blocks: [{ type: 'list', items: [
@@ -394,6 +396,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
       'договорные данные — во время исполнения и до истечения сроков давности требований;',
       'бухгалтерские и налоговые документы — в установленные законом сроки;',
       'технические журналы — по срокам хостинг-провайдера и не дольше необходимого для безопасности и диагностики, кроме журналов, являющихся доказательством инцидента;',
+      'данные маркетинговой атрибуции в памяти браузера — до 90 дней и не дольше, чем до отзыва соответствующего согласия;',
       'записи сессий Microsoft Clarity — как правило, 30 дней; записи, отмеченные как избранные, могут храниться до 9 месяцев;',
       'данные на основании согласия — до его отзыва или прекращения цели.',
     ] }] },
@@ -406,6 +409,7 @@ const ruPrivacy = translatedDocument(plPrivacy, {
     { title: '9. Google Tag Manager, Microsoft Clarity и память устройства', blocks: [
       { type: 'paragraph', text: 'Сайт использует Google Tag Manager для технического управления тегами. Google Consent Mode по умолчанию запрещает рекламное и аналитическое хранение. Панель конфиденциальности позволяет принять все необязательные технологии, отклонить их либо отдельно выбрать аналитику и измерение рекламы. Выбор хранится в необходимом cookie eurosortex_consent 180 дней и позднее может быть изменён по ссылке в подвале.' },
       { type: 'paragraph', text: 'С согласия на аналитику Microsoft Clarity регистрирует использование сайта, включая клики, прокрутку, посещённые разделы и записи сессий, и создаёт тепловые карты. Чувствительное содержимое по умолчанию маскируется. Clarity учитывает сигналы Google Consent Mode, поэтому аналитические cookies используются только после соответствующего согласия.' },
+      { type: 'paragraph', text: 'После согласия на аналитику или измерение рекламы сайт может хранить до 90 дней данные первого и последнего контакта с кампанией: UTM-параметры, рекламные идентификаторы кликов, страницу входа, referrer и время контакта. Эти данные добавляются к добровольно отправленной заявке и передаются в CRM для определения источника заявки и измерения эффективности маркетинга. Отзыв обеих согласий удаляет запись из памяти браузера.' },
       { type: 'paragraph', text: 'Загрузка кода Google или Microsoft может установить техническое соединение с серверами поставщика и передать сетевые данные, включая IP и сведения браузера. Конфигурация контейнера периодически проверяется.' },
       { type: 'note', text: 'Пользователь может ограничивать и удалять cookies и данные сайтов в браузере. Блокировка необходимой технической памяти может повлиять на работу сайта.' },
     ] },
@@ -520,7 +524,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
   metaDescription: 'EuroSortex Group Privacy Policy covering enquiries, WhatsApp, Google tools and Microsoft Clarity.',
   eyebrow: 'LEGAL DOCUMENTS',
   effectiveDateLabel: 'Effective from',
-  effectiveDate: '7 August 2026',
+  effectiveDate: '3 September 2026',
   intro: 'This Policy explains how we process the personal data of visitors to eurosortex.com and people who contact us about business matters.',
   sections: [
     { title: '1. Data controller', blocks: [
@@ -531,7 +535,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
       'data supplied through the website form, by email, phone or WhatsApp, including name, phone number, email, company, tax number and enquiry content;',
       'data of representatives, employees and contractors of customers;',
       'enquiry, offer, order, payment, delivery, invoice and complaint data;',
-      'technical data such as IP address, device and browser type, request time, URL and security logs;',
+      'technical data such as IP address, device and browser type, request time, URL and security logs; after the relevant consent, this may also include UTM campaign parameters, advertising click identifiers, the landing page and referrer;',
       'interface events stored in the local data layer, such as phone, WhatsApp, catalogue filter and language clicks; transmission to measurement tools is governed by section 9.',
     ] }] },
     { title: '3. Purposes and legal bases', blocks: [{ type: 'list', items: [
@@ -552,6 +556,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
       'contract data — during performance and until relevant limitation periods expire;',
       'accounting and tax records — for the statutory period;',
       'technical logs — under the host’s retention rules and no longer than needed for security and diagnostics, unless a log is evidence of an incident;',
+      'marketing attribution data stored in browser storage — for up to 90 days and no longer than until the relevant consent is withdrawn;',
       'Microsoft Clarity session recordings — normally for 30 days; recordings marked as favorites may be retained for up to 9 months;',
       'consent-based data — until consent is withdrawn or the purpose ends.',
     ] }] },
@@ -564,6 +569,7 @@ const enPrivacy = translatedDocument(plPrivacy, {
     { title: '9. Google Tag Manager, Microsoft Clarity and device storage', blocks: [
       { type: 'paragraph', text: 'The site uses Google Tag Manager to manage tags. Google Consent Mode denies advertising and analytics storage by default. The privacy panel lets users accept all optional technologies, reject them or select analytics and advertising measurement separately. The choice is stored in the necessary eurosortex_consent cookie for 180 days and can later be changed through the footer link.' },
       { type: 'paragraph', text: 'With analytics consent, Microsoft Clarity records how the site is used, including clicks, scrolling, visited sections and session recordings, and generates heatmaps. Sensitive content is masked by default. Clarity honors Google Consent Mode signals, so analytics cookies are used only after the relevant consent.' },
+      { type: 'paragraph', text: 'After consent to analytics or advertising measurement, the Website may store first- and last-touch campaign data for up to 90 days: UTM parameters, advertising click identifiers, landing page, referrer and capture time. This data is attached to a voluntarily submitted enquiry and transferred to the CRM to identify the enquiry source and measure marketing effectiveness. Withdrawing both consents removes the stored record from browser storage.' },
       { type: 'paragraph', text: 'Loading Google or Microsoft code may establish a technical connection to the provider’s servers and transfer network data such as the IP address and browser information. The tag container is reviewed periodically.' },
       { type: 'note', text: 'Browser settings can restrict or delete cookies and other site data. Blocking essential technical storage may affect some features.' },
     ] },
@@ -678,7 +684,7 @@ const ukPrivacy: LegalDocument = {
   metaDescription: 'Політика конфіденційності EuroSortex Group: обробка даних, звернення, WhatsApp, Google та Microsoft Clarity.',
   eyebrow: 'ЮРИДИЧНІ ДОКУМЕНТИ',
   effectiveDateLabel: 'Чинна з',
-  effectiveDate: '7 серпня 2026 р.',
+  effectiveDate: '3 вересня 2026 р.',
   intro: 'Ця Політика пояснює, як обробляються персональні дані відвідувачів eurosortex.com та осіб, які звертаються до нас із комерційних питань.',
   sections: [
     { title: '1. Адміністратор даних', blocks: [
@@ -689,7 +695,7 @@ const ukPrivacy: LegalDocument = {
       'дані, надані через форму сайту, електронною поштою, телефоном або через WhatsApp: ім’я, номер телефону, email, назва компанії, NIP і зміст звернення;',
       'дані представників, працівників і підрядників клієнтів;',
       'дані щодо запитів, пропозицій, замовлень, оплат, доставок, фактур і рекламацій;',
-      'технічні дані: IP-адреса, пристрій, браузер, час запиту, URL і журнали безпеки;',
+      'технічні дані: IP-адреса, пристрій, браузер, час запиту, URL і журнали безпеки; після отримання відповідної згоди також UTM-параметри, рекламні ідентифікатори кліків, сторінка входу та referrer;',
       'події інтерфейсу в локальному шарі даних, наприклад натискання телефону, WhatsApp, фільтрів і зміни мови; передавання до вимірювальних систем регулюється розділом 9.',
     ] }] },
     { title: '3. Цілі та правові підстави', blocks: [{ type: 'list', items: [
@@ -710,6 +716,7 @@ const ukPrivacy: LegalDocument = {
       'договірні дані — під час виконання та до спливу строків позовної давності;',
       'бухгалтерські й податкові документи — протягом установлених законом строків;',
       'технічні журнали — за правилами хостинг-провайдера й не довше, ніж потрібно для безпеки та діагностики, крім журналів, що є доказом інциденту;',
+      'дані маркетингової атрибуції в пам’яті браузера — до 90 днів і не довше, ніж до відкликання відповідної згоди;',
       'записи сесій Microsoft Clarity — зазвичай протягом 30 днів; записи, позначені як вибрані, можуть зберігатися до 9 місяців;',
       'дані на підставі згоди — до її відкликання або припинення відповідної мети.',
     ] }] },
@@ -722,6 +729,7 @@ const ukPrivacy: LegalDocument = {
     { title: '9. Google Tag Manager, Microsoft Clarity і пам’ять пристрою', blocks: [
       { type: 'paragraph', text: 'Сайт використовує Google Tag Manager для технічного керування тегами. Google Consent Mode за замовчуванням забороняє рекламне й аналітичне зберігання. Панель конфіденційності дає змогу прийняти всі необов’язкові технології, відхилити їх або окремо вибрати аналітику та вимірювання реклами. Вибір зберігається в необхідному cookie eurosortex_consent протягом 180 днів і згодом може бути змінений через посилання у футері.' },
       { type: 'paragraph', text: 'За згодою на аналітику Microsoft Clarity реєструє використання сайту, зокрема кліки, прокручування, відвідані розділи й записи сесій, та створює теплові карти. Чутливий вміст за замовчуванням маскується. Clarity враховує сигнали Google Consent Mode, тому аналітичні cookies використовуються лише після відповідної згоди.' },
+      { type: 'paragraph', text: 'Після згоди на аналітику або вимірювання реклами сайт може зберігати до 90 днів дані першого й останнього контакту з кампанією: UTM-параметри, рекламні ідентифікатори кліків, сторінку входу, referrer і час контакту. Ці дані додаються до добровільно надісланого запиту та передаються до CRM для визначення джерела запиту й вимірювання ефективності маркетингу. Відкликання обох згод видаляє запис із пам’яті браузера.' },
       { type: 'paragraph', text: 'Завантаження коду Google або Microsoft може встановити технічне з’єднання із серверами постачальника й передати мережеві дані, зокрема IP та відомості браузера. Конфігурація контейнера періодично перевіряється.' },
       { type: 'note', text: 'У браузері можна обмежити або видалити cookies та інші дані сайтів. Блокування необхідної технічної пам’яті може вплинути на роботу сайту.' },
     ] },

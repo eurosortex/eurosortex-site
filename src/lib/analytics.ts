@@ -5,6 +5,7 @@ export type AnalyticsPlacement =
   | 'catalog_help'
   | 'quality_section'
   | 'transport_section'
+  | 'product_contact'
   | 'final_cta'
   | 'mobile_sticky'
   | 'footer'
@@ -13,6 +14,14 @@ export type AnalyticsPlacement =
 type PageLanguage = string;
 
 export type AnalyticsEvent =
+  | {
+      event: 'generate_lead';
+      form_id: 'product_enquiry';
+      placement: 'product_contact';
+      page_language: PageLanguage;
+      product_id: string;
+      product_name: string;
+    }
   | {
       event: 'whatsapp_click';
       placement: AnalyticsPlacement;
@@ -91,6 +100,186 @@ declare global {
       source?: string,
     ) => void;
   }
+}
+
+const ATTRIBUTION_STORAGE_KEY = 'eurosortex_attribution_v1';
+const ATTRIBUTION_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1_000;
+const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'] as const;
+const CLICK_ID_KEYS = ['gclid', 'wbraid', 'gbraid', 'fbclid', 'msclkid', 'ttclid'] as const;
+
+type UtmKey = (typeof UTM_KEYS)[number];
+type ClickIdKey = (typeof CLICK_ID_KEYS)[number];
+
+export type AttributionTouch = Partial<Record<UtmKey | ClickIdKey, string>> & {
+  landing_page: string;
+  referrer?: string;
+  captured_at: string;
+};
+
+export interface LeadAttribution {
+  first_touch: AttributionTouch;
+  last_touch: AttributionTouch;
+}
+
+interface StoredAttribution extends LeadAttribution {
+  updated_at: string;
+}
+
+function cleanAttributionValue(value: string | null, maxLength = 300): string | undefined {
+  const cleaned = value?.trim().slice(0, maxLength);
+  return cleaned || undefined;
+}
+
+function currentConsent(): { analytics: boolean; advertising: boolean } {
+  return window.__eurosortexConsentChoice || { analytics: false, advertising: false };
+}
+
+function readStoredAttribution(): StoredAttribution | null {
+  try {
+    const raw = window.localStorage.getItem(ATTRIBUTION_STORAGE_KEY);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as StoredAttribution;
+    const updatedAt = Date.parse(parsed.updated_at);
+    if (!parsed.first_touch || !parsed.last_touch || !Number.isFinite(updatedAt) || Date.now() - updatedAt > ATTRIBUTION_MAX_AGE_MS) {
+      window.localStorage.removeItem(ATTRIBUTION_STORAGE_KEY);
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function externalReferrer(): string | undefined {
+  if (!document.referrer) return undefined;
+
+  try {
+    const referrer = new URL(document.referrer);
+    return referrer.origin === window.location.origin
+      ? undefined
+      : cleanAttributionValue(referrer.href, 500);
+  } catch {
+    return undefined;
+  }
+}
+
+function createCurrentTouch(existing: StoredAttribution | null): AttributionTouch | null {
+  const consent = currentConsent();
+  if (!consent.analytics && !consent.advertising) return null;
+
+  const params = new URLSearchParams(window.location.search);
+  const campaignValues: Partial<Record<UtmKey | ClickIdKey, string>> = {};
+
+  if (consent.analytics) {
+    UTM_KEYS.forEach((key) => {
+      const value = cleanAttributionValue(params.get(key));
+      if (value) campaignValues[key] = value;
+    });
+  }
+
+  if (consent.advertising) {
+    CLICK_ID_KEYS.forEach((key) => {
+      const value = cleanAttributionValue(params.get(key), 500);
+      if (value) campaignValues[key] = value;
+    });
+  }
+
+  const referrer = consent.analytics ? externalReferrer() : undefined;
+  const hasCampaignSignal = Object.keys(campaignValues).length > 0 || Boolean(referrer);
+  if (existing && !hasCampaignSignal) return null;
+
+  if (!existing && consent.analytics && !hasCampaignSignal) {
+    campaignValues.utm_source = '(direct)';
+    campaignValues.utm_medium = '(none)';
+  }
+
+  return {
+    ...campaignValues,
+    landing_page: window.location.pathname.slice(0, 500) || '/',
+    ...(referrer ? { referrer } : {}),
+    captured_at: new Date().toISOString(),
+  };
+}
+
+function captureAttribution(): void {
+  const consent = currentConsent();
+
+  if (!consent.analytics && !consent.advertising) {
+    try {
+      window.localStorage.removeItem(ATTRIBUTION_STORAGE_KEY);
+    } catch {
+      // Storage may be disabled; attribution must never interrupt the page.
+    }
+    return;
+  }
+
+  const existing = readStoredAttribution();
+  const touch = createCurrentTouch(existing);
+  if (!touch) {
+    if (!existing) return;
+
+    try {
+      window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify({
+        first_touch: filterTouchForConsent(existing.first_touch),
+        last_touch: filterTouchForConsent(existing.last_touch),
+        updated_at: existing.updated_at,
+      }));
+    } catch {
+      // Storage may be disabled; the form still works without attribution.
+    }
+    return;
+  }
+
+  const stored: StoredAttribution = {
+    first_touch: existing?.first_touch ?? touch,
+    last_touch: touch,
+    updated_at: touch.captured_at,
+  };
+
+  try {
+    window.localStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(stored));
+  } catch {
+    // Storage may be disabled; the form still works without attribution.
+  }
+}
+
+function filterTouchForConsent(touch: AttributionTouch): AttributionTouch {
+  const consent = currentConsent();
+  const filtered: AttributionTouch = {
+    landing_page: touch.landing_page,
+    captured_at: touch.captured_at,
+  };
+
+  if (consent.analytics) {
+    UTM_KEYS.forEach((key) => {
+      if (touch[key]) filtered[key] = touch[key];
+    });
+    if (touch.referrer) filtered.referrer = touch.referrer;
+  }
+
+  if (consent.advertising) {
+    CLICK_ID_KEYS.forEach((key) => {
+      if (touch[key]) filtered[key] = touch[key];
+    });
+  }
+
+  return filtered;
+}
+
+export function getLeadAttribution(): LeadAttribution | undefined {
+  if (typeof window === 'undefined') return undefined;
+  const consent = currentConsent();
+  if (!consent.analytics && !consent.advertising) return undefined;
+
+  const stored = readStoredAttribution();
+  if (!stored) return undefined;
+
+  return {
+    first_touch: filterTouchForConsent(stored.first_touch),
+    last_touch: filterTouchForConsent(stored.last_touch),
+  };
 }
 
 export function pushAnalyticsEvent(event: AnalyticsEvent): void {
@@ -281,6 +470,8 @@ function initializeScrollDepthTracking(): void {
 export function initializeAnalyticsTracking(): void {
   if (typeof window === 'undefined' || window.__eurosortexAnalyticsInitialized) return;
   window.__eurosortexAnalyticsInitialized = true;
+  captureAttribution();
+  window.addEventListener('eurosortex:consent-update', captureAttribution);
   document.addEventListener('click', handleAnalyticsClick);
   initializeSectionTracking();
   initializeScrollDepthTracking();

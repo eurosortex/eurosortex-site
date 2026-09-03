@@ -224,6 +224,7 @@ const faqJsonLd = {
             >
               <h3>{extra.formTitle}</h3>
               <input type="hidden" name="product" value={product.name} />
+              <input type="hidden" name="productId" value={product.id} />
               <input type="hidden" name="locale" value={locale} />
               <input class="form-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <label>
@@ -444,6 +445,8 @@ const faqJsonLd = {
 </style>
 
 <script>
+  import { getLeadAttribution, pushAnalyticsEvent } from '../lib/analytics';
+
   document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form) => {
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -464,6 +467,7 @@ const faqJsonLd = {
 
       const payload = {
         product: String(data.get('product') ?? ''),
+        productId: String(data.get('productId') ?? ''),
         locale: String(data.get('locale') ?? ''),
         website: String(data.get('website') ?? ''),
         name: String(data.get('name') ?? ''),
@@ -471,6 +475,7 @@ const faqJsonLd = {
         quantity: Number(data.get('quantity')),
         message: String(data.get('message') ?? ''),
         pagePath: window.location.pathname,
+        attribution: getLeadAttribution(),
       };
 
       try {
@@ -483,6 +488,14 @@ const faqJsonLd = {
 
         if (!response.ok || !result?.ok) throw new Error('Enquiry request failed');
 
+        pushAnalyticsEvent({
+          event: 'generate_lead',
+          form_id: 'product_enquiry',
+          placement: 'product_contact',
+          page_language: document.documentElement.lang || payload.locale,
+          product_id: payload.productId,
+          product_name: payload.product,
+        });
         form.reset();
         status.dataset.state = 'success';
         status.textContent = form.dataset.successLabel ?? 'Thank you! Your enquiry has been sent.';
