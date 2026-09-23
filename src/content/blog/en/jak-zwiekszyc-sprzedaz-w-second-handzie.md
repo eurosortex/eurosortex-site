@@ -42,7 +42,7 @@ Weak stock may occupy space for too long, require heavy discounts and reduce the
 
 When comparing batches, consider grade, indicative composition, season, the share of categories your customers want and the potential share of unsaleable pieces—not only the headline price. Estimate the possible revenue from the complete batch rather than focusing on the percentage markup of one very cheap item.
 
-The [EuroSortex wholesale assortment](/en/wholesale-assortment/) shows product parameters, net prices and minimum order quantities. Before buying, you can ask the manager for photos or video of the currently available batch.
+The [EuroSortex wholesale assortment](/en/wholesale-assortment/) shows product descriptions and minimum order quantities; the manager confirms the current price. Before buying, you can ask the manager for photos or video of the currently available batch.
 
 ## 2. Add complementary product categories
 

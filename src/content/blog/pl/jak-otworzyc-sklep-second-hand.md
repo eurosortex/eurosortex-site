@@ -63,7 +63,7 @@ W matrycy określ:
 - zapas potrzebny do regularnej wymiany ekspozycji;
 - kategorie testowane w mniejszej ilości.
 
-Nie wybieraj towaru wyłącznie na podstawie najniższej ceny za kilogram. Znaczenie mają skład partii, sezon, stan odzieży oraz dopasowanie do odbiorców konkretnego sklepu. W [asortymencie EuroSortex](/asortyment/) porównasz miksy, bluzy, spodnie, odzież dziecięcą, T-shirty, bluzki i obuwie. Przed zamówieniem potwierdzamy dostępność i pokazujemy aktualną partię.
+Nie wybieraj towaru wyłącznie na podstawie najniższej ceny za kilogram. Znaczenie mają skład partii, sezon, stan odzieży oraz dopasowanie do odbiorców konkretnego sklepu. W [asortymencie EuroSortex](/asortyment/) porównasz miksy, bluzy, odzież dziecięcą, swetry, odzież wierzchnią i obuwie. Przed zamówieniem potwierdzamy dostępność i pokazujemy aktualną partię.
 
 ## 5. Przygotuj marketing otwarcia
 

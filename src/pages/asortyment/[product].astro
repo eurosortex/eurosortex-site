@@ -2,10 +2,10 @@
 import ProductLandingPage from '../../components/ProductLandingPage.astro';
 import CategoryLandingPage from '../../components/CategoryLandingPage.astro';
 import { getCategorySlug } from '../../config/marketing';
-import { products, type Product, type ProductCategory } from '../../data/products';
+import { products, productCategories, type Product, type ProductCategory } from '../../data/products';
 
 export function getStaticPaths() {
-  const categories: ProductCategory[] = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'];
+  const categories = productCategories;
   return [
     ...products.map((product) => ({
       params: { product: product.id },

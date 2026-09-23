@@ -2,14 +2,14 @@
 import ProductLandingPage from '../../../components/ProductLandingPage.astro';
 import CategoryLandingPage from '../../../components/CategoryLandingPage.astro';
 import { getAssortmentSegment, getCategorySlug } from '../../../config/marketing';
-import { products, type Product, type ProductCategory } from '../../../data/products';
+import { products, productCategories, type Product, type ProductCategory } from '../../../data/products';
 import type { Locale } from '../../../config/locales';
 
 type TranslatedLocale = Exclude<Locale, 'pl'>;
 
 export function getStaticPaths() {
   const translatedLocales = ['ru', 'uk', 'en'] as const;
-  const categories: ProductCategory[] = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'];
+  const categories = productCategories;
   return translatedLocales.flatMap((locale) =>
     [
       ...products.map((product) => ({

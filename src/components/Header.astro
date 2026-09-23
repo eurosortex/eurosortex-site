@@ -6,7 +6,7 @@ import { localeConfig, locales } from '../config/locales';
 import { contact, whatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
-import type { ProductCategory } from '../data/products';
+import { productCategories } from '../data/products';
 import { getAboutPath, getAssortmentPath, getCategoryPath } from '../config/marketing';
 
 interface Props {
@@ -27,7 +27,7 @@ const nav = [
   { href: sectionHref('#dostawa'), label: t.nav.terms },
   { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog, area: 'blog' },
 ];
-const assortmentCategories = ['mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'] satisfies ProductCategory[];
+const assortmentCategories = productCategories;
 const phoneHref = `tel:${contact.phoneE164}`;
 const waGeneral = whatsappUrl('general', locale);
 ---
@@ -35,7 +35,8 @@ const waGeneral = whatsappUrl('general', locale);
 <header class="site-header">
   <div class="header-inner container">
     <a href={localeConfig[locale].path} class="logo-link" aria-label={`EuroSortex Group — ${u.home}`}>
-      <img src="/images/logo.png" alt="EuroSortex Group" class="logo" width="196" height="44" />
+      <img src="/images/logo.png" alt="EuroSortex Group" class="logo" width="1254" height="1254" />
+      <span class="logo-name" aria-hidden="true">EuroSortex<span>Group</span></span>
     </a>
 
     <nav class="header-nav" aria-label={u.mainNav}>
@@ -199,17 +200,38 @@ const waGeneral = whatsappUrl('general', locale);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 12px;
     height: 60px;
   }
 
   .logo-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     flex: none;
   }
 
+  .logo-name {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: #062653;
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  .logo-name span {
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
   .logo {
-    height: 34px;
+    height: 56px;
     width: auto;
     display: block;
   }
@@ -601,7 +623,7 @@ const waGeneral = whatsappUrl('general', locale);
     }
 
     .logo {
-      height: 38px;
+      height: 60px;
     }
 
     .header-actions {
@@ -656,7 +678,7 @@ const waGeneral = whatsappUrl('general', locale);
     }
 
     .logo {
-      height: 44px;
+      height: 64px;
     }
 
     .header-nav {

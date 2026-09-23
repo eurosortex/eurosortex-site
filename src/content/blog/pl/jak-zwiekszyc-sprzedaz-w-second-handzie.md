@@ -42,7 +42,7 @@ Słaby towar może długo zajmować miejsce, wymagać głębokich przecen i obni
 
 Porównując partie, analizuj nie tylko cenę, ale też gatunek, orientacyjny skład, sezonowość, udział kategorii atrakcyjnych dla Twojej grupy oraz możliwy udział rzeczy niesprzedażowych. Warto zestawić koszt zakupu z przewidywanym przychodem z całej partii, a nie z marżą na jednej wyjątkowo taniej sztuce.
 
-W [aktualnym asortymencie hurtowym EuroSortex](/asortyment/) znajdziesz parametry pozycji, ceny netto i minimalne zamówienie. Przed zakupem możesz poprosić managera o zdjęcia lub wideo rzeczywiście dostępnej partii.
+W [aktualnym asortymencie hurtowym EuroSortex](/asortyment/) znajdziesz opis pozycji i minimalne zamówienie; aktualną cenę potwierdza manager. Przed zakupem możesz poprosić managera o zdjęcia lub wideo rzeczywiście dostępnej partii.
 
 ## 2. Poszerz asortyment o produkty uzupełniające
 

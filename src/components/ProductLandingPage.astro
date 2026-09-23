@@ -25,8 +25,8 @@ const alternates = getProductAlternates(product.id);
 const assortmentPath = getAssortmentPath(locale);
 const categoryPath = getCategoryPath(locale, product.category);
 const faq = c.faq(product);
-const warmSeasonIds = ['summer-assortment', 'children-summer', 't-shirt-standart', 'blouses-mix', 'ladies-blouses'];
-const coolSeasonIds = ['sweatshirts-mix', 'casual-sweatshirts', 'sport-pants', 'extra-sport-pants', 'season-shoes'];
+const warmSeasonIds: string[] = [];
+const coolSeasonIds = ['winter-assortment', 'men-sweaters', 'ladies-sweaters', 'classic-outwear', 'season-shoes'];
 const seasonKey = warmSeasonIds.includes(product.id) ? 'warm' : coolSeasonIds.includes(product.id) ? 'cool' : 'yearRound';
 const suitabilityItems = [...extra.audiences, { title: extra.seasonTitle, text: extra.seasons[seasonKey] }];
 const privacyPath = getLegalPath(locale, 'privacy');
@@ -34,7 +34,7 @@ const related = [
   ...products.filter((item) => item.category === product.category && item.id !== product.id),
   ...products.filter((item) => item.category !== product.category),
 ].slice(0, 3);
-const absoluteImage = new URL(product.image, Astro.site).href;
+const absoluteImage = product.image ? new URL(product.image, Astro.site).href : undefined;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 const productJsonLd = {
   '@context': 'https://schema.org',
@@ -42,7 +42,7 @@ const productJsonLd = {
   '@id': `${pageUrl}#product`,
   name: product.name,
   sku: product.id,
-  image: [absoluteImage],
+  ...(absoluteImage ? { image: [absoluteImage] } : {}),
   description: c.metaDescription(product),
   category: t.catalog.filters[product.category],
   brand: { '@type': 'Brand', name: company.brandName },
@@ -118,22 +118,24 @@ const faqJsonLd = {
               <p class="availability-note">{c.availabilityNote}</p>
               <dl class="product-facts">
                 <div>
-                  <dt>{c.price}</dt>
-                  <dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd>
-                </div>
-                <div>
                   <dt>{c.minimum}</dt>
                   <dd>{c.minimumValue}</dd>
                 </div>
                 <div>
+                  <dt>{c.price}</dt>
+                  <dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd>
+                </div>
+                <div>
                   <dt>{t.common.grade}</dt>
-                  <dd>{product.grade}</dd>
+                  <dd>{product.quality[locale]}</dd>
                 </div>
               </dl>
             </div>
             <figure class="product-image-wrap">
-              <img src={product.image} alt={c.imageAlt(product.name)} width="960" height="640" fetchpriority="high" />
-              <figcaption>{product.name} · {product.grade} {t.common.grade.toLowerCase()}</figcaption>
+              {product.image
+                ? <img src={product.image} alt={c.imageAlt(product.name)} width="960" height="640" fetchpriority="high" />
+                : <div class="product-image-placeholder" aria-hidden="true">{product.name}</div>}
+              {product.image && <figcaption>{product.name}</figcaption>}
             </figure>
           </div>
         </div>
@@ -153,9 +155,10 @@ const faqJsonLd = {
             <dl class="product-table">
               <div><dt>{c.price}</dt><dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd></div>
               <div><dt>{c.minimum}</dt><dd>{c.minimumValue}</dd></div>
+              <div><dt>{t.common.grade}</dt><dd>{product.quality[locale]}</dd></div>
               {product.composition && <div><dt>{c.composition}</dt><dd>{product.composition[locale]}</dd></div>}
-              <div><dt>{c.branded}</dt><dd>{product.brandedShareApprox[locale]}</dd></div>
-              {product.disposalShareMax && <div><dt>{c.disposal}</dt><dd>{product.disposalShareMax[locale]}</dd></div>}
+              <div><dt>{t.common.branded}</dt><dd>{product.luxuryShareApprox}%</dd></div>
+              {product.disposalShareMax && <div><dt>{c.disposal}</dt><dd>≤ {product.disposalShareMax}%</dd></div>}
             </dl>
             <p class="vat-note">{c.vatNote}</p>
             <section class="order-flow" aria-labelledby="order-flow-title">
@@ -318,6 +321,7 @@ const faqJsonLd = {
   .availability-note { margin: -4px 0 0; max-width: 56ch; color: var(--text-muted); font-size: 13.5px; }
   .product-image-wrap { position: relative; align-self: start; width: 100%; aspect-ratio: 3 / 2; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-cream); }
   .product-image-wrap img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
+  .product-image-placeholder { display: grid; place-items: end start; width: 100%; height: 100%; padding: 32px; background: linear-gradient(135deg, #e9e3d6, #d5dfd6 65%, #b4c9bd); color: var(--green); font-size: clamp(30px, 4vw, 54px); font-weight: 800; line-height: 1.05; }
   .product-image-wrap figcaption { position: absolute; right: 12px; bottom: 12px; padding: 7px 10px; border-radius: 6px; background: rgb(20 55 36 / 88%); color: #fff; font: 600 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
   .product-facts { display: flex; flex-direction: column; width: 100%; margin: 4px 0 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
   .product-facts div { display: flex; min-width: 0; justify-content: space-between; align-items: baseline; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--border-soft); }

@@ -56,7 +56,7 @@ The matrix can define:
 - stock needed for regular floor refreshes;
 - categories to test in smaller quantities.
 
-Do not choose goods only by the lowest price per kilogram. Batch composition, season, condition and fit with the shop’s audience all matter. The [EuroSortex assortment](/en/wholesale-assortment/) includes clothing mixes, sweatshirts, trousers, children’s wear, T-shirts, blouses and footwear. We confirm availability and show the current batch before an order is placed.
+Do not choose goods only by the lowest price per kilogram. Batch composition, season, condition and fit with the shop’s audience all matter. The [EuroSortex assortment](/en/wholesale-assortment/) includes clothing mixes, sweatshirts, children’s wear, sweaters, outerwear and footwear. We confirm availability and show the current batch before an order is placed.
 
 ## 5. Prepare the opening marketing plan
 

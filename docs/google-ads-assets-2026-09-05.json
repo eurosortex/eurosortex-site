@@ -1,0 +1,338 @@
+{
+  "groups": [
+    {
+      "name": "Hurt ogólny",
+      "path": "/asortyment/",
+      "keywords": [
+        "hurtownia odzieży używanej",
+        "odzież używana hurt",
+        "odzież używana hurtowo",
+        "hurtownia second hand",
+        "dostawca odzieży używanej",
+        "towar do second handu",
+        "zaopatrzenie sklepów second hand"
+      ],
+      "headlines": [
+        "Odzież Używana Hurtowo",
+        "Hurt Dla Sklepów Second-Hand",
+        "Hurtownia Odzieży Używanej",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Sortowana Odzież Z Europy",
+        "Towar Do Twojego Second-Handu",
+        "Zdjęcia Aktualnej Partii",
+        "Zapytaj O Ofertę Dla Sklepu",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Sprawdź Gatunek I Skład",
+        "Miksy, Bluzy I Obuwie",
+        "Pomoc W Transporcie",
+        "Zapytaj Na WhatsApp"
+      ],
+      "descriptions": [
+        "Sortowana odzież używana dla sklepów second-hand. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Zapytaj o aktualną ofertę, cenę i zdjęcia konkretnej partii. Napisz na WhatsApp.",
+        "Miksy, bluzy, spodnie, odzież dziecięca i obuwie. Dobierz asortyment do swojego sklepu.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Gatunek i warunki ustalimy przed zakupem."
+      ]
+    },
+    {
+      "name": "Miksy",
+      "path": "/asortyment/miksy-odziezy-uzywanej/",
+      "keywords": [
+        "mix odzieży używanej hurt",
+        "miksy odzieży używanej hurtowo",
+        "odzież używana sortowana hurt",
+        "odzież używana na kilogramy hurt"
+      ],
+      "headlines": [
+        "Miksy Odzieży Używanej Hurt",
+        "Sortowana Odzież Dla Sklepów",
+        "Mix Do Sklepu Second-Hand",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "Miksy sortowanej odzieży używanej dla sklepów. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Porównaj gatunek i orientacyjny skład. Poproś o zdjęcia aktualnie dostępnej partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    },
+    {
+      "name": "Bluzy",
+      "path": "/asortyment/bluzy-uzywane/",
+      "keywords": [
+        "bluzy używane hurt",
+        "bluzy second hand hurt",
+        "mix bluz hurt",
+        "bluzy damskie męskie używane hurt"
+      ],
+      "headlines": [
+        "Bluzy Używane Hurtowo",
+        "Mix Bluz Dla Second-Handów",
+        "Bluzy Damskie I Męskie Hurt",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "Sortowane bluzy damskie i męskie dla second-handów. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Uzupełnij dział bluz w swoim sklepie. Zapytaj o gatunek, cenę i zdjęcia aktualnej partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    },
+    {
+      "name": "Odzież dziecięca",
+      "path": "/asortyment/odziez-dziecieca-uzywana/",
+      "keywords": [
+        "odzież dziecięca używana hurt",
+        "hurtownia odzieży dziecięcej używanej",
+        "ubranka dziecięce używane hurt",
+        "mix dziecięcy second hand hurt"
+      ],
+      "headlines": [
+        "Odzież Dziecięca Używana Hurt",
+        "Dziecięcy Mix Dla Second-Handu",
+        "Ubrania Dziecięce Hurt B2B",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "Używana odzież dziecięca w miksach dla sklepów. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Sprawdź wariant całoroczny i sezonowy. Poproś o aktualną cenę, skład i zdjęcia partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    },
+    {
+      "name": "Spodnie",
+      "path": "/asortyment/spodnie-uzywane/",
+      "keywords": [
+        "spodnie używane hurt",
+        "spodnie dresowe używane hurt",
+        "mix spodni dresowych hurt",
+        "spodnie second hand hurt"
+      ],
+      "headlines": [
+        "Spodnie Używane Hurtowo",
+        "Dresy Używane Dla Sklepów",
+        "Mix Spodni Dresowych Hurt",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "Używane spodnie dresowe damskie i męskie dla sklepów. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Porównaj warianty jakościowe. Zapytaj o aktualną cenę, dostępność i zdjęcia partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    },
+    {
+      "name": "T-shirty i bluzki",
+      "path": "/asortyment/t-shirty-i-bluzki-uzywane/",
+      "keywords": [
+        "t shirty używane hurt",
+        "koszulki używane hurt",
+        "bluzki damskie używane hurt",
+        "mix bluzek używanych hurt"
+      ],
+      "headlines": [
+        "T-Shirty I Bluzki Używane Hurt",
+        "Używane Koszulki Dla Sklepów",
+        "Bluzki Używane Hurt B2B",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "T-shirty i bluzki używane do zatowarowania sklepów. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Wybierz mix koszulek lub bluzek damskich. Zapytaj o gatunek, cenę i zdjęcia partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    },
+    {
+      "name": "Obuwie",
+      "path": "/asortyment/obuwie-uzywane/",
+      "keywords": [
+        "obuwie używane hurt",
+        "buty używane hurt",
+        "hurtownia obuwia używanego",
+        "buty second hand hurt"
+      ],
+      "headlines": [
+        "Obuwie Używane Hurtowo",
+        "Buty Second-Hand Dla Sklepów",
+        "Sezonowe Obuwie Hurt B2B",
+        "EuroSortex Group",
+        "Minimum 20 kg Na Pozycję",
+        "Zdjęcia Aktualnej Partii",
+        "Sprawdź Dostępną Partię",
+        "Zapytaj O Cenę I Gatunek",
+        "Dostawa Na Terenie UE",
+        "Magazyn W Warszawie",
+        "Zapytaj Na WhatsApp",
+        "Towar Do Twojego Sklepu",
+        "Współpraca Hurtowa B2B",
+        "Pomoc W Transporcie",
+        "Sprawdź Asortyment I Ceny"
+      ],
+      "descriptions": [
+        "Sortowane obuwie używane dla sklepów second-hand. Minimum 20 kg na pozycję. Hurt B2B.",
+        "Zapytaj o dostępne obuwie sezonowe, orientacyjny skład, cenę i zdjęcia aktualnej partii.",
+        "Magazyn w Warszawie. Dostawa na terenie UE. Pomagamy zorganizować transport.",
+        "Napisz na WhatsApp: podaj asortyment, ilość i miasto dostawy. Przygotujemy ofertę."
+      ]
+    }
+  ],
+  "negatives": [
+    "\"oferty pracy\"",
+    "\"szukam pracy\"",
+    "\"praca w hurtowni\"",
+    "\"praca w second hand\"",
+    "\"praca w lumpeksie\"",
+    "\"zatrudnienie\"",
+    "\"wynagrodzenie\"",
+    "\"staż\"",
+    "\"praktyki\"",
+    "\"oddam za darmo\"",
+    "\"ubrania za darmo\"",
+    "\"gdzie oddać ubrania\"",
+    "\"gdzie oddac ubrania\"",
+    "\"kontenery na odzież\"",
+    "\"kontenery na odziez\"",
+    "\"zbiórka odzieży\"",
+    "\"zbiorka odziezy\"",
+    "\"skup odzieży używanej\"",
+    "\"skup odziezy uzywanej\"",
+    "\"sprzedam swoje ubrania\"",
+    "\"czyściwo\"",
+    "\"czysciwo\"",
+    "\"recykling tekstyliów\"",
+    "\"recykling tekstyliow\"",
+    "[lumpeks]",
+    "[second hand]",
+    "[odzież używana]",
+    "[odziez uzywana]",
+    "[odzież na wagę]",
+    "[odziez na wage]",
+    "[second hand warszawa]",
+    "[lumpeks warszawa]"
+  ],
+  "sitelinks": [
+    [
+      "Cały Asortyment Hurtowy",
+      "Miksy, bluzy, spodnie i obuwie",
+      "Sprawdź ofertę dla swojego sklepu",
+      "/asortyment/"
+    ],
+    [
+      "Miksy Odzieży Używanej",
+      "Porównaj gatunek i skład",
+      "Poproś o zdjęcia dostępnej partii",
+      "/asortyment/miksy-odziezy-uzywanej/"
+    ],
+    [
+      "Bluzy Używane Hurtowo",
+      "Miksy bluz damskich i męskich",
+      "Sprawdź ceny netto i dostępność",
+      "/asortyment/bluzy-uzywane/"
+    ],
+    [
+      "Odzież Dziecięca Hurt",
+      "Miksy całoroczne i sezonowe",
+      "Minimum 20 kg na pozycję",
+      "/asortyment/odziez-dziecieca-uzywana/"
+    ],
+    [
+      "Spodnie Używane Hurt",
+      "Miksy spodni dresowych",
+      "Porównaj warianty jakościowe",
+      "/asortyment/spodnie-uzywane/"
+    ],
+    [
+      "T-Shirty I Bluzki Hurt",
+      "Koszulki i bluzki damskie",
+      "Zapytaj o dostępne partie",
+      "/asortyment/t-shirty-i-bluzki-uzywane/"
+    ],
+    [
+      "Obuwie Używane Hurtowo",
+      "Sezonowe obuwie sortowane",
+      "Sprawdź cenę i zdjęcia partii",
+      "/asortyment/obuwie-uzywane/"
+    ],
+    [
+      "Poznaj EuroSortex",
+      "Współpraca ze sklepami B2B",
+      "Magazyn w Warszawie",
+      "/o-nas/"
+    ]
+  ],
+  "callouts": [
+    "Wyłącznie Hurt B2B",
+    "Minimum 20 kg Na Pozycję",
+    "Zdjęcia Dostępnej Partii",
+    "Ceny Netto Za Kilogram",
+    "Dostawa Na Terenie UE",
+    "Pomoc W Transporcie",
+    "Magazyn W Warszawie",
+    "Gatunek I Skład Partii"
+  ],
+  "account": {
+    "name": "Anydays - Odzież na wagę | Second Hand",
+    "customerId": "977-647-1742",
+    "campaignName": "EuroSortex | PL | Search | B2B",
+    "campaignId": "24107983569"
+  }
+}

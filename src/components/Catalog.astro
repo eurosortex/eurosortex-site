@@ -2,7 +2,7 @@
 import IconWhatsApp from './IconWhatsApp.astro';
 import type { Locale } from '../config/locales';
 import { productWhatsappUrl, whatsappUrl } from '../config/contact';
-import { products, formatPrice, type Product, type ProductCategory } from '../data/products';
+import { products, productCategories, formatPrice, type Product, type ProductCategory } from '../data/products';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
 import { getAssortmentPath, getCategoryPath, getProductPath } from '../config/marketing';
@@ -21,7 +21,7 @@ const { locale, variant = 'preview', eyebrow, title, intro, items, activeCategor
 const t = content[locale];
 const u = ui[locale];
 const productCopy = productPageCopy[locale];
-const categories = ['all', 'mix', 'sweatshirts', 'children', 'pants', 'tops', 'shoes'] as const;
+const categories = ['all', ...productCategories] as const;
 const isPreview = variant === 'preview';
 const sourceProducts = items ?? products;
 const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProducts;
@@ -54,22 +54,18 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
       {displayedProducts.map((p) => (
         <li class="card" data-cat={p.category}>
           <a class="card-image-link" href={getProductPath(locale, p.id)} aria-label={`${productCopy.relatedAction}: ${p.name}`}>
-            <img
-              class="card-image"
-              src={p.image}
-              alt={`${u.photo}: ${p.name}`}
-              width="960"
-              height="640"
-              loading="lazy"
-              decoding="async"
-            />
+            {p.image
+              ? <img class="card-image" src={p.image} alt={`${u.photo}: ${p.name}`} width="960" height="640" loading="lazy" decoding="async" />
+              : <span class="card-image card-image-placeholder" aria-hidden="true"><span>{p.name}</span></span>}
           </a>
           <div class="card-body">
             <div class="card-head">
               <h3><a href={getProductPath(locale, p.id)}>{p.name}</a></h3>
-              <span class="grade-label">{p.grade} {t.common.grade.toUpperCase()}</span>
+              <span class="grade-label">{p.quality[locale]}</span>
             </div>
             <p class="card-desc">{p.description[locale]}</p>
+            {p.composition && <p class="card-spec">{p.composition[locale]}</p>}
+            <p class="card-spec">{t.common.branded}: {p.luxuryShareApprox}%</p>
             <div class="card-price">
               <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} {t.common.netSuffix}</span>
               <span class="vat">{t.common.vat}</span>
@@ -230,6 +226,17 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
     transition: transform 0.25s ease;
   }
 
+  .card-image-placeholder {
+    display: grid;
+    place-items: end start;
+    padding: 24px;
+    background: linear-gradient(135deg, #e9e3d6, #d5dfd6 65%, #b4c9bd);
+    color: var(--green);
+    font-size: clamp(25px, 3vw, 38px);
+    font-weight: 800;
+    line-height: 1.05;
+  }
+
   .card-body {
     padding: 18px 16px;
     display: flex;
@@ -240,9 +247,9 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
 
   .card-head {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
   .card-head h3 {
@@ -261,11 +268,9 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
   }
 
   .grade-label {
-    flex: none;
     font: 600 10.5px var(--font-mono);
     letter-spacing: 1px;
     color: var(--text-muted);
-    white-space: nowrap;
   }
 
   .card-desc {
@@ -274,6 +279,8 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
     line-height: 1.5;
     color: var(--text-soft);
   }
+
+  .card-spec { margin: 0; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
 
   .card-price {
     display: flex;
