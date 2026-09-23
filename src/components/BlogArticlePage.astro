@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import type { Locale } from '../config/locales';
+import { brandAssets } from '../config/brandAssets';
 import { localeConfig } from '../config/locales';
 import { getAssortmentPath } from '../config/marketing';
 import { company, whatsappUrl } from '../config/contact';
@@ -56,7 +57,7 @@ const articleJsonLd = {
     name: company.brandName,
     legalName: company.legalName,
     url: siteUrl,
-    logo: { '@type': 'ImageObject', url: new URL('/images/logo.png', Astro.site).href },
+    logo: { '@type': 'ImageObject', url: new URL(brandAssets.logo, Astro.site).href },
   },
 };
 ---

@@ -1,7 +1,8 @@
 ---
 import type { Locale } from '../config/locales';
 import IconInstagram from './IconInstagram.astro';
-import { localeConfig, locales } from '../config/locales';
+import { localeConfig, visibleLocales } from '../config/locales';
+import { brandAssets } from '../config/brandAssets';
 import { getLegalPath } from '../config/legal';
 import { company, contact } from '../config/contact';
 import { content } from '../i18n/content';
@@ -34,7 +35,7 @@ const year = new Date().getFullYear();
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-brand-mark">
-          <img src="/images/logo.png" alt="EuroSortex Group" class="footer-logo" width="1254" height="1254" />
+          <img src={brandAssets.logo} alt="EuroSortex Group" class="footer-logo" width="1254" height="1254" />
           <span class="footer-brand-name" aria-hidden="true">EuroSortex<span>Group</span></span>
         </div>
         <p>{t.footer.description}</p>
@@ -111,7 +112,7 @@ const year = new Date().getFullYear();
 
     <div class="footer-lang">
       <span class="mono-label">{u.language}</span>
-      {locales.map((item, i) => (
+      {visibleLocales.map((item, i) => (
         <>
           <a
             href={languagePaths?.[item] ?? localeConfig[item].path}
@@ -123,7 +124,7 @@ const year = new Date().getFullYear();
           >
             {localeConfig[item].label}
           </a>
-          {i < locales.length - 1 && <span class="dot" aria-hidden="true">·</span>}
+          {i < visibleLocales.length - 1 && <span class="dot" aria-hidden="true">·</span>}
         </>
       ))}
     </div>

@@ -2,7 +2,8 @@
 import IconWhatsApp from './IconWhatsApp.astro';
 import IconInstagram from './IconInstagram.astro';
 import type { Locale } from '../config/locales';
-import { localeConfig, locales } from '../config/locales';
+import { localeConfig, visibleLocales } from '../config/locales';
+import { brandAssets } from '../config/brandAssets';
 import { contact, whatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
@@ -35,7 +36,7 @@ const waGeneral = whatsappUrl('general', locale);
 <header class="site-header">
   <div class="header-inner container">
     <a href={localeConfig[locale].path} class="logo-link" aria-label={`EuroSortex Group — ${u.home}`}>
-      <img src="/images/logo.png" alt="EuroSortex Group" class="logo" width="1254" height="1254" />
+      <img src={brandAssets.logo} alt="EuroSortex Group" class="logo" width="1254" height="1254" />
       <span class="logo-name" aria-hidden="true">EuroSortex<span>Group</span></span>
     </a>
 
@@ -80,7 +81,7 @@ const waGeneral = whatsappUrl('general', locale);
           </svg>
         </button>
         <div class="lang-menu" hidden>
-          {locales.map((item) => (
+          {visibleLocales.map((item) => (
             <a
               href={languagePaths?.[item] ?? localeConfig[item].path}
               lang={item}

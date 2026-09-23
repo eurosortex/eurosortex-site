@@ -1,5 +1,6 @@
 export const locales = ['pl', 'ru', 'uk', 'en'] as const;
 export type Locale = (typeof locales)[number];
+export const visibleLocales: readonly Locale[] = ['pl', 'ru', 'uk'];
 
 export const defaultLocale: Locale = 'pl';
 
@@ -16,4 +17,3 @@ export const localeConfig: Record<
 export function isLocale(value: string): value is Locale {
   return locales.includes(value as Locale);
 }
-

@@ -1,5 +1,7 @@
 ---
 import type { Locale } from '../config/locales';
+import { visibleLocales } from '../config/locales';
+import { brandAssets } from '../config/brandAssets';
 import { content } from '../i18n/content';
 import { company, contact } from '../config/contact';
 import Base from '../layouts/Base.astro';
@@ -31,7 +33,7 @@ const organizationJsonLd = {
   description: t.meta.description,
   logo: {
     '@type': 'ImageObject',
-    url: new URL('/images/logo.png', Astro.site).href,
+    url: new URL(brandAssets.logo, Astro.site).href,
     width: 1254,
     height: 1254,
   },
@@ -68,7 +70,7 @@ const organizationJsonLd = {
     email: contact.email,
     contactType: 'sales',
     areaServed: { '@type': 'AdministrativeArea', name: 'European Union' },
-    availableLanguage: ['pl', 'ru', 'uk', 'en'],
+    availableLanguage: visibleLocales,
   },
   areaServed: { '@type': 'AdministrativeArea', name: 'European Union' },
 };
