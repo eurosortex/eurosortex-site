@@ -110,6 +110,6 @@ Testuj jedną większą zmianę naraz. Dzięki temu łatwiej ustalisz, czy wynik
 
 ## Dobierz towar do modelu sprzedaży sklepu
 
-Wzrost średniego paragonu zaczyna się od asortymentu, który daje klientowi sensowny wybór i możliwość łączenia produktów. EuroSortex dostarcza sortowaną odzież i obuwie używane dla sklepów, outletów i hurtowników w całej Unii Europejskiej. Minimalne zamówienie dla jednej pozycji wynosi 20 kg, a cena i dostępność są potwierdzane dla konkretnej partii.
+Wzrost średniego paragonu zaczyna się od asortymentu, który daje klientowi sensowny wybór i możliwość łączenia produktów. EuroSortex dostarcza sortowaną odzież i obuwie używane dla sklepów, outletów i hurtowników w całej Polsce. Minimalne zamówienie dla jednej pozycji wynosi 20 kg, a cena i dostępność są potwierdzane dla konkretnej partii.
 
 Przejrzyj [katalog hurtowy](/asortyment/) lub [napisz do managera](/#kontakt). Podaj format sklepu, najważniejsze kategorie, sezon, planowaną ilość i miejscowość dostawy — sprawdzimy aktualne partie, które warto rozważyć.

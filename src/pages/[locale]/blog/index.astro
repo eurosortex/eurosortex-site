@@ -1,12 +1,12 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import type { Locale } from '../../../config/locales';
-import { locales } from '../../../config/locales';
+import { visibleLocales } from '../../../config/locales';
 import BlogListingPage from '../../../components/BlogListingPage.astro';
 import { BLOG_PAGE_SIZE, getPublishedBlogPosts } from '../../../lib/blog';
 
 export const getStaticPaths = (async () => {
-  const translatedLocales = locales.filter((locale) => locale !== 'pl');
+  const translatedLocales = visibleLocales.filter((locale) => locale !== 'pl');
   return translatedLocales.map((locale) => ({ params: { locale }, props: { locale } }));
 }) satisfies GetStaticPaths;
 

@@ -1,5 +1,6 @@
 export const locales = ['pl', 'ru', 'uk', 'en'] as const;
 export type Locale = (typeof locales)[number];
+// Visitor languages; only Polish pages are eligible for search indexing.
 export const visibleLocales: readonly Locale[] = ['pl', 'ru', 'uk'];
 
 export const defaultLocale: Locale = 'pl';

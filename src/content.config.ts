@@ -3,11 +3,11 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const blog = defineCollection({
-  loader: glob({ base: './src/content/blog', pattern: '**/*.md' }),
+  loader: glob({ base: './src/content/blog', pattern: '{pl,ru,uk}/*.md' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    locale: z.enum(['pl', 'ru', 'uk', 'en']).default('pl'),
+    locale: z.enum(['pl', 'ru', 'uk']).default('pl'),
     category: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),

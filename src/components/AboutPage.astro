@@ -36,6 +36,7 @@ const aboutJsonLd = {
     '@id': `${new URL('/', Astro.site).href}#organization`,
     name: company.brandName,
     legalName: company.legalName,
+    areaServed: { '@type': 'Country', name: 'Polska', identifier: 'PL' },
     url: new URL('/', Astro.site).href,
     email: contact.email,
     telephone: contact.phoneE164,

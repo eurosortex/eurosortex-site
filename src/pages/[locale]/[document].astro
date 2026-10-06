@@ -6,7 +6,7 @@ import type { Locale } from '../../config/locales';
 type TranslatedLocale = Exclude<Locale, 'pl'>;
 
 export function getStaticPaths() {
-  const translatedLocales = ['ru', 'uk', 'en'] as const;
+  const translatedLocales = ['ru', 'uk'] as const;
   return translatedLocales.flatMap((locale) =>
     legalDocumentKeys.map((document) => ({
       params: { locale, document: getLegalSlug(locale, document) },

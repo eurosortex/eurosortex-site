@@ -1,11 +1,11 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { locales } from '../../../../config/locales';
+import { visibleLocales } from '../../../../config/locales';
 import BlogListingPage from '../../../../components/BlogListingPage.astro';
 import { BLOG_PAGE_SIZE, getPublishedBlogPosts } from '../../../../lib/blog';
 
 export const getStaticPaths = (async () => {
-  const translatedLocales = locales.filter((locale) => locale !== 'pl');
+  const translatedLocales = visibleLocales.filter((locale) => locale !== 'pl');
   const pathsByLocale = await Promise.all(translatedLocales.map(async (locale) => {
     const posts = await getPublishedBlogPosts(locale);
     const totalPages = Math.ceil(posts.length / BLOG_PAGE_SIZE);

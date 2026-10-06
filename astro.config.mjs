@@ -8,8 +8,10 @@ export default defineConfig({
   trailingSlash: 'always',
   i18n: {
     defaultLocale: 'pl',
-    locales: ['pl', 'ru', 'uk', 'en'],
+    locales: ['pl', 'ru', 'uk'],
     routing: { prefixDefaultLocale: false },
   },
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => !/^\/(ru|uk|en)(\/|$)/.test(new URL(page).pathname) && !page.endsWith('/404.html'),
+  })],
 });

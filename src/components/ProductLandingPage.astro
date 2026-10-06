@@ -49,6 +49,7 @@ const productJsonLd = {
   offers: {
     '@type': 'Offer',
     url: pageUrl,
+    eligibleRegion: { '@type': 'Country', name: 'Polska', identifier: 'PL' },
     priceCurrency: 'PLN',
     price: product.netPricePlnPerKg.toFixed(2),
     priceSpecification: {
