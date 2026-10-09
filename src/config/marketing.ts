@@ -111,3 +111,11 @@ export function getAboutAlternates(): Record<Locale, string> {
     en: getAboutPath('en'),
   };
 }
+
+export function getReviewsPath(locale: Locale): string {
+  const slugs = { pl: 'opinie', ru: 'otzyvy', uk: 'vidhuky', en: 'reviews' };
+  return `${prefix(locale)}/${slugs[locale]}/`;
+}
+export function getReviewsAlternates(): Record<Locale, string> {
+  return { pl: getReviewsPath('pl'), ru: getReviewsPath('ru'), uk: getReviewsPath('uk'), en: getReviewsPath('en') };
+}

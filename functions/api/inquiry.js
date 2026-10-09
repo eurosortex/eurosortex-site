@@ -36,7 +36,7 @@ function contactFields(reply) {
 function validReply(value) {
   const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phone = /^[+()\d\s.-]{6,30}$/;
-  return email.test(value) || phone.test(value);
+  return email.test(value) || (phone.test(value) && value.replace(/\D/g, '').length >= 6);
 }
 
 function cleanAttributionTouch(value) {
@@ -127,16 +127,28 @@ async function handleInquiry({ request, env }) {
 
   const name = clean(input.name, 120);
   const reply = clean(input.reply, 160);
-  const product = clean(input.product, 160);
-  const productId = clean(input.productId, 160);
+  if (input.products !== undefined && (!Array.isArray(input.products) || input.products.length > 20 || input.products.some((item) => !item || typeof item !== 'object' || !clean(item.name, 80) || !clean(item.id, 80)))) {
+    return json({ ok: false, error: 'validation_failed' }, 400);
+  }
+  const selectedProducts = input.products?.map((item) => ({ name: clean(item.name, 80), id: clean(item.id, 80) }));
+  const product = selectedProducts ? selectedProducts.map((item) => item.name).join(', ') || 'Do ustalenia' : clean(input.product, 160);
+  const productId = selectedProducts ? selectedProducts.map((item) => item.id).join(', ') : clean(input.productId, 160);
+  const contactPreference = clean(input.contactPreference, 20);
+  if (contactPreference && (!['whatsapp', 'tel', 'email'].includes(contactPreference) || ((contactPreference === 'email') !== reply.includes('@')))) {
+    return json({ ok: false, error: 'validation_failed' }, 400);
+  }
+  const preferenceLabels = { whatsapp: 'WhatsApp — написать', tel: 'Телефон — позвонить', email: 'E-mail — написать' };
   const message = clean(input.message, 2_000);
+  const city = clean(input.city, 160);
   const locale = ['pl', 'ru', 'uk', 'en'].includes(input.locale) ? input.locale : 'pl';
   const pagePath = clean(input.pagePath, 300);
-  const quantity = Number(input.quantity);
+  const quantityMissing = input.quantity == null || (typeof input.quantity === 'string' && input.quantity.trim() === '');
+  const quantity = quantityMissing ? null : Number(input.quantity);
   const firstTouch = cleanAttributionTouch(input.attribution?.first_touch);
   const lastTouch = cleanAttributionTouch(input.attribution?.last_touch);
 
-  if (!name || !validReply(reply) || !product || !Number.isFinite(quantity) || quantity < 20 || quantity > 100_000) {
+  const minimumQuantity = 50 * (input.quantityScope === 'total' ? Math.max(1, new Set(selectedProducts?.map(item => item.id)).size) : 1);
+  if (!name || !validReply(reply) || !product || (quantity !== null && (!Number.isFinite(quantity) || quantity < minimumQuantity || quantity > 100_000))) {
     return json({ ok: false, error: 'validation_failed' }, 400);
   }
 
@@ -151,7 +163,7 @@ async function handleInquiry({ request, env }) {
 
   const baseUrl = `https://${subdomain}.kommo.com/api/v4`;
   const lead = {
-    name: `Website · ${product}`,
+    name: `Website · ${product}`.slice(0, 250),
     pipeline_id: pipelineId,
     ...(statusId ? { status_id: statusId } : {}),
     _embedded: {
@@ -192,7 +204,10 @@ async function handleInquiry({ request, env }) {
     `ID ассортимента: ${productId || '—'}`,
     `Имя / компания: ${name}`,
     `Контакт: ${reply}`,
-    `Количество: ${quantity} кг`,
+    `Предпочтительный способ связи: ${preferenceLabels[contactPreference] || 'не указан'}`,
+    ...(input.quantityScope === 'total' ? ['Объём: ориентировочный общий вес заявки, не вес каждой позиции'] : []),
+    `Количество: ${quantity === null ? 'не указано — уточнить у клиента' : `${quantity} кг`}`,
+    `Город доставки: ${city || '—'}`,
     '',
     'Сообщение:',
     message || '—',

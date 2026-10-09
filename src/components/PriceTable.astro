@@ -1,0 +1,78 @@
+---
+import type { Locale } from '../config/locales';
+import { storefront, productLabel } from '../i18n/storefront';
+import { products, formatPrice } from '../data/products';
+import { getProductPath } from '../config/marketing';
+
+interface Props { locale?: Locale }
+const { locale = 'pl' } = Astro.props;
+const s = storefront(locale);
+---
+
+<div class="price-list">
+  <table aria-label={s("Cennik hurtowy odzieży i obuwia")} aria-describedby="price-list-note">
+    <colgroup><col class="product-column" /><col /><col /></colgroup>
+    <thead>
+      <tr>
+        <th scope="col">{s("Rodzaj towaru")}</th>
+        <th scope="col">{s("Cena za 1 kg")} <span>{s("netto")}</span></th>
+        <th scope="col">{s("Koszt 50 kg")} <span>{s("netto")}</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {products.map((product) => (
+        <tr>
+          <th scope="row"><a href={getProductPath(locale, product.id)}>{productLabel(locale, product.name)}<span aria-hidden="true">↗</span></a></th>
+          <td>{formatPrice(product.netPricePlnPerKg, locale)} <span>zł</span></td>
+          <td>{formatPrice(product.netPricePlnPerKg * 50, locale)} <span>zł</span></td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <div class="price-list-footer">
+    <p id="price-list-note"><strong>{s("50 kg to minimalne zamówienie każdej pozycji.")}</strong><br />{s("Ceny netto. VAT i transport doliczamy osobno. Ceny i dostępność potwierdzamy przed zamówieniem.")}</p>
+    <a class="price-download" href="/cennik-eurosortex.pdf" download="cennik-eurosortex.pdf">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <span>{s("Pobierz cennik PDF")}<small>{s("Do zapisania lub wydruku")}</small></span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .price-list { margin-top: 32px; }
+  table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; border: 1px solid var(--border-strong); }
+  .product-column { width: 50%; }
+  thead { background: var(--green); color: #fff; }
+  thead th { padding: 18px 20px; font-size: 15px; font-weight: 600; border-right: 1px solid rgb(255 255 255 / 20%); }
+  thead th span { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; color: var(--green-pale-text); }
+  thead th:not(:first-child), td { text-align: right; }
+  tbody tr:nth-child(even) { background: var(--surface-cream); }
+  tbody tr:hover, tbody tr:focus-within { background: var(--green-soft); }
+  tbody th, td { border: 1px solid var(--border); }
+  tbody th { padding: 0; font-size: 15px; font-weight: 500; }
+  tbody th a { display: flex; align-items: center; gap: 10px; padding: 17px 20px; color: var(--text-strong); }
+  tbody th a:hover { color: var(--green); text-decoration: underline; text-underline-offset: 4px; }
+  tbody th a span { color: var(--green); font-size: 15px; }
+  td { padding: 17px 20px; font-size: 16px; font-variant-numeric: tabular-nums; font-weight: 600; white-space: nowrap; }
+  td:last-child { color: var(--text-soft); font-weight: 400; }
+  td span { font-size: 13px; font-weight: 400; }
+  .price-list-footer { display: flex; align-items: center; justify-content: space-between; gap: 32px; margin-top: 24px; }
+  .price-list-footer p { margin: 0; max-width: 70ch; font-size: 12px; line-height: 1.8; color: var(--text-muted); }
+  .price-list-footer p strong { color: var(--text-soft); font-weight: 500; }
+  .price-download { display: inline-flex; align-items: center; justify-content: center; gap: 16px; flex: none; padding: 14px 24px; border: 1px solid var(--green); color: var(--green); font-size: 15px; font-weight: 600; }
+  .price-download:hover { background: var(--green-soft); }
+  .price-download small { display: block; margin-top: 3px; font-size: 11px; color: var(--text-soft); font-weight: 400; }
+  @media(max-width: 767px) { .price-list-footer { align-items: start; flex-direction: column; gap: 20px; } }
+  @media(max-width: 600px) {
+    .product-column { width: 44%; }
+    thead th { padding: 14px 8px; font-size: 12px; }
+    thead th span { font-size: 11px; }
+    tbody th { font-size: 13px; }
+    tbody th a { padding: 16px 8px; min-height: 52px; }
+    tbody th a span { display: none; }
+    td { padding: 16px 8px; font-size: 14px; }
+    td span { font-size: 12px; }
+    .price-list { margin-top: 24px; }
+    .price-download { width: 100%; }
+  }
+</style>

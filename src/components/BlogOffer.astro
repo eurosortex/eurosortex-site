@@ -1,0 +1,32 @@
+---
+import type { Locale } from '../config/locales';
+import { getAssortmentPath } from '../config/marketing';
+import { whatsappUrl } from '../config/contact';
+import { blogCopy } from '../i18n/blog';
+import IconWhatsApp from './IconWhatsApp.astro';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const copy = blogCopy[locale];
+---
+<aside class="blog-offer" aria-label={copy.offerEyebrow}>
+  <div class="offer-copy">
+    <span class="kicker">{copy.offerEyebrow}</span>
+    <h2>{copy.offerTitle}</h2>
+    <p>{copy.offerText}</p>
+  </div>
+  <div class="offer-actions">
+    <a class="btn btn-primary" href={getAssortmentPath(locale)}>{copy.viewOffer}<span aria-hidden="true">→</span></a>
+    <a class="whatsapp-link" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="blog_offer"><IconWhatsApp size={19} />{copy.whatsappAction}<span aria-hidden="true">↗</span></a>
+  </div>
+</aside>
+<style>
+  .blog-offer { display: grid; gap: 28px; padding: clamp(24px, 4vw, 48px); background: var(--surface-cream); border-block: 1px solid var(--border); }
+  h2 { max-width: 25ch; margin: 12px 0 14px; font-size: clamp(27px, 3vw, 36px); font-weight: 600; line-height: 1.2; letter-spacing: -.8px; color: var(--text-strong); text-wrap: pretty; }
+  p { max-width: 58ch; margin: 0; font-size: 15px; line-height: 1.7; color: var(--text-soft); }
+  .offer-actions { display: grid; align-content: center; gap: 12px; }
+  .btn { min-height: 52px; padding: 12px 24px; gap: 24px; text-align: center; white-space: normal; }
+  .whatsapp-link { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; color: var(--green); font-size: 13px; font-weight: 600; }
+  .whatsapp-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .whatsapp-link svg { flex: none; }
+  @media (min-width: 900px) { .blog-offer { grid-template-columns: minmax(0, 1fr) minmax(240px, .45fr); gap: 60px; } }
+</style>

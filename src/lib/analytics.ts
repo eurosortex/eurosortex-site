@@ -17,7 +17,7 @@ export type AnalyticsEvent =
   | {
       event: 'generate_lead';
       form_id: 'product_enquiry';
-      placement: 'product_contact';
+      placement: 'product_contact' | 'final_cta';
       page_language: PageLanguage;
       product_id: string;
       product_name: string;

@@ -108,4 +108,4 @@ Po starcie zapisuj, które kategorie klienci najczęściej przymierzają i kupuj
 
 Planujesz otwarcie sklepu second-hand w Polsce? Zespół EuroSortex pomoże dopasować dostępne partie do formatu sklepu, sezonu i zakładanej grupy klientów.
 
-Zobacz [pozycje hurtowe od 20 kg](/asortyment/) lub [napisz do managera](/#kontakt), podając miasto, powierzchnię sklepu, planowany termin otwarcia i budżet pierwszego zatowarowania.
+Zobacz [pozycje hurtowe od 50 kg](/asortyment/) lub [napisz do managera](/#kontakt), podając miasto, powierzchnię sklepu, planowany termin otwarcia i budżet pierwszego zatowarowania.

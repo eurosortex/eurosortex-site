@@ -125,21 +125,21 @@ export function whatsappUrl(message: WhatsappMessage | string, locale: Locale = 
 
 export function productWhatsappUrl(productName: string, locale: Locale): string {
   const text: Record<Locale, string> = {
-    pl: `Dzień dobry! Interesuje mnie ${productName}.
+    pl: `Dzień dobry! Interesuje mnie asortyment: ${productName}.
 
 Planowana ilość (kg): [wpisz]
 Firma / sklep: [wpisz]
 Miejscowość dostawy: [wpisz]
 
 Proszę o potwierdzenie dostępności, aktualnej ceny i zdjęcia partii.`,
-    ru: `Здравствуйте! Меня интересует ${productName}.
+    ru: `Здравствуйте! Интересует ассортимент: ${productName}.
 
 Планируемый объём (кг): [укажите]
 Компания / магазин: [укажите]
 Город доставки: [укажите]
 
 Подтвердите, пожалуйста, наличие, актуальную цену и пришлите фото партии.`,
-    uk: `Добрий день! Мене цікавить ${productName}.
+    uk: `Добрий день! Цікавить асортимент: ${productName}.
 
 Планований обсяг (кг): [вкажіть]
 Компанія / магазин: [вкажіть]

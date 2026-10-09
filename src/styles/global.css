@@ -6,16 +6,16 @@
 
 :root {
   /* canvas & surfaces */
-  --bg: #f6f3ec;
-  --surface: #fdfcf9;
-  --surface-cream: #f1ede2;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-cream: #f5f6f3;
 
   /* borders */
-  --border: #e3ddd0;
-  --border-soft: #efe9dd;
-  --border-strong: #d6cfbe;
-  --border-cream: #ddd6c4;
-  --border-input: #c9c2b2;
+  --border: #dfe3de;
+  --border-soft: #edf0eb;
+  --border-strong: #cdd3ca;
+  --border-cream: #dce1d8;
+  --border-input: #b9c2b5;
 
   /* brand green */
   --green: #1e4d33;
@@ -34,20 +34,23 @@
   --text: #2b2b28;
   --text-strong: #23231f;
   --text-mid: #3c3c38;
-  --text-soft: #55534c;
-  --text-muted: #7a766b;
-  --text-faint: #8a8574;
+  --text-soft: #596159;
+  --text-muted: #60695f;
+  --text-faint: #626b5e;
+
+  --section-space: clamp(56px, 6vw, 80px);
+  --heading-section: clamp(29px, 3vw, 38px);
 
   /* type */
   --font-sans: 'Manrope Variable', 'Manrope', system-ui, sans-serif;
   --font-mono: ui-monospace, Menlo, monospace;
 
   /* interaction */
-  --shadow-button: 0 10px 24px rgb(30 77 51 / 18%);
+  --shadow-button: none;
 
   /* placeholder imagery */
   --ph-stripe-a: #e6e0d2;
-  --ph-stripe-b: #ddd6c4;
+  --ph-stripe-b: #dce1d8;
 }
 
 *,
@@ -106,7 +109,7 @@ button:focus-visible {
 
 /* anchored sections shouldn't hide under the sticky desktop header */
 section[id] {
-  scroll-margin-top: 84px;
+  scroll-margin-top: 112px;
 }
 
 /* ---- layout ---- */
@@ -133,7 +136,7 @@ section[id] {
 
 /* mono section label, e.g. "02 / ASORTYMENT" */
 .kicker {
-  font: 600 11px var(--font-mono);
+  font: 600 11px var(--font-sans);
   letter-spacing: 1.6px;
   color: var(--text-faint);
   text-transform: uppercase;
@@ -148,7 +151,7 @@ section[id] {
 
 /* mono label inside spec rows */
 .mono-label {
-  font: 600 10.5px var(--font-mono);
+  font: 600 10.5px var(--font-sans);
   letter-spacing: 1px;
   color: var(--text-faint);
   text-transform: uppercase;
@@ -161,7 +164,7 @@ section[id] {
   align-items: center;
   gap: 9px;
   font-weight: 700;
-  border-radius: 9px;
+  border-radius: 2px;
   white-space: nowrap;
 }
 

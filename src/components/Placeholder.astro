@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 /**
  * Striped stand-in for photography that hasn't been delivered yet.
- * Fills its parent element; swap each instance for a real <img>
+ * Fills its parent element; swap each instance for a real image
  * (same wrapper, same tag badge) once the warehouse photos arrive.
  */
 interface Props {
@@ -16,12 +18,11 @@ const { label, tag, imageWord = 'PHOTO', src, loading = 'lazy' } = Astro.props;
 
 <div class="ph">
   {src ? (
-    <img
+    <Image
       class="ph-canvas ph-photo"
-      src={src}
+      src={imageAsset(src)}
       alt={label}
-      width="1600"
-      height="1200"
+      width={1600} widths={[320, 480, 768, 960, 1280]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1199px) 50vw, 600px" format="webp" quality={80}
       loading={loading}
       fetchpriority={loading === 'eager' ? 'high' : 'auto'}
       decoding="async"

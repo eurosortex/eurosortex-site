@@ -1,11 +1,12 @@
 ---
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 import type { Locale } from '../config/locales';
-import { brandAssets } from '../config/brandAssets';
 import { localeConfig } from '../config/locales';
-import { getAssortmentPath } from '../config/marketing';
-import { company, whatsappUrl } from '../config/contact';
+import { getAboutPath, getAssortmentPath } from '../config/marketing';
+import { company } from '../config/contact';
 import { ui } from '../i18n/ui';
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
@@ -13,7 +14,7 @@ import Footer from './Footer.astro';
 import StickyBar from './StickyBar.astro';
 import BlogCard from './BlogCard.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
-import IconWhatsApp from './IconWhatsApp.astro';
+import BlogOffer from './BlogOffer.astro';
 import { blogCopy } from '../i18n/blog';
 import { getBlogArticleAlternatePaths, getBlogArticlePath, getBlogEntrySlug, getBlogRoot, getPublishedBlogPosts } from '../lib/blog';
 
@@ -50,15 +51,8 @@ const articleJsonLd = {
   articleSection: post.data.category,
   mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
   isPartOf: { '@type': 'Blog', '@id': `${blogUrl}#blog`, name: copy.metaTitle.replace(' | EuroSortex', ''), url: blogUrl },
-  author: { '@type': 'Organization', '@id': organizationId, name: company.brandName, url: siteUrl },
-  publisher: {
-    '@type': 'Organization',
-    '@id': organizationId,
-    name: company.brandName,
-    legalName: company.legalName,
-    url: siteUrl,
-    logo: { '@type': 'ImageObject', url: new URL(brandAssets.logo, Astro.site).href },
-  },
+  author: { '@type': 'Organization', '@id': organizationId, name: company.brandName, url: new URL(getAboutPath(locale), Astro.site).href },
+  publisher: { '@id': organizationId },
 };
 ---
 
@@ -87,31 +81,24 @@ const articleJsonLd = {
               { label: post.data.title },
             ]}
           />
-          <div class="article-meta">
-            <span>{post.data.category}</span>
-            <span aria-hidden="true">·</span>
-            <time datetime={post.data.publishedAt.toISOString()}>{date}</time>
-            <span aria-hidden="true">·</span>
-            <span>{post.data.readingTime} {copy.readingTime}</span>
-            <span aria-hidden="true">·</span>
-            <span>{copy.authorLabel}: <a href={localeConfig[locale].path}>{copy.authorName}</a></span>
+          <div class="article-hero-grid">
+            <div class="article-hero-copy">
+              <span class="kicker">{post.data.category}</span>
+              <h1>{post.data.title}</h1>
+              <p class="lead">{post.data.description}</p>
+              <div class="article-meta">
+                <time datetime={post.data.publishedAt.toISOString()}>{date}</time>
+                <span aria-hidden="true">·</span>
+                <span>{post.data.readingTime} {copy.readingTime}</span>
+              </div>
+              <p class="article-author">{copy.authorLabel}: <a href={getAboutPath(locale)}>{copy.authorName}</a></p>
+            </div>
+            <Image class="article-image" src={imageAsset(post.data.image)} alt={post.data.imageAlt} width={1000} widths={[320, 480, 768, 1000]} sizes="(max-width: 899px) calc(100vw - 32px), 44vw" format="webp" quality={80} loading="eager" fetchpriority="high" decoding="async" />
           </div>
-          <h1>{post.data.title}</h1>
-          <p class="lead">{post.data.description}</p>
         </div>
       </header>
 
       <div class="container article-shell">
-        <img
-          class="article-image"
-          src={post.data.image}
-          alt={post.data.imageAlt}
-          width="1600"
-          height="900"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
 
         {tableOfContents.length > 0 && (
           <details class="mobile-toc">
@@ -120,7 +107,7 @@ const articleJsonLd = {
           </details>
         )}
 
-        <div class="article-layout">
+        <div class:list={["article-layout", { "without-toc": tableOfContents.length === 0 }]}>
           {tableOfContents.length > 0 && (
             <aside class="desktop-toc" aria-label={copy.toc}>
               <span class="mono-label">{copy.toc.toUpperCase()}</span>
@@ -133,25 +120,15 @@ const articleJsonLd = {
           </div>
         </div>
 
-        <aside class="article-cta" aria-label={copy.currentBatches}>
-          <div>
-            <span class="kicker">{copy.currentBatches}</span>
-            <h2>{copy.articleCtaTitle}</h2>
-            <p>{copy.articleCtaText}</p>
-          </div>
-          <a class="btn btn-primary" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="final_cta">
-            <IconWhatsApp size={18} />
-            {copy.whatsappAction}
-          </a>
-        </aside>
+        <div class="article-offer"><BlogOffer locale={locale} /></div>
       </div>
     </article>
 
     {allPosts.length > 0 && (
       <section class="related" aria-labelledby="related-heading">
         <div class="container">
-          <h2 id="related-heading">{copy.related}</h2>
-          <div class="related-grid">{allPosts.map((item) => <BlogCard post={item} locale={locale} />)}</div>
+          <div class="related-heading"><h2 id="related-heading">{copy.related}</h2><a href={getBlogRoot(locale)}>{copy.backToArticles} <span aria-hidden="true">→</span></a></div>
+          <div class="related-grid">{allPosts.map((item) => <BlogCard post={item} locale={locale} headingLevel="h3" />)}</div>
         </div>
       </section>
     )}
@@ -162,340 +139,65 @@ const articleJsonLd = {
 </Base>
 
 <style>
-  .article-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
+  .article-header { border-bottom: 1px solid var(--border); }
+  .article-header-inner { padding-block: 30px 48px; }
+  .article-hero-grid { display: grid; gap: 30px; margin-top: 36px; align-items: center; }
+  .article-hero-copy { min-width: 0; }
+  h1 { margin: 16px 0 20px; color: var(--text-strong); font-size: clamp(32px, 3.7vw, 44px); font-weight: 600; line-height: 1.15; letter-spacing: -1px; text-wrap: pretty; }
+  .lead { margin: 0; color: var(--text-soft); font-size: 16px; line-height: 1.75; }
+  .article-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+  .article-author { margin: 8px 0 0; color: var(--text-muted); font-size: 12px; }
+  .article-author a { color: var(--green); }
+  .article-author a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .article-image { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: var(--surface-cream); }
+  .article-shell { padding-block: 40px 64px; }
+  .mobile-toc { border-block: 1px solid var(--border); margin-bottom: 32px; }
+  .mobile-toc summary { display: flex; align-items: center; justify-content: space-between; min-height: 56px; gap: 20px; list-style: none; cursor: pointer; font-size: 14px; font-weight: 600; }
+  .mobile-toc summary::-webkit-details-marker { display: none; }
+  .mobile-toc summary span { color: var(--green); font-size: 22px; font-weight: 400; }
+  .mobile-toc[open] summary span { transform: rotate(45deg); }
+  .mobile-toc ol { list-style: none; padding: 0 0 16px; margin: 0; }
+  .mobile-toc a { display: block; padding: 10px 0; color: var(--text-soft); font-size: 14px; line-height: 1.6; }
+  .mobile-toc a:hover { color: var(--green); }
+  .desktop-toc { display: none; }
+  .article-content { min-width: 0; max-width: 720px; margin-inline: auto; color: var(--text-mid); font-size: 16px; line-height: 1.85; overflow-wrap: break-word; }
+  .article-content :global(h2) { margin: 44px 0 18px; scroll-margin-top: 112px; color: var(--text-strong); font-size: clamp(25px, 2.7vw, 31px); font-weight: 600; line-height: 1.3; letter-spacing: -.65px; text-wrap: pretty; }
+  .article-content :global(h3) { margin: 28px 0 12px; color: var(--text-strong); font-size: 21px; font-weight: 600; line-height: 1.4; }
+  .article-content :global(p) { margin: 0 0 20px; }
+  .article-content :global(ul), .article-content :global(ol) { margin: 0 0 24px; padding-left: 24px; }
+  .article-content :global(li) { margin-bottom: 10px; padding-left: 4px; }
+  .article-content :global(li::marker) { color: var(--green); }
+  .article-content :global(strong) { color: var(--text-strong); font-weight: 650; }
+  .article-content :global(a) { text-decoration: underline; text-underline-offset: 4px; }
+  .article-content :global(blockquote) { margin: 28px 0; padding: 20px 24px; border-left: 2px solid var(--green); background: var(--surface-cream); }
+  .article-content :global(blockquote p:last-child) { margin-bottom: 0; }
+  .article-content :global(img) { max-width: 100%; height: auto; }
+  .article-content :global(table) { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 14px; margin-block: 24px; }
+  .article-content :global(th), .article-content :global(td) { padding: 12px; border-bottom: 1px solid var(--border); text-align: left; }
+  .article-offer { margin-top: 56px; }
+  .related { padding-block: 56px 64px; border-top: 1px solid var(--border); }
+  .related-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 30px; }
+  .related-heading h2 { margin: 0; font-size: clamp(28px, 3vw, 36px); font-weight: 600; letter-spacing: -.8px; color: var(--text-strong); }
+  .related-heading a { display: flex; align-items: center; gap: 20px; min-height: 44px; font-size: 14px; font-weight: 600; }
+  .related-grid { display: grid; gap: 36px; }
+  @media (min-width: 640px) { .related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 900px) {
+    .article-hero-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 56px; }
+    .article-header-inner { padding-bottom: 56px; }
   }
-
-  .article-header-inner {
-    max-width: 1000px;
-    padding-block: 34px 42px;
-  }
-
-  .article-meta {
-    margin-top: 28px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    color: var(--text-faint);
-    font: 600 10.5px var(--font-mono);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .article-meta a {
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
-  .article-meta a:hover {
-    color: var(--green);
-  }
-
-  h1 {
-    margin: 14px 0 16px;
-    font-size: clamp(34px, 6vw, 58px);
-    line-height: 1.08;
-    letter-spacing: -0.025em;
-    color: var(--text-strong);
-    text-wrap: balance;
-  }
-
-  .lead {
-    max-width: 760px;
-    margin: 0;
-    font-size: 17px;
-    line-height: 1.65;
-    color: var(--text-soft);
-  }
-
-  .article-shell {
-    max-width: 1000px;
-    padding-block: 28px 56px;
-  }
-
-  .article-image {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    max-height: 510px;
-    object-fit: cover;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-  }
-
-  .mobile-toc {
-    margin-top: 24px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--surface);
-  }
-
-  .mobile-toc summary {
-    min-height: 52px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .mobile-toc summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .mobile-toc[open] summary {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .mobile-toc summary span {
-    transition: transform 160ms ease;
-  }
-
-  .mobile-toc[open] summary span {
-    transform: rotate(45deg);
-  }
-
-  .mobile-toc ol {
-    margin: 0;
-    padding: 12px 16px 15px 36px;
-  }
-
-  .mobile-toc li {
-    padding: 5px 0 5px 4px;
-    color: var(--text-muted);
-    font-size: 13.5px;
-  }
-
-  .mobile-toc a {
-    color: var(--text-mid);
-  }
-
-  .article-layout {
-    margin-top: 0;
-  }
-
-  .desktop-toc {
-    display: none;
-  }
-
-  .article-content {
-    max-width: 760px;
-    margin: 34px auto 0;
-    font-size: 16.5px;
-    line-height: 1.78;
-    color: var(--text-mid);
-  }
-
-  .article-content :global(h2) {
-    margin: 42px 0 14px;
-    scroll-margin-top: 94px;
-    font-size: 28px;
-    line-height: 1.24;
-    color: var(--text-strong);
-  }
-
-  .article-content :global(h3) {
-    margin: 30px 0 10px;
-    font-size: 21px;
-    line-height: 1.3;
-    color: var(--text-strong);
-  }
-
-  .article-content :global(p) {
-    margin: 0 0 18px;
-  }
-
-  .article-content :global(ul),
-  .article-content :global(ol) {
-    margin: 0 0 22px;
-    padding-left: 24px;
-  }
-
-  .article-content :global(li) {
-    margin-bottom: 9px;
-    padding-left: 4px;
-  }
-
-  .article-content :global(strong) {
-    color: var(--text-strong);
-  }
-
-  .article-content :global(blockquote) {
-    margin: 28px 0;
-    padding: 18px 20px;
-    border-left: 4px solid var(--green);
-    background: var(--green-soft);
-    color: var(--text-strong);
-    border-radius: 0 10px 10px 0;
-  }
-
-  .article-content :global(blockquote p:last-child) {
-    margin-bottom: 0;
-  }
-
-  .article-cta {
-    margin-top: 44px;
-    padding: 26px 22px;
-    background: var(--surface-cream);
-    border: 1px solid var(--border-cream);
-    border-radius: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .article-cta h2 {
-    margin: 8px 0 6px;
-    font-size: 24px;
-    line-height: 1.25;
-    color: var(--text-strong);
-  }
-
-  .article-cta p {
-    margin: 0;
-    color: var(--text-soft);
-  }
-
-  .article-cta .btn {
-    min-height: 50px;
-    padding: 0 20px;
-  }
-
-  .related {
-    padding-block: 48px 64px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-  }
-
-  .related h2 {
-    margin: 0 0 22px;
-    font-size: 28px;
-    color: var(--text-strong);
-  }
-
-  .related-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  @media (max-width: 767px) {
-    .article-image {
-      height: auto;
-      max-height: none;
-      object-position: center;
-    }
-  }
-
-  @media (min-width: 768px) {
-    .article-header-inner {
-      padding-block: 54px 62px;
-    }
-
-    .article-shell {
-      padding-block: 44px 76px;
-    }
-
-    .article-content {
-      margin-top: 46px;
-      font-size: 17px;
-    }
-
-    .article-cta {
-      padding: 32px 36px;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: 34px;
-    }
-
-    .article-cta .btn {
-      flex: none;
-    }
-
-    .related-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-    }
-  }
-
   @media (min-width: 1024px) {
-    .mobile-toc {
-      display: none;
-    }
-
-    .article-layout {
-      margin-top: 54px;
-      display: grid;
-      grid-template-columns: 210px minmax(0, 760px);
-      gap: 64px;
-      justify-content: center;
-      align-items: start;
-    }
-
-    .desktop-toc {
-      display: block;
-      position: sticky;
-      top: 96px;
-      padding-top: 18px;
-      border-top: 2px solid var(--green);
-    }
-
-    .desktop-toc ol {
-      margin: 14px 0 0;
-      padding: 0;
-      list-style: none;
-      counter-reset: toc;
-    }
-
-    .desktop-toc li {
-      counter-increment: toc;
-      border-bottom: 1px solid var(--border-soft);
-    }
-
-    .desktop-toc li a {
-      padding: 10px 0;
-      display: grid;
-      grid-template-columns: 24px 1fr;
-      gap: 7px;
-      color: var(--text-muted);
-      font-size: 12.5px;
-      line-height: 1.45;
-    }
-
-    .desktop-toc li a::before {
-      content: counter(toc, decimal-leading-zero);
-      color: var(--text-faint);
-      font: 600 9.5px var(--font-mono);
-      padding-top: 3px;
-    }
-
-    .desktop-toc li a:hover {
-      color: var(--green);
-    }
-
-    .toc-offer {
-      margin-top: 16px;
-      display: inline-flex;
-      gap: 7px;
-      font-size: 12.5px;
-      font-weight: 800;
-    }
-
-    .article-content {
-      margin: 0;
-      max-width: none;
-    }
-
-    .article-cta {
-      max-width: 1034px;
-      margin-inline: auto;
-      margin-top: 56px;
-    }
+    .article-shell { padding-top: 56px; }
+    .mobile-toc { display: none; }
+    .article-layout { display: grid; grid-template-columns: 240px minmax(0, 720px); gap: clamp(48px, 6vw, 88px); align-items: start; justify-content: space-between; }
+    .article-layout.without-toc { grid-template-columns: minmax(0, 720px); justify-content: center; }
+    .desktop-toc { display: block; position: sticky; top: 112px; max-height: calc(100dvh - 144px); overflow-y: auto; padding-block: 16px; border-top: 1px solid var(--green); }
+    .desktop-toc .mono-label { font-family: var(--font-sans); font-size: 11px; font-weight: 600; letter-spacing: .08em; }
+    .desktop-toc ol { list-style: none; padding: 0; margin: 14px 0 0; }
+    .desktop-toc li { border-bottom: 1px solid var(--border-soft); }
+    .desktop-toc li a { display: block; padding: 11px 0; color: var(--text-soft); font-size: 13px; line-height: 1.6; }
+    .desktop-toc a:hover { color: var(--green); }
+    .toc-offer { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; margin-top: 12px; font-size: 13px; font-weight: 600; }
+    .article-content { margin: 0; font-size: 17px; }
   }
+  @media (max-width: 639px) { .article-header-inner { padding-top: 22px; } .article-hero-grid { margin-top: 28px; } .article-image { aspect-ratio: 3 / 2; } .related-heading { align-items: start; flex-direction: column; } }
 </style>

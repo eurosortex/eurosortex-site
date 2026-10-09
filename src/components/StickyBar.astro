@@ -2,18 +2,18 @@
 import IconWhatsApp from './IconWhatsApp.astro';
 import IconPhone from './IconPhone.astro';
 import type { Locale } from '../config/locales';
-import { contact, whatsappUrl } from '../config/contact';
+import { contact, whatsappUrl, productWhatsappUrl } from '../config/contact';
 import { content } from '../i18n/content';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; productName?: string }
+const { locale, productName } = Astro.props;
 const t = content[locale];
 ---
 
 <div class="sticky-bar">
   <a
     class="btn btn-primary bar-wa"
-    href={whatsappUrl('general', locale)}
+    href={productName ? productWhatsappUrl(productName, locale) : whatsappUrl('general', locale)}
     data-analytics-whatsapp
     data-analytics-placement="mobile_sticky"
   >
@@ -39,14 +39,14 @@ const t = content[locale];
     min-height: 64px;
     display: flex;
     gap: 10px;
-    box-shadow: 0 -6px 16px rgba(43, 43, 40, 0.08);
+    box-shadow: none;
   }
 
   .bar-wa {
     flex: 1.5;
     height: 48px;
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 600;
     gap: 8px;
   }
 
@@ -63,7 +63,7 @@ const t = content[locale];
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 768px) {
     .sticky-bar {
       display: none;
     }

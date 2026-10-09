@@ -1,0 +1,141 @@
+---
+import { storefront, productLabel } from '../i18n/storefront';
+import type { Locale } from '../config/locales';
+import { products, type Product } from '../data/products';
+import { productEnhancementCopy } from '../i18n/marketing';
+import { getLegalPath } from '../config/legal';
+import { whatsappUrl } from '../config/contact';
+import IconWhatsApp from './IconWhatsApp.astro';
+
+interface Props { locale?: Locale; compact?: boolean; placement?: string; product?: Product }
+const { locale = 'pl', compact = false, placement = 'final_cta', product } = Astro.props;
+const isCompact = compact || Boolean(product);
+const s = storefront(locale);
+const extra = productEnhancementCopy[locale];
+---
+
+<form id={product ? "zapytanie" : undefined} class:list={['quote-form', { 'is-compact': isCompact }]} action="/api/inquiry" method="post" data-inquiry-form data-selection-prefix={s("Wybrany asortyment:")} data-selection-suffix={s("Możesz zmienić wybór poniżej.")} data-whatsapp-label={s("Numer telefonu do WhatsApp")} data-email-label={s("Adres e-mail")} data-phone-label={s("Numer telefonu")} data-inquiry-placement={placement} data-submit-label={s("Poproś o ofertę")} data-sending-label={extra.formSending} data-success-label={extra.formSuccess} data-error-label={extra.formError} data-reply-error={s("Podaj poprawny numer telefonu lub wybierz e-mail.")}>
+  <header class="form-heading"><h3>{s("Poproś o ofertę")}</h3><p>{s("Wystarczy imię i kontakt. Pozostałe szczegóły możemy ustalić w rozmowie.")}</p></header>
+  <p class="selected-products" data-selected-products role="status" aria-live="polite" hidden></p>
+  {product && <p class="selected-products">{s('Wybrany asortyment:')} <strong>{productLabel(locale, product.name)}</strong></p>}
+  <input type="hidden" name="locale" value={locale} />
+  <input class="form-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+  <div class="contact-fields">
+    <label class="field"><span>{s("Imię lub nazwa firmy")} <span class="required-mark" aria-hidden="true">*</span></span><input name="name" type="text" autocomplete="name" maxlength="120" placeholder={s("Jak się do Ciebie zwracać?")} required /></label>
+    <fieldset class="reply-field">
+      <legend>{s("Jak mamy się skontaktować?")} <span class="required-mark" aria-hidden="true">*</span></legend>
+      <div class="reply-modes">
+        <label><input type="radio" name="replyType" value="whatsapp" data-reply-mode checked /><span>WhatsApp</span></label>
+        <label><input type="radio" name="replyType" value="tel" data-reply-mode /><span>{s("Telefon")}</span></label>
+        <label><input type="radio" name="replyType" value="email" data-reply-mode /><span>E-mail</span></label>
+      </div>
+      <input name="reply" type="tel" inputmode="tel" autocomplete="tel" maxlength="160" placeholder="+48 123 456 789" aria-label={s("Numer telefonu do WhatsApp")} required />
+    </fieldset>
+  </div>
+  {isCompact ? <><input type="hidden" name="product" value={product?.name ?? "Do ustalenia"} />{product && <input type="hidden" name="productId" value={product.id} />}</> : <>
+  <fieldset class="assortment-field">
+    <legend>{s("Co Cię interesuje?")} <small>{s("opcjonalnie · możesz wybrać kilka")}</small></legend>
+    <div class="product-options">
+      {products.map((product) => <label><input type="checkbox" name="products" value={product.name} data-product-id={product.id} /><span>{productLabel(locale, product.name)}</span></label>)}
+    </div>
+    <label class="product-help"><input type="checkbox" name="productHelp" value="yes" checked /><span>{s("Pomóżcie mi wybrać")}</span></label>
+  </fieldset>
+  <input type="hidden" name="quantityScope" value="total" />
+  <div class="order-fields">
+    <label class="field"><span>{s("Łączna ilość, kg")} <small>{s("opcjonalnie")}</small></span><input name="quantity" type="number" inputmode="numeric" min="50" max="100000" step="1" placeholder={s("np. 100")} aria-describedby="quote-quantity-hint" /></label>
+    <label class="field"><span>{s("Miejscowość dostawy")} <small>{s("opcjonalnie")}</small></span><input name="city" type="text" autocomplete="address-level2" maxlength="160" placeholder={s("np. Poznań")} /></label>
+  </div>
+  <p class="quantity-hint" id="quote-quantity-hint">{s("Podaj orientacyjną ilość całego zamówienia lub zostaw puste. Minimum: 50 kg każdej wybranej pozycji.")}</p>
+  </>}
+  <details class="additional-details" data-inquiry-details>
+    <summary>{s(product ? "Dodaj ilość, dostawę lub pytanie" : "Dodaj wiadomość")} <span aria-hidden="true">+</span></summary>
+    <div class="additional-fields">
+      {product && <>
+        <div class="order-fields">
+          <label class="field"><span>{extra.quantityLabel} <small>{s('opcjonalnie')}</small></span><input name="quantity" type="number" inputmode="numeric" min="50" max="100000" step="1" placeholder="50" aria-describedby="product-quantity-hint" /></label>
+          <label class="field"><span>{s('Miejscowość dostawy')} <small>{s('opcjonalnie')}</small></span><input name="city" type="text" autocomplete="address-level2" maxlength="160" placeholder={s('np. Poznań')} /></label>
+        </div>
+        <p class="quantity-hint" id="product-quantity-hint">{s('Minimum 50 kg. Ilość możesz ustalić z nami później.')}</p>
+      </>}
+      <label class="field"><span>{s("Wiadomość")} <small>{s("opcjonalnie")}</small></span><textarea name="message" rows="3" maxlength="2000" placeholder={product ? extra.messagePlaceholder : s("Np. szukam bluz i odzieży dziecięcej. Poproszę o zdjęcia dostępnych partii.")}></textarea></label>
+    </div>
+  </details>
+  <div class="form-completion">
+    <button class="form-submit" type="submit"><span data-submit-copy>{s("Poproś o ofertę")}</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" /></svg></button>
+    <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
+    {!isCompact && <a class="whatsapp-fallback" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="form_alternative"><IconWhatsApp size={18} /><span>{s("Możesz też napisać na WhatsApp")}</span><span aria-hidden="true">↗</span></a>}
+    <p class="form-note">{s("Wysyłasz zapytanie, nie składasz zamówienia. Cenę i dostawę uzgodnimy przed zakupem.")} <a href={getLegalPath(locale, 'privacy')}>{s("Polityka prywatności")}</a>.</p>
+  </div>
+</form>
+
+<style>
+  .quote-form { min-width: 0; padding: 32px; border: 1px solid var(--border); background: white; color: var(--text); scroll-margin-top: 112px; }
+  .form-heading { padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+  h3 { margin: 0 0 10px; color: var(--text-strong); font-size: 24px; font-weight: 600; line-height: 1.3; letter-spacing: -.025em; }
+  .form-heading p { max-width: 52ch; margin: 0; color: var(--text-soft); font-size: 13px; line-height: 1.7; }
+  .selected-products { margin: 0 0 22px; padding: 12px 14px; border-left: 2px solid var(--green); background: var(--green-soft); color: var(--green-deep); font-size: 13px; line-height: 1.6; }
+  .contact-fields { display: grid; gap: 22px; }
+  .field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .field > span, legend { color: var(--text-mid); font-size: 13px; font-weight: 600; line-height: 1.5; }
+  .required-mark { color: var(--green); }
+  small { margin-left: 4px; font-size: 10px; font-weight: 400; color: var(--text-muted); }
+  input:not([type='radio']):not([type='checkbox']), select, textarea { width: 100%; min-width: 0; border: 1px solid var(--border-input); border-radius: 0; background: white; color: var(--text); font: 400 16px var(--font-sans); }
+  input:not([type='radio']):not([type='checkbox']), select { min-height: 48px; padding: 10px 12px; }
+  textarea { min-height: 90px; padding: 12px; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 1; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .reply-field { min-width: 0; margin: 0; padding: 0; border: 0; }
+  legend { float: none; padding: 0; margin-bottom: 8px; }
+  .reply-modes { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 20px; margin-bottom: 8px; }
+  .reply-modes label { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; cursor: pointer; color: var(--text-soft); font-size: 12px; }
+  .reply-modes input { margin: 0; accent-color: var(--green); width: 15px; height: 15px; }
+  .reply-modes label:has(input:checked) { color: var(--green); font-weight: 600; }
+  .reply-field > input { clear: both; display: block; }
+  .assortment-field { margin: 22px 0 0; padding: 0; border: 0; min-width: 0; }
+  .product-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+  .product-options label, .product-help { display: flex; align-items: center; gap: 9px; min-height: 38px; cursor: pointer; font-size: 13px; line-height: 1.4; }
+  .assortment-field input { flex: none; width: 16px; height: 16px; margin: 0; accent-color: var(--green); }
+  .assortment-field label:has(input:checked) { color: var(--green); }
+  .product-help { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+  .order-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 22px; }
+  .quantity-hint { margin: 9px 0 22px; color: var(--text-muted); font-size: 11px; line-height: 1.6; }
+  .additional-details { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .is-compact .additional-details { margin-top: 22px; }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; padding: 14px 0; list-style: none; cursor: pointer; color: var(--text-mid); font-size: 12px; font-weight: 600; line-height: 1.5; }
+  summary::-webkit-details-marker { display: none; }
+  summary > span { flex: none; color: var(--green); font-size: 20px; font-weight: 400; }
+  details[open] summary > span { transform: rotate(45deg); }
+  .additional-fields { display: grid; gap: 18px; padding: 4px 0 22px; }
+  .additional-fields .order-fields { margin-top: 0; }
+  .additional-fields .quantity-hint { margin: -10px 0 0; }
+  .form-completion { display: grid; gap: 12px; padding-top: 22px; }
+  .form-submit { display: flex; align-items: center; justify-content: center; gap: 24px; min-height: 50px; padding: 12px 18px; background: var(--green); color: white; font-size: 14px; font-weight: 650; }
+  .form-submit:hover { background: var(--green-hover); }
+  .form-submit:disabled { opacity: .65; cursor: wait; }
+  .form-status { margin: 0; padding: 12px; font-size: 13px; line-height: 1.6; }
+  .form-status[hidden] { display: none; }
+  .form-status[data-state='pending'] { background: var(--surface-cream); color: var(--text-soft); }
+  .form-status[data-state='success'] { background: var(--green-soft); color: var(--green); }
+  .form-status[data-state='error'] { background: #fff0ed; color: #8f2d1f; }
+  .whatsapp-fallback { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; color: var(--green); font-size: 12px; line-height: 1.5; }
+  .whatsapp-fallback:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .whatsapp-fallback > svg { flex: none; }
+  .form-note { margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.7; }
+  .form-note a { text-decoration: underline; text-underline-offset: 3px; }
+  .quote-form .form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
+  @media (max-width: 599px) {
+    .quote-form { padding: 24px 20px; }
+    .form-heading { margin-bottom: 20px; padding-bottom: 20px; }
+    .order-fields { grid-template-columns: 1fr; gap: 18px; }
+    .product-options { grid-template-columns: 1fr 1fr; gap: 0 10px; }
+    .product-options label { font-size: 12px; min-height: 44px; }
+    .assortment-field legend small { display: block; margin-left: 0; }
+    .reply-modes { justify-content: flex-start; gap: 22px; }
+    .reply-modes label { min-height: 32px; }
+    .whatsapp-fallback { font-size: 11px; }
+  }
+</style>
+
+<script>
+  import '../lib/inquiry-form';
+</script>

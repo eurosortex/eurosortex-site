@@ -1,17 +1,20 @@
 ---
+import { storefront } from '../i18n/storefront';
 import type { Locale } from '../config/locales';
 import { content } from '../i18n/content';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
+const s = storefront(locale);
 const t = content[locale];
 ---
 
-<section class="faq" id="faq">
+<section class="faq faq-simple" id="faq">
   <div class="container">
     <div class="faq-inner">
-      <span class="kicker">{t.faq.eyebrow}</span>
+      <div class="faq-intro"><span class="kicker">{t.faq.eyebrow}</span>
       <h2>{t.faq.title}</h2>
+      <p>{s("Najważniejsze informacje przed pierwszym zamówieniem.")}</p></div>
       <div class="faq-list">
         {t.faq.items.map((f, i) => (
           <div class="faq-item">
@@ -19,17 +22,17 @@ const t = content[locale];
               <button
                 type="button"
                 class="faq-q"
-                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-expanded={false ? 'true' : 'false'}
                 aria-controls={`faq-a-${i}`}
               >
                 <span class="faq-q-text">{f.question}</span>
-                <span class="faq-mark" aria-hidden="true">{i === 0 ? '−' : '+'}</span>
+                <span class="faq-mark" aria-hidden="true">{false ? '−' : '+'}</span>
               </button>
             </h3>
             <div
-              class:list={['faq-a', { 'is-open': i === 0 }]}
+              class:list={['faq-a', { 'is-open': false }]}
               id={`faq-a-${i}`}
-              aria-hidden={i === 0 ? 'false' : 'true'}
+              aria-hidden={false ? 'false' : 'true'}
             >
               <div class="faq-a-inner">
                 <p>{f.answer}</p>
@@ -162,6 +165,15 @@ const t = content[locale];
       line-height: 1.6;
     }
   }
+
+  .faq-simple { padding-block: var(--section-space); }
+  .faq-simple .faq-inner { max-width: none; }
+  .faq-simple h2 { font-size: var(--heading-section); line-height: 1.15; font-weight: 600; letter-spacing: -1px; margin: 12px 0 20px; }
+  .faq-intro p { margin: 0 0 28px; max-width: 28ch; font-size: 15px; line-height: 1.7; color: var(--text-soft); }
+  .faq-simple .faq-list { border-top: 1px solid var(--border); }
+  .faq-simple .faq-q-text { font-weight: 500; font-size: 16px; }
+  .faq-simple .faq-q { padding-block: 20px; }
+  @media(min-width: 900px) { .faq-simple .faq-inner { display: grid; grid-template-columns: .8fr 1.2fr; gap: 64px; } }
 </style>
 
 <script>

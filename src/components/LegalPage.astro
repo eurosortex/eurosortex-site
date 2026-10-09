@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 import type { Locale } from '../config/locales';
 import { localeConfig, visibleLocales } from '../config/locales';
 import { brandAssets } from '../config/brandAssets';
@@ -34,7 +36,7 @@ const documentLinks: Array<{ key: LegalDocumentKey; label: string }> = [
   <header class="legal-header">
     <div class="container legal-header-inner">
       <a href={localeConfig[locale].path} class="legal-logo" aria-label={labels.backHome}>
-        <img src={brandAssets.logo} alt="EuroSortex Group" width="1254" height="1254" />
+        <Image src={imageAsset(brandAssets.logo)} alt="EuroSortex Group" width={112} height={112} widths={[64, 112, 224]} sizes="64px" format="webp" loading="eager" />
       </a>
       <a href={localeConfig[locale].path} class="back-link">
         <span aria-hidden="true">←</span>
@@ -113,7 +115,7 @@ const documentLinks: Array<{ key: LegalDocumentKey; label: string }> = [
     </div>
   </main>
 
-  <Footer locale={locale} />
+  <Footer locale={locale} languagePaths={alternates} />
 </Base>
 
 <style>

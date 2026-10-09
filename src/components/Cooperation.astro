@@ -1,0 +1,72 @@
+---
+import type { Locale } from '../config/locales';
+import { storefront } from '../i18n/storefront';
+
+interface Props { locale?: Locale }
+const { locale = 'pl' } = Astro.props;
+const s = storefront(locale);
+const steps = [
+  { title: s("Wybierz asortyment"), text: s("Podaj kategorię, ilość i miejscowość dostawy. Minimum to 50 kg każdej pozycji.") },
+  { title: s("Poznaj ofertę"), text: s("Uzgodnimy aktualną partię, zdjęcia, cenę i koszt transportu przed Twoją decyzją.") },
+  { title: s("Potwierdź zamówienie"), text: s("Po akceptacji oferty wystawiamy fakturę i ustalamy realizację dostawy.") },
+];
+---
+
+<section class="cooperation" id="jak-zamowic" aria-labelledby="cooperation-title">
+  <div class="container cooperation-grid">
+    <header class="cooperation-heading">
+      <span class="kicker">{s("WSPÓŁPRACA")}</span>
+      <h2 id="cooperation-title">{s("Od wyboru towaru")}<br />{s("do dostawy.")}</h2>
+    </header>
+    <div class="cooperation-process">
+      <ol class="order-steps" aria-label={s("Etapy zamówienia")}>
+        {steps.map((step, index) => <li><span class="step-number" aria-hidden="true">0{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
+      </ol>
+      <a class="inquiry-link" href="#kontakt">{s("Przejdź do zapytania")} <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" /></svg></a>
+    </div>
+    <section class="terms" id="dostawa" aria-labelledby="cooperation-terms-title">
+      <h3 id="cooperation-terms-title">{s("Warunki realizacji")}</h3>
+      <dl>
+        <div><dt>{s("Dostawa")}</dt><dd><strong>{s("1–3 tygodnie")}</strong><p>{s("Od zaksięgowania pełnej przedpłaty, na terenie całej Polski.")}</p></dd></div>
+        <div><dt>{s("Płatność")}</dt><dd><strong>{s("100% przedpłaty")}</strong><p>{s("Przelewem na podstawie faktury, przed wysyłką.")}</p></dd></div>
+        <div><dt>{s("Transport")}</dt><dd><strong>{s("Wyceniany osobno")}</strong><p>{s("Opłaca go kupujący. Możliwy również odbiór własny.")}</p></dd></div>
+      </dl>
+    </section>
+  </div>
+</section>
+
+<style>
+  .cooperation { padding-block: var(--section-space); background: var(--surface-cream); }
+  .cooperation-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); grid-template-areas: 'heading process' 'terms process'; column-gap: 72px; row-gap: 36px; align-items: start; }
+  .cooperation-heading { grid-area: heading; }
+  h2 { font-size: var(--heading-section); color: var(--text-strong); font-weight: 600; letter-spacing: -.035em; line-height: 1.16; margin: 16px 0 0; }
+  .cooperation-process { grid-area: process; }
+  .order-steps { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--border-strong); }
+  .order-steps li { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 24px; padding: 30px 0; border-bottom: 1px solid var(--border-strong); }
+  .step-number { font-size: 30px; font-weight: 400; line-height: 1.1; letter-spacing: -.06em; font-variant-numeric: tabular-nums; color: var(--green); }
+  .order-steps h3 { font-size: 21px; color: var(--text-strong); font-weight: 600; line-height: 1.3; letter-spacing: -.02em; margin: 0 0 12px; }
+  .order-steps p { font-size: 14px; color: var(--text-soft); line-height: 1.8; margin: 0; max-width: 48ch; text-wrap: pretty; }
+  .inquiry-link { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 48px; margin-top: 14px; font-size: 13px; font-weight: 600; }
+  .inquiry-link:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .inquiry-link svg { flex: none; }
+  .terms { grid-area: terms; max-width: 430px; scroll-margin-top: 120px; }
+  .terms h3 { margin: 0 0 16px; color: var(--text-muted); font-size: 11px; font-weight: 600; line-height: 1.5; letter-spacing: .09em; text-transform: uppercase; }
+  .terms dl { margin: 0; }
+  .terms dl > div { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 16px; padding: 14px 0; border-top: 1px solid var(--border); }
+  .terms dt { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+  .terms dd { margin: 0; }
+  .terms strong { display: block; font-size: 13px; line-height: 1.5; color: var(--text-strong); font-weight: 600; }
+  .terms p { margin: 5px 0 0; font-size: 12px; line-height: 1.7; color: var(--text-soft); }
+  @media(max-width: 1099px) {
+    .cooperation-grid { column-gap: 36px; }
+    .order-steps li { grid-template-columns: 40px minmax(0, 1fr); gap: 18px; }
+  }
+  @media(max-width: 767px) {
+    .cooperation-grid { grid-template-columns: 1fr; grid-template-areas: 'heading' 'process' 'terms'; row-gap: 30px; }
+    .order-steps li { padding-block: 24px; }
+    .order-steps h3 { font-size: 20px; margin-bottom: 8px; }
+    .order-steps p { font-size: 13px; }
+    .step-number { font-size: 26px; }
+    .terms { max-width: none; }
+  }
+</style>

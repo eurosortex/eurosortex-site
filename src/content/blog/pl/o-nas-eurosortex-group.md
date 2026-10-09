@@ -5,8 +5,8 @@ locale: "pl"
 category: "O firmie"
 publishedAt: 2026-08-24
 readingTime: 4
-image: "/images/blog/eurosortex-group-o-nas.png"
-imageAlt: "Logo EuroSortex Group na białym tle"
+image: "/images/warehouse-quality.jpg"
+imageAlt: "Bele odzieży używanej w magazynie EuroSortex"
 featured: true
 draft: false
 ---
@@ -48,6 +48,6 @@ Transport opłaca kupujący. Możemy pomóc w jego organizacji; możliwy jest r�
 
 ## Dla kogo jest nasza oferta
 
-Współpracujemy wyłącznie z firmami. Oferta jest przeznaczona przede wszystkim dla sklepów second-hand, outletów i hurtowników, którzy chcą regularnie uzupełniać asortyment. Minimalne zamówienie dla jednej pozycji wynosi 20 kg.
+Współpracujemy wyłącznie z firmami. Oferta jest przeznaczona przede wszystkim dla sklepów second-hand, outletów i hurtowników, którzy chcą regularnie uzupełniać asortyment. Minimalne zamówienie dla jednej pozycji wynosi 50 kg.
 
 Jeżeli prowadzisz sklep i szukasz dostawcy, z którym można omówić konkretną partię przed zakupem, [napisz do nas](/#kontakt). Prześlemy aktualną ofertę i pokażemy towar dostępny dla Twojego biznesu.

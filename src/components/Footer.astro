@@ -1,4 +1,7 @@
 ---
+import { storefront } from '../i18n/storefront';
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 import type { Locale } from '../config/locales';
 import IconInstagram from './IconInstagram.astro';
 import { localeConfig, visibleLocales } from '../config/locales';
@@ -8,34 +11,33 @@ import { company, contact } from '../config/contact';
 import { content } from '../i18n/content';
 import { consentCopy } from '../i18n/consent';
 import { ui } from '../i18n/ui';
-import { getAboutPath, getAssortmentPath } from '../config/marketing';
+import { getReviewsPath, getAboutPath, getAssortmentPath } from '../config/marketing';
 
 interface Props {
   locale: Locale;
   languagePaths?: Partial<Record<Locale, string>>;
 }
 const { locale, languagePaths } = Astro.props;
+const s = storefront(locale);
 const t = content[locale];
 const u = ui[locale];
 const consent = consentCopy[locale];
 const nav = [
-  { href: getAssortmentPath(locale), label: t.nav.offer },
-  { href: getAboutPath(locale), label: t.nav.about },
-  { href: `${localeConfig[locale].path}#jakosc`, label: t.nav.quality },
-  { href: `${localeConfig[locale].path}#jak-zamowic`, label: t.nav.process },
-  { href: `${localeConfig[locale].path}#dostawa`, label: t.nav.terms },
-  { href: `${localeConfig[locale].path}#faq`, label: t.nav.faq },
-  { href: locale === 'pl' ? '/blog/' : `/${locale}/blog/`, label: t.nav.blog },
+  { href: getAssortmentPath(locale), label: s('Oferta') },
+  { href: getAboutPath(locale), label: s('O nas') },
+  { href: `${localeConfig[locale].path}#jak-zamowic`, label: s('Jak zamówić') },
+  ...(import.meta.env.DEV ? [{ href: getReviewsPath(locale), label: s('Opinie') }] : []),
+  { href: `${localeConfig[locale].path}blog/`, label: s('Blog') },
 ];
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
+<footer class="site-footer footer-refined">
   <div class="container">
     <div class="footer-top">
       <div class="footer-brand">
         <div class="footer-brand-mark">
-          <img src={brandAssets.logo} alt="EuroSortex Group" class="footer-logo" width="1254" height="1254" />
+          <Image src={imageAsset(brandAssets.logo)} alt="EuroSortex Group" class="footer-logo" width={112} height={112} widths={[64, 112, 224]} sizes="64px" format="webp" loading="lazy" />
           <span class="footer-brand-name" aria-hidden="true">EuroSortex<span>Group</span></span>
         </div>
         <p>{t.footer.description}</p>
@@ -60,9 +62,9 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <section class="footer-company" aria-labelledby="company-details">
+    <details class="footer-company">
+      <summary><span>{t.footer.companyDetails}</span><span class="company-summary-nip">NIP {company.identifiers.nip}</span><span class="company-toggle" aria-hidden="true">+</span></summary>
       <div class="footer-company-heading">
-        <span class="mono-label" id="company-details">{t.footer.companyDetails}</span>
         <strong>{company.legalName}</strong>
       </div>
 
@@ -99,9 +101,9 @@ const year = new Date().getFullYear();
           <span>{company.shareCapital}</span>
         </div>
       </div>
-    </section>
+    </details>
 
-    <nav class="footer-documents" aria-label={t.footer.legalDocuments}>
+    <div class="footer-meta"><nav class="footer-documents" aria-label={t.footer.legalDocuments}>
       <span class="mono-label">{t.footer.legalDocuments}</span>
       <div class="footer-document-links">
         <a href={getLegalPath(locale, 'privacy')}>{t.footer.privacy}</a>
@@ -129,9 +131,10 @@ const year = new Date().getFullYear();
       ))}
     </div>
 
+    </div>
+
     <div class="footer-legal">
       <span>© {year} {company.brandName}</span>
-      <span>{company.legalName}</span>
       <button type="button" data-consent-open>{consent.reopen}</button>
     </div>
   </div>
@@ -482,5 +485,42 @@ const year = new Date().getFullYear();
     .footer-registry {
       grid-column: span 2;
     }
+  }
+
+  .footer-company summary { display: flex; align-items: center; gap: 20px; cursor: pointer; list-style: none; padding-block: 16px; color: var(--text-mid); font-size: 13px; }
+  .footer-company summary::-webkit-details-marker { display: none; }
+  .company-summary-nip { color: var(--text-muted); font-size: 12px; }
+  .company-toggle { margin-left: auto; font-size: 22px; color: var(--green); }
+  .footer-company[open] .company-toggle { transform: rotate(45deg); }
+  .footer-company[open] .footer-company-heading { margin-top: 12px; }
+  .footer-refined { padding-block: 48px 24px; }
+  .footer-refined .footer-top { gap: 40px; }
+  .footer-refined .footer-brand { max-width: 380px; gap: 16px; }
+  .footer-refined .footer-brand p { font-size: 13px; max-width: 35ch; }
+  .footer-refined .footer-logo { height: 48px; }
+  .footer-refined .footer-nav { gap: 6px; }
+  .footer-refined .footer-nav a { min-height: 30px; border: 0; font-size: 14px; font-weight: 500; }
+  .footer-refined .footer-contact a { font-weight: 500; font-size: 14px; }
+  .footer-refined .footer-company { padding: 0; margin-top: 32px; border-block: 1px solid var(--border); }
+  .footer-refined .footer-company-grid { padding-bottom: 24px; }
+  .footer-refined .footer-documents { border: 0; margin: 0; padding: 0; }
+  .footer-refined .footer-documents > .mono-label { display: none; }
+  .footer-refined .footer-document-links { gap: 0 20px; }
+  .footer-refined .footer-document-links a { font-size: 12px; font-weight: 400; }
+  .footer-refined .footer-lang { margin: 0; padding: 0; border: 0; font-size: 12px; }
+  .footer-refined .footer-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; }
+  .footer-refined .footer-legal { font-size: 12px; margin-top: 20px; padding-top: 14px; }
+  @media(min-width: 768px) {
+    .footer-refined .footer-top { display: grid; grid-template-columns: 1.3fr .7fr 1fr; gap: 40px; }
+    .footer-refined .footer-brand, .footer-refined .footer-nav, .footer-refined .footer-contact { min-width: 0; }
+    .footer-refined .footer-contact a { overflow-wrap: anywhere; }
+  }
+  @media(max-width: 767px) {
+    .footer-refined .footer-top { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .footer-refined .footer-brand { grid-column: 1 / -1; }
+    .footer-refined .footer-contact { border: 0; padding: 0; gap: 8px; min-width: 0; }
+    .footer-refined .footer-contact a { font-size: 12px; overflow-wrap: anywhere; }
+    .footer-refined .footer-contact .footer-instagram { gap: 5px; }
+    .footer-refined .footer-contact .footer-instagram svg { width: 15px; flex: none; }
   }
 </style>

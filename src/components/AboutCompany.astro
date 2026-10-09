@@ -1,0 +1,157 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
+import { storefront } from '../i18n/storefront';
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
+import { company, contact, whatsappUrl } from '../config/contact';
+import { getAssortmentPath } from '../config/marketing';
+import Breadcrumbs from './Breadcrumbs.astro';
+import IconInstagram from './IconInstagram.astro';
+import IconWhatsApp from './IconWhatsApp.astro';
+import QuoteForm from './QuoteForm.astro';
+
+interface Props { locale?: Locale }
+const { locale = 'pl' } = Astro.props;
+const s = storefront(locale);
+
+const principles = [
+  { title: s("Zdjęcia aktualnej partii"), text: s("Na życzenie przesyłamy zdjęcia lub wideo dostępnego towaru i omawiamy jego skład oraz stan.") },
+  { title: s("Jasne warunki zakupu"), text: s("Przed zamówieniem potwierdzamy ilość, cenę i koszt dostawy do Twojego sklepu.") },
+  { title: s("Bezpośredni kontakt"), text: s("Rozmawiasz z nami o potrzebach swojego sklepu — przez telefon, WhatsApp lub e-mail.") },
+];
+const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${company.warehouse.street}, ${company.warehouse.city}`)}`;
+---
+
+<article class="company-page">
+  <header class="company-hero">
+    <div class="container">
+      <Breadcrumbs label={s("Ścieżka nawigacji")} items={[{ label: s('Strona główna'), href: localeConfig[locale].path }, { label: s('O nas') }]} />
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="kicker">{s("O EUROSORTEX GROUP")}</span>
+          <h1>{s("Hurtownia odzieży używanej")}<br />{s("w Warszawie.")}</h1>
+          <p>{s("Dostarczamy sortowaną odzież i obuwie używane z Europy do sklepów second-hand w całej Polsce. Współpracujemy wyłącznie z firmami.")}</p>
+          <div class="hero-links"><a class="solid-link" href="#kontakt">{s("Porozmawiajmy o współpracy")} <span aria-hidden="true">→</span></a><a class="text-link" href={getAssortmentPath(locale)}>{s("Poznaj asortyment")} <span aria-hidden="true">→</span></a></div>
+        </div>
+        <figure class="hero-photo">
+          <Image src={imageAsset('/images/warehouse-quality.jpg')} alt={s("Bele sortowanej odzieży używanej w magazynie hurtowni EuroSortex w Warszawie")} width={1200} widths={[400, 600, 900, 1200]} sizes="(max-width: 899px) calc(100vw - 32px), 45vw" format="webp" quality={80} loading="eager" fetchpriority="high" />
+          <figcaption><span>EUROSORTEX GROUP</span><span>Warszawa, ul. Jagiellońska 88</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </header>
+
+  <section class="story section-space" aria-labelledby="story-heading">
+    <div class="container">
+      <div class="editorial-grid">
+        <div><span class="kicker">{s("KIM JESTEŚMY")}</span><h2 id="story-heading">{s("Dwa lata EuroSortex.")}<br />{s("Współpraca oparta na rozmowie.")}</h2></div>
+        <p class="story-copy">{s("Od dwóch lat rozwijamy EuroSortex Group jako hurtownię dla sklepów z odzieżą używaną. Zależy nam na stałej współpracy: poznajemy potrzeby Twojego sklepu, omawiamy dostępną partię i ustalamy szczegóły zakupu. Niezależnie od tego, czy dopiero otwierasz sklep, czy uzupełniasz asortyment.")}</p>
+      </div>
+      <div class="principles-grid">{principles.map((item) => <section><h3>{item.title}</h3><p>{item.text}</p></section>)}</div>
+    </div>
+  </section>
+
+  <section class="company-location section-space" aria-labelledby="location-heading">
+    <div class="container location-grid">
+      <div><span class="kicker">{s("WARSZAWA · CAŁA POLSKA")}</span><h2 id="location-heading">{s("Magazyn w Warszawie.")}<br />{s("Dostawa do sklepów w całej Polsce.")}</h2><p>{s("Organizację dostawy lub odbiór własny ustalamy indywidualnie. Przed przyjazdem do magazynu uzgodnij z nami termin i dostępność towaru.")}</p><a class="location-phone" href={`tel:${contact.phoneE164}`} data-analytics-placement="about_warehouse">{contact.phoneDisplay}</a><a class="instagram-link" href={contact.instagramUrl} target="_blank" rel="noopener noreferrer" data-analytics-placement="about_instagram"><IconInstagram size={19} /> {s("Znajdziesz nas też na Instagramie")} <span aria-hidden="true">↗</span></a></div>
+      <div class="location-details">
+        <div class="warehouse-address"><span class="kicker">{s("ADRES MAGAZYNU")}</span><address>{company.warehouse.street}<br />{company.warehouse.postalCode} {company.warehouse.city}</address><a href={mapUrl} target="_blank" rel="noopener noreferrer">{s("Sprawdź dojazd w Google Maps")} <span aria-hidden="true">↗</span></a></div>
+        <div class="company-identity"><h3>{s("Dane firmy")}</h3><p>{company.legalName}</p><dl><div><dt>NIP</dt><dd>{company.identifiers.nip}</dd></div><div><dt>KRS</dt><dd>{company.identifiers.krs}</dd></div></dl><p class="registered-office">{s("Siedziba rejestrowa:")} {company.registeredOffice.street}, {company.registeredOffice.postalCode} {company.registeredOffice.city}.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="company-contact section-space" id="kontakt" aria-labelledby="company-contact-heading">
+    <div class="container contact-row">
+      <div class="contact-copy"><span class="kicker">{s("POROZMAWIAJMY")}</span><h2 id="company-contact-heading">{s("Szukasz towaru do swojego sklepu?")}</h2><p>{s("Zostaw kontakt. Porozmawiamy o potrzebach Twojego sklepu i dostępnej ofercie.")}</p><div class="contact-actions"><span>{s("Wolisz napisać bezpośrednio?")}</span><a class="text-link" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="about_contact"><IconWhatsApp size={20} /> {s("Napisz na WhatsApp")} <span aria-hidden="true">↗</span></a></div></div>
+      <QuoteForm locale={locale} compact placement="about_contact" />
+    </div>
+  </section>
+</article>
+
+<style>
+  .company-hero { padding: 26px 0 48px; border-bottom: 1px solid var(--border); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 64px; align-items: center; margin-top: 36px; }
+  h1, h2, h3 { color: var(--text-strong); font-weight: 600; text-wrap: pretty; }
+  h1 { margin: 20px 0 24px; font-size: clamp(34px, 3.65vw, 50px); line-height: 1.12; letter-spacing: -.045em; }
+  h2 { margin: 16px 0 24px; font-size: var(--heading-section); line-height: 1.18; letter-spacing: -.035em; }
+  h3 { margin: 0 0 12px; font-size: 19px; line-height: 1.35; letter-spacing: -.02em; }
+  p { margin: 0 0 18px; color: var(--text-soft); font-size: 15px; line-height: 1.8; }
+  p:last-child { margin-bottom: 0; }
+  .hero-copy > p { max-width: 48ch; font-size: 17px; }
+  .hero-links { display: flex; align-items: center; flex-wrap: wrap; gap: 18px 28px; margin-top: 28px; }
+  .solid-link { display: inline-flex; justify-content: space-between; align-items: center; gap: 24px; min-height: 50px; padding: 12px 20px; color: #fff; background: var(--green); font-size: 13px; font-weight: 600; }
+  .solid-link:hover { background: var(--green-hover); }
+  .text-link { display: inline-flex; align-items: center; gap: 20px; min-height: 44px; font-size: 13px; font-weight: 600; }
+  .text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .hero-photo { min-width: 0; margin: 0; }
+  .hero-photo img { display: block; width: 100%; height: auto; aspect-ratio: 1.25; object-fit: cover; }
+  figcaption { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-top: 12px; font-size: 10px; color: var(--text-muted); }
+  figcaption > span:first-child { letter-spacing: .09em; }
+  .section-space { padding-block: var(--section-space); }
+  .editorial-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 72px; align-items: center; }
+  .editorial-grid h2 { margin-bottom: 0; }
+  .story-copy { margin: 0; font-size: 17px; }
+  .principles-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; margin-top: 40px; }
+  .principles-grid > section { border-top: 1px solid var(--border); padding-top: 24px; }
+  .principles-grid p { font-size: 14px; }
+  .company-location { background: var(--green-deep); color: #fff; }
+  .location-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 100px; }
+  .company-location h2, .company-location h3 { color: #fff; }
+  .company-location .kicker, .company-location p { color: var(--green-pale-text); }
+  .company-location p { max-width: 52ch; }
+  .company-location a { color: #fff; }
+  .company-location a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .location-phone { display: block; width: fit-content; margin-top: 24px; font-size: 25px; font-weight: 600; }
+  .instagram-link { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 10px; font-size: 12px; }
+  .instagram-link svg { flex: none; }
+  .location-details { border-left: 1px solid var(--green-row-border); padding-left: 40px; }
+  address { font-style: normal; font-size: 23px; line-height: 1.6; margin: 18px 0 10px; }
+  .warehouse-address > a { display: inline-flex; align-items: center; min-height: 44px; gap: 14px; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
+  .company-identity { border-top: 1px solid var(--green-row-border); margin-top: 24px; padding-top: 24px; }
+  .company-identity h3 { font-size: 14px; }
+  .company-identity p { font-size: 12px; overflow-wrap: anywhere; }
+  .company-identity dl { margin: 18px 0; font-size: 13px; }
+  .company-identity dl > div { display: flex; gap: 20px; margin: 8px 0; }
+  .company-identity dt { color: var(--green-pale-text); min-width: 30px; }
+  .company-identity dd { margin: 0; }
+  .company-identity .registered-office { font-size: 11px; }
+  .company-contact { background: var(--surface-cream); }
+  .contact-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 72px; }
+  .contact-copy { padding-top: 24px; }
+  .contact-row h2 { max-width: 24ch; margin-bottom: 12px; }
+  .contact-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-top: 32px; }
+  .contact-actions > span { color: var(--text-soft); font-size: 13px; }
+  .contact-actions .text-link { gap: 12px; }
+  @media(max-width: 1099px) {
+    .hero-grid, .editorial-grid { gap: 36px; }
+    .location-grid { gap: 48px; }
+  }
+  @media(max-width: 899px) {
+    .hero-grid, .editorial-grid, .location-grid { grid-template-columns: 1fr; gap: 28px; }
+    h1 { max-width: 20ch; }
+    .hero-photo img { aspect-ratio: 1.8; }
+    .hero-copy > p { max-width: 60ch; }
+    .location-details { padding-left: 0; padding-top: 28px; border-left: 0; border-top: 1px solid var(--green-row-border); display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+    .company-identity { border-top: 0; margin-top: 0; padding-top: 0; }
+    .principles-grid { gap: 24px; }
+    .contact-row { grid-template-columns: 1fr; gap: 24px; }
+    .contact-copy { padding-top: 0; }
+  }
+  @media(max-width: 599px) {
+    .company-hero { padding-top: 20px; padding-bottom: 32px; }
+    .hero-grid { margin-top: 28px; }
+    h1 { font-size: 35px; }
+    h2 { font-size: 29px; }
+    .hero-copy > p, .story-copy { font-size: 15px; }
+    .hero-links { gap: 10px; align-items: stretch; flex-direction: column; }
+    .solid-link { font-size: 12px; }
+    .hero-photo img { aspect-ratio: 1.3; }
+    .principles-grid, .location-details { grid-template-columns: 1fr; }
+    .principles-grid { margin-top: 28px; }
+    .location-phone { font-size: 23px; }
+    .instagram-link { font-size: 11px; gap: 8px; }
+    .company-identity { border-top: 1px solid var(--green-row-border); padding-top: 24px; }
+  }
+</style>

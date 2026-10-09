@@ -1,0 +1,89 @@
+---
+import type { Locale } from '../config/locales';
+import { storefront } from '../i18n/storefront';
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
+import { whatsappUrl } from '../config/contact';
+
+interface Props { locale?: Locale }
+const { locale = 'pl' } = Astro.props;
+const s = storefront(locale);
+
+const details = [
+  { title: s("Materiały zdjęciowe"), text: s("Zdjęcia lub wideo aktualnie dostępnej partii.") },
+  { title: s("Skład asortymentu"), text: s("Rodzaje ubrań, orientacyjne rozmiary i sezon.") },
+  { title: s("Stan towaru"), text: s("Klasa jakości, ślady użytkowania i możliwe wady.") },
+];
+---
+
+<section class="quality-inspection" id="jakosc" aria-labelledby="quality-inspection-title">
+  <div class="container">
+    <header class="inspection-heading">
+      <div>
+        <span class="kicker">{s("JAKOŚĆ TOWARU")}</span>
+        <h2 id="quality-inspection-title">{s("Informacje o partii")}<br />{s("przed zakupem")}</h2>
+      </div>
+      <p>{s("Każda dostawa ma inny skład. Przed zamówieniem ustalamy szczegóły konkretnej partii, aby ułatwić Ci ocenę towaru pod kątem potrzeb sklepu.")}</p>
+    </header>
+    <div class="inspection-grid">
+      <figure class="inspection-photo">
+        <Image src={imageAsset('/images/warehouse-quality.jpg')} alt={s("Bele sortowanej odzieży używanej w magazynie EuroSortex")} width={1200} widths={[400, 600, 800, 1200]} sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1311px) 44vw, 520px" format="webp" quality={80} loading="lazy" />
+        <figcaption><span>{s("Magazyn EuroSortex")}</span><span>{s("Sortowana odzież używana")}</span></figcaption>
+      </figure>
+      <div class="inspection-information">
+        <dl class="inspection-details">
+          {details.map((detail) => (
+            <div><dt>{detail.title}</dt><dd>{detail.text}</dd></div>
+          ))}
+        </dl>
+        <div class="inspection-action">
+          <a class="inspection-cta" href={whatsappUrl('photos', locale)} data-analytics-whatsapp data-analytics-placement="quality_photos">
+            {s("Zapytaj o aktualną partię")}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" /></svg>
+          </a>
+          <span>{s("Kontakt przez WhatsApp")}</span>
+        </div>
+        <p class="inspection-note">{s("Zdjęcia w katalogu są przykładowe. Skład i stan dostępnej partii mogą się różnić.")}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quality-inspection { padding-bottom: var(--section-space); background: var(--surface); }
+  .inspection-heading, .inspection-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); column-gap: 72px; }
+  .inspection-heading { align-items: end; padding-top: 36px; padding-bottom: 36px; border-top: 1px solid var(--border); }
+  h2 { margin: 16px 0 0; color: var(--text-strong); font-size: var(--heading-section); font-weight: 600; line-height: 1.16; letter-spacing: -.035em; }
+  .inspection-heading > p { margin: 0 0 3px; max-width: 54ch; color: var(--text-soft); font-size: 15px; line-height: 1.8; text-wrap: pretty; }
+  .inspection-grid { align-items: start; }
+  .inspection-photo { margin: 0; }
+  .inspection-photo img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; }
+  figcaption { display: flex; justify-content: space-between; gap: 16px; margin-top: 12px; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+  .inspection-details { margin: 0; border-top: 1px solid var(--border-strong); }
+  .inspection-details > div { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 24px; padding: 21px 0; border-bottom: 1px solid var(--border); }
+  dt { color: var(--text-strong); font-size: 14px; font-weight: 600; line-height: 1.65; }
+  dd { margin: 0; max-width: 32ch; color: var(--text-soft); font-size: 13px; line-height: 1.7; }
+  .inspection-action { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 24px; }
+  .inspection-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 46px; padding: 12px 18px; background: var(--green); color: white; font-size: 13px; font-weight: 600; line-height: 1.5; }
+  .inspection-cta:hover { background: var(--green-hover); }
+  .inspection-cta svg { flex: none; }
+  .inspection-action > span { color: var(--text-muted); font-size: 11px; }
+  .inspection-note { max-width: 60ch; margin: 18px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.7; }
+  @media (max-width: 1099px) {
+    .inspection-heading, .inspection-grid { column-gap: 36px; }
+    .inspection-details > div { gap: 16px; padding-block: 16px; }
+    .inspection-photo img { aspect-ratio: 4 / 3; }
+  }
+  @media (max-width: 767px) {
+    .inspection-heading, .inspection-grid { grid-template-columns: 1fr; gap: 24px; }
+    .inspection-heading { padding-block: 28px; }
+    .inspection-heading > p { margin: 0; font-size: 14px; }
+    .inspection-photo img { aspect-ratio: 8 / 5; }
+    .inspection-details > div { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+    .inspection-action { margin-top: 22px; }
+  }
+  @media (max-width: 359px) {
+    .inspection-details > div { grid-template-columns: 1fr; gap: 5px; }
+    figcaption { flex-direction: column; gap: 2px; }
+  }
+</style>

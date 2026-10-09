@@ -1,4 +1,5 @@
 ---
+import { storefront } from '../i18n/storefront';
 import type { Locale } from '../config/locales';
 import { localeConfig } from '../config/locales';
 import { products } from '../data/products';
@@ -15,6 +16,7 @@ import StickyBar from './StickyBar.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
+const s = storefront(locale);
 const c = assortmentPageCopy[locale];
 const u = ui[locale];
 const alternates = getAssortmentAlternates();
@@ -28,6 +30,7 @@ const collectionJsonLd = {
   name: c.metaTitle,
   description: c.metaDescription,
   inLanguage: localeConfig[locale].htmlLang,
+  breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
   mainEntity: {
     '@type': 'ItemList',
     numberOfItems: products.length,
@@ -52,22 +55,22 @@ const collectionJsonLd = {
 >
   <Header locale={locale} linkSectionsToHome currentArea="assortment" languagePaths={alternates} />
   <main id="tresc">
-    <header class="assortment-hero">
+    <header class="assortment-hero offer-hero">
       <div class="container">
         <Breadcrumbs label={c.breadcrumb} items={[{ label: u.home, href: home }, { label: c.breadcrumb }]} />
         <div class="hero-grid">
           <div class="hero-copy">
             <span class="kicker">{c.eyebrow}</span>
             <h1>{c.title}</h1>
-            <p>{c.lead}</p>
+            <p>{s('Sortowana odzież i obuwie z Europy. Wybierz towar i zapytaj o dostępną partię.')}</p>
           </div>
           <dl class="hero-facts">
-            {c.facts.map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
+            {c.facts.filter((_, index) => index > 0).map((fact) => <div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}
           </dl>
         </div>
       </div>
     </header>
-    <Catalog locale={locale} variant="full" eyebrow={c.catalogEyebrow} title={c.catalogTitle} />
+    <Catalog locale={locale} variant="full" interactive eyebrow={c.catalogEyebrow} title={c.catalogTitle} />
     <FinalCta locale={locale} />
   </main>
   <Footer locale={locale} languagePaths={alternates} />
@@ -122,7 +125,7 @@ const collectionJsonLd = {
     margin: 0;
     overflow: hidden;
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 2px;
     background: var(--bg);
   }
 
@@ -204,5 +207,28 @@ const collectionJsonLd = {
       margin: 0;
       text-align: right;
     }
+  }
+</style>
+
+<style>
+  .offer-hero { padding-block: 24px 28px; }
+  .offer-hero .hero-grid { grid-template-columns: minmax(0, 1fr) auto; gap: 32px; align-items: end; margin-top: 24px; }
+  .offer-hero .hero-copy { gap: 12px; }
+  .offer-hero h1 { max-width: none; font-size: clamp(30px, 3vw, 42px); font-weight: 600; line-height: 1.18; letter-spacing: -.04em; }
+  .offer-hero .hero-copy p { max-width: 60ch; font-size: 15px; }
+  .offer-hero .hero-facts { border: 0; border-radius: 0; background: none; grid-template-columns: 1fr; gap: 10px; min-width: 190px; }
+  .offer-hero .hero-facts div { display: flex; align-items: baseline; justify-content: space-between; padding: 0; border: 0; gap: 20px; }
+  .offer-hero .hero-facts dt { font: 400 12px var(--font-sans); color: var(--text-soft); }
+  .offer-hero .hero-facts dd { margin: 0; font-size: 13px; font-weight: 600; }
+  @media(max-width: 899px) {
+    .offer-hero .hero-grid { grid-template-columns: 1fr; gap: 18px; }
+    .offer-hero .hero-facts { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+    .offer-hero .hero-facts div { gap: 8px; }
+  }
+  @media(max-width: 599px) {
+    .offer-hero { padding-block: 18px 24px; }
+    .offer-hero .hero-grid { margin-top: 20px; }
+    .offer-hero h1 { font-size: 30px; }
+    .offer-hero .hero-copy > .kicker { display: none; }
   }
 </style>

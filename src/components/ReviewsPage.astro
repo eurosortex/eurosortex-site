@@ -1,0 +1,182 @@
+---
+import type { Locale } from '../config/locales';
+import { localeConfig } from '../config/locales';
+import { storefront, productLabel } from '../i18n/storefront';
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import { contact, whatsappUrl } from '../config/contact';
+import { getReviewsAlternates, getProductPath, getAssortmentPath } from '../config/marketing';
+import { products, productCategories } from '../data/products';
+import { reviewExamples } from '../data/review-examples';
+import { content } from '../i18n/content';
+
+interface Props { locale?: Locale }
+const { locale = 'pl' } = Astro.props;
+const s = storefront(locale);
+
+const reviews = reviewExamples.map((review) => ({
+  ...review,
+  title: s(review.title), text: s(review.text), shop: s(review.shop),
+  totalKg: review.items.reduce((sum, item) => sum + item.kg, 0),
+  products: review.items.map(({ productId, kg }) => {
+    const product = products.find((item) => item.id === productId);
+    if (!product || !Number.isFinite(kg) || kg < 50) throw new Error(`Invalid example order item: ${productId}`);
+    return { ...product, kg };
+  }),
+}));
+const filters = [
+  { id: 'all', label: content[locale].catalog.filters.all },
+  ...productCategories.map((id) => ({ id, label: content[locale].catalog.filters[id] })),
+];
+const alternates = getReviewsAlternates();
+const reviewEmail = `mailto:${contact.email}?subject=${encodeURIComponent(s('Opinie o współpracy') + ' — EuroSortex')}`;
+---
+
+<Base title={`${s('Opinie o współpracy')} | EuroSortex`} description={s('Opinie, dane osób i zamówienia są fikcyjne. To prezentacja układu strony, nie rzeczywiste rekomendacje klientów.')} locale={locale} alternatePaths={alternates} pageType="reviews" noindex>
+  <Header locale={locale} languagePaths={alternates} linkSectionsToHome currentArea="reviews" />
+  <main id="tresc">
+    <section class="reviews-hero" aria-labelledby="reviews-title">
+      <div class="container">
+        <Breadcrumbs label={s("Ścieżka nawigacji")} items={[{ label: s('Strona główna'), href: localeConfig[locale].path }, { label: s('Opinie') }]} />
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="kicker">EUROSORTEX GROUP</span>
+            <h1 id="reviews-title">{s("Opinie o współpracy")}</h1>
+            <p>{s("O wyborze asortymentu, kontakcie i zaopatrzeniu sklepów second-hand.")}</p>
+          </div>
+          <div class="share-review"><span>{s("Masz za sobą zamówienie u nas?")}</span><a href={reviewEmail} data-analytics-placement="reviews_share">{s("Napisz swoją opinię")} <span aria-hidden="true">↗</span></a></div>
+        </div>
+        <aside class="demo-notice" aria-label={s("Informacja o przykładowych treściach")}>
+          <strong>{s("Przykładowe opinie")}</strong>
+          <p>{s("Opinie, dane osób i zamówienia są fikcyjne. To prezentacja układu strony, nie rzeczywiste rekomendacje klientów.")}</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="reviews-section" id="opinie" aria-labelledby="stories-title">
+      <div class="container">
+        <h2 id="stories-title" class="visually-hidden">{s("Przykładowe opinie według asortymentu")}</h2>
+        <div class="review-tools" hidden>
+          <div class="review-filters" role="group" aria-label={s("Filtruj przykłady według asortymentu")}>
+            {filters.map((filter) => <button type="button" data-review-filter={filter.id} aria-pressed={filter.id === 'all'} aria-controls="review-grid">{filter.label}</button>)}
+          </div>
+          <p class="review-count" role="status" aria-live="polite" aria-atomic="true">{s("Opinie:")} <span data-review-count>{reviews.length}</span></p>
+        </div>
+        <div class="review-grid" id="review-grid">
+          {reviews.map((review, index) => (
+            <article class="review-card" data-review-categories={[...new Set(review.products.map((product) => product.category))].join(' ')} aria-labelledby={`review-title-${index}`}>
+              <div class="card-top"><span class="person-city">{review.city}</span></div>
+              <h3 id={`review-title-${index}`}>{review.title}</h3>
+              <blockquote><p>{review.text}</p></blockquote>
+              <div class="review-person"><strong>{review.name}</strong><span>{review.shop}</span></div>
+              <div class="review-products">
+                <div class="order-heading"><span class="products-label">{s("Zamówienie")}</span><strong>{review.totalKg} <span>{s("kg łącznie")}</span></strong></div>
+                <ul class="product-links">{review.products.map((product) => <li><a href={getProductPath(locale, product.id)} class="review-product"><span>{productLabel(locale, product.name)} <span class="product-arrow" aria-hidden="true">↗</span></span><strong>{product.kg} kg</strong></a></li>)}</ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-cta" aria-labelledby="cta-title">
+      <div class="container cta-inner"><div><span class="kicker">{s("POROZMAWIAJMY O WSPÓŁPRACY")}</span><h2 id="cta-title">{s("Dobierz asortyment do swojego sklepu.")}</h2><p>{s("Napisz, czego szukasz. Sprawdzimy dostępną ofertę i zdjęcia partii.")}</p></div><div class="cta-actions"><a class="cta-primary" href={whatsappUrl('general', locale)} data-analytics-whatsapp data-analytics-placement="reviews_cta">{s("Napisz na WhatsApp")} <span aria-hidden="true">↗</span></a><a class="catalog-link" href={getAssortmentPath(locale)}>{s("Zobacz asortyment")} <span aria-hidden="true">→</span></a></div></div>
+    </section>
+  </main>
+  <Footer locale={locale} languagePaths={alternates} />
+</Base>
+
+<script>
+  const controls = document.querySelector<HTMLElement>('.review-tools');
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-review-filter]'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-review-categories]'));
+  const count = document.querySelector<HTMLElement>('[data-review-count]');
+
+  if (controls && count) {
+    controls.hidden = false;
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.reviewFilter;
+        filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        let visible = 0;
+        cards.forEach((card) => {
+          const matches = selected === 'all' || card.dataset.reviewCategories?.split(' ').includes(selected ?? '');
+          card.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        count.textContent = String(visible);
+      });
+    });
+  }
+</script>
+
+<style>
+  h1, h2, h3, p { text-wrap: pretty; }
+  .reviews-hero { padding: 24px 0 28px; border-bottom: 1px solid var(--border); }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 40px; padding: 28px 0; }
+  h1 { margin: 14px 0 12px; font-size: clamp(32px, 3.4vw, 46px); font-weight: 600; line-height: 1.15; letter-spacing: -.04em; color: var(--text-strong); }
+  .hero-copy p { margin: 0; color: var(--text-soft); font-size: 15px; line-height: 1.7; }
+  .share-review { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+  .share-review > span { font-size: 12px; color: var(--text-muted); }
+  .share-review a { display: flex; align-items: center; gap: 24px; min-height: 44px; font-size: 13px; font-weight: 600; }
+  a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .demo-notice { display: flex; align-items: baseline; gap: 20px; padding: 14px 18px; border-left: 2px solid var(--green); background: var(--surface-cream); }
+  .demo-notice strong { flex: none; color: var(--green); font-size: 12px; font-weight: 600; }
+  .demo-notice p { margin: 0; color: var(--text-soft); font-size: 12px; line-height: 1.7; }
+  .reviews-section { padding: 28px 0 56px; background: var(--surface-cream); }
+  .review-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .review-filters button { min-height: 44px; padding: 10px 15px; border: 1px solid var(--border-input); border-radius: 0; background: white; font-size: 13px; font-weight: 500; color: var(--text-soft); }
+  .review-filters button:hover { border-color: var(--green); }
+  .review-filters button[aria-pressed='true'] { background: var(--green); border-color: var(--green); color: white; }
+  .review-filters button:focus-visible, a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .review-count { margin: 18px 0 0; font-size: 12px; color: var(--text-muted); }
+  .review-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 24px; }
+  .review-card { display: flex; flex-direction: column; min-width: 0; padding: 26px; background: white; border: 1px solid var(--border); border-top: 3px solid var(--green); }
+  .review-card[hidden], .review-tools[hidden] { display: none; }
+  .card-top { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 11px; color: var(--text-muted); }
+  .person-city { color: var(--text-soft); }
+  h3 { margin: 18px 0 12px; font-size: 22px; font-weight: 600; line-height: 1.35; letter-spacing: -.025em; color: var(--text-strong); }
+  blockquote { margin: 0 0 22px; }
+  blockquote p { margin: 0; font-size: 15px; line-height: 1.8; color: var(--text-strong); }
+  .review-person { display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
+  .review-person strong { font-size: 13px; font-weight: 600; color: var(--text-strong); }
+  .review-person > span { font-size: 11px; color: var(--text-muted); }
+  .review-products { min-height: 164px; margin: 22px -26px -26px; padding: 18px 26px; border-top: 1px solid var(--border-soft); background: #f7f8f5; }
+  .order-heading { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 8px; }
+  .products-label { font-size: 10px; color: var(--text-muted); }
+  .order-heading > strong { font-size: 17px; font-weight: 600; color: var(--green); white-space: nowrap; }
+  .order-heading > strong > span { font-size: 10px; font-weight: 400; }
+  .product-links { list-style: none; padding: 0; margin: 0; }
+  .review-product { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; color: var(--green); font-size: 12px; }
+  .review-product > strong { flex: none; font-weight: 600; color: var(--text-strong); }
+  .product-arrow { margin-left: 4px; }
+  .reviews-cta { padding-block: 56px; background: var(--green-deep); color: white; }
+  .cta-inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 56px; }
+  .reviews-cta .kicker { color: var(--green-pale-text); }
+  .reviews-cta h2 { max-width: 26ch; margin: 16px 0; font-size: var(--heading-section); font-weight: 600; line-height: 1.2; letter-spacing: -.035em; }
+  .reviews-cta p { margin: 0; color: var(--green-pale-text); font-size: 14px; line-height: 1.7; }
+  .cta-actions { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  .cta-primary, .catalog-link { display: flex; align-items: center; justify-content: space-between; gap: 30px; min-height: 48px; font-size: 13px; font-weight: 600; }
+  .cta-primary { padding: 12px 20px; background: white; color: var(--green); }
+  .catalog-link { color: white; }
+  @media(max-width: 1100px) { .review-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; } }
+  @media(max-width: 767px) {
+    .hero-grid, .cta-inner { grid-template-columns: 1fr; gap: 20px; }
+    .hero-grid { padding: 24px 0; }
+    .share-review { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 0 20px; }
+    .demo-notice { display: block; padding: 12px 14px; }
+    .demo-notice p { margin-top: 4px; }
+    .reviews-section { padding: 20px 0 36px; }
+    .review-grid { grid-template-columns: 1fr; gap: 24px; margin-top: 20px; }
+    .review-card { padding: 22px; }
+    .review-filters { flex-wrap: nowrap; overflow-x: auto; padding: 3px 3px 10px; }
+    .review-filters button { flex: none; }
+    h3 { font-size: 21px; }
+    .review-products { min-height: 0; margin: 22px -22px -22px; padding: 16px 22px; }
+    .reviews-cta { padding-block: 36px; }
+    .reviews-cta h2 { font-size: 29px; }
+    .cta-actions { align-items: flex-start; }
+  }
+</style>

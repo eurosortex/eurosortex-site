@@ -33,14 +33,7 @@ const collectionJsonLd = {
   name: c.metaTitle,
   description: c.metaDescription,
   inLanguage: localeConfig[locale].htmlLang,
-  breadcrumb: {
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: u.home, item: new URL(home, Astro.site).href },
-      { '@type': 'ListItem', position: 2, name: t.nav.offer, item: new URL(assortmentPath, Astro.site).href },
-      { '@type': 'ListItem', position: 3, name: t.catalog.filters[category], item: pageUrl },
-    ],
-  },
+  breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
   mainEntity: {
     '@type': 'ItemList',
     numberOfItems: categoryProducts.length,
@@ -112,7 +105,7 @@ const collectionJsonLd = {
   h1, p { text-wrap: pretty; }
   h1 { margin: 0; max-width: 20ch; color: var(--text-strong); font-size: 35px; line-height: 1.08; font-weight: 800; letter-spacing: -.025em; }
   .hero-copy p { margin: 0; max-width: 66ch; color: var(--text-soft); font-size: 16px; line-height: 1.62; }
-  .hero-facts { display: grid; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+  .hero-facts { display: grid; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; background: var(--bg); }
   .hero-facts div { display: flex; justify-content: space-between; gap: 20px; padding: 15px 16px; border-bottom: 1px solid var(--border-soft); }
   .hero-facts div:last-child { border-bottom: 0; }
   .hero-facts dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; }

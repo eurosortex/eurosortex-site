@@ -12,6 +12,7 @@ export default defineConfig({
     routing: { prefixDefaultLocale: false },
   },
   integrations: [sitemap({
-    filter: (page) => !/^\/(ru|uk|en)(\/|$)/.test(new URL(page).pathname) && !page.endsWith('/404.html'),
+    // The reviews page contains clearly labelled fictional examples until real reviews are supplied.
+    filter: (page) => !/^\/(ru|uk|en)(\/|$)/.test(new URL(page).pathname) && !page.endsWith('/404.html') && new URL(page).pathname !== '/opinie/',
   })],
 });

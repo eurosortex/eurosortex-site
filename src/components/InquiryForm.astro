@@ -1,0 +1,86 @@
+---
+import type { Locale } from '../config/locales';
+import { getLegalPath } from '../config/legal';
+import { products, formatPrice, type Product } from '../data/products';
+import { productEnhancementCopy, polishProductNames } from '../i18n/marketing';
+import { content } from '../i18n/content';
+interface Props { locale: Locale; product?: Product }
+const { locale, product } = Astro.props;
+const extra = productEnhancementCopy[locale];
+const privacyPath = getLegalPath(locale, 'privacy');
+const labels = {
+  pl: { product: 'Asortyment', choose: 'Wybierz towar', city: 'Miejscowość dostawy', note: 'To zapytanie o ofertę, nie zamówienie. Ostateczną cenę i koszt transportu uzgodnimy przed płatnością.' },
+  ru: { product: 'Ассортимент', choose: 'Выберите товар', city: 'Город доставки', note: 'Это запрос предложения, а не заказ. Итоговую цену и транспорт согласуем до оплаты.' },
+  uk: { product: 'Асортимент', choose: 'Оберіть товар', city: 'Місто доставки', note: 'Це запит пропозиції, а не замовлення. Остаточну ціну й транспорт узгодимо до оплати.' },
+  en: { product: 'Assortment', choose: 'Choose a product', city: 'Delivery city', note: 'This is an enquiry, not an order. We agree the final price and transport before payment.' },
+}[locale];
+---
+            <form
+              class="inquiry-form"
+              action="/api/inquiry"
+              method="post"
+              data-inquiry-form
+              data-inquiry-placement={product ? 'product_contact' : 'final_cta'}
+              data-submit-label={extra.submitForm}
+              data-sending-label={extra.formSending}
+              data-success-label={extra.formSuccess}
+              data-error-label={extra.formError}
+            >
+              <h3>{extra.formTitle}</h3>
+              {product ? <>
+                <input type="hidden" name="product" value={product.name} />
+                <input type="hidden" name="productId" value={product.id} />
+              </> : <label class="wide"><span>{labels.product}</span>
+                <select name="product" data-product-select required>
+                  <option value="" disabled selected>{labels.choose}</option>
+                  {products.map((item) => <option value={item.name} data-product-id={item.id}>{locale === 'pl' ? polishProductNames[item.name] ?? item.name : item.name} — {formatPrice(item.netPricePlnPerKg, locale)} {content[locale].common.netSuffix}</option>)}
+                </select>
+              </label>}
+              <input type="hidden" name="locale" value={locale} />
+              <input class="form-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+              <label>
+                <span>{extra.nameLabel}</span>
+                <input name="name" type="text" autocomplete="name" maxlength="120" placeholder={extra.namePlaceholder} required />
+              </label>
+              <label>
+                <span>{extra.replyLabel}</span>
+                <input name="reply" type="text" autocomplete="email" maxlength="160" placeholder={extra.replyPlaceholder} required />
+              </label>
+              <label>
+                <span>{extra.quantityLabel}</span>
+                <input name="quantity" type="number" min="50" max="100000" step="1" value="50" inputmode="numeric" required />
+              </label>
+              <label><span>{labels.city}</span><input name="city" type="text" autocomplete="address-level2" maxlength="160" required /></label>
+              <label class="message-field">
+                <span>{extra.messageLabel}</span>
+                <textarea name="message" rows="3" maxlength="2000" placeholder={extra.messagePlaceholder}></textarea>
+              </label>
+              <button class="btn btn-primary form-submit" type="submit"><span data-submit-copy>{extra.submitForm}</span> →</button>
+              <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
+              <p class="form-note">{labels.note}</p>
+              <p class="form-note">{extra.formNote} <a href={privacyPath}>{extra.privacyLink}</a>.</p>
+            </form>
+<style>
+  .inquiry-form { min-width: 0; display: grid; gap: 18px; padding: 28px 24px; border-radius: 2px; background: var(--surface); }
+  .inquiry-form h3 { margin: 0 0 2px; color: var(--text-strong); font-size: 22px; font-weight: 600; }
+  .inquiry-form label { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
+  .inquiry-form label > span { color: var(--text-mid); font-size: 13px; font-weight: 600; }
+  .inquiry-form input, .inquiry-form textarea, .inquiry-form select { width: 100%; border: 1px solid var(--border-input); border-radius: 2px; background: #fff; color: var(--text); font: 400 16px var(--font-sans); }
+  .inquiry-form input, .inquiry-form select { min-height: 48px; padding: 0 13px; }
+  .inquiry-form textarea { min-height: 90px; padding: 12px 13px; resize: vertical; }
+  .inquiry-form input:focus, .inquiry-form textarea:focus, .inquiry-form select:focus { border-color: var(--green); outline: 2px solid var(--green-soft-border); outline-offset: 1px; }
+  .inquiry-form .form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
+  .form-submit { min-height: 50px; padding: 0 18px; }
+  .form-submit:disabled { opacity: .65; cursor: wait; box-shadow: none; }
+  .form-status { margin: 0; padding: 11px 13px; border-radius: 2px; font-size: 13.5px; font-weight: 700; line-height: 1.5; }
+  .form-status[data-state="pending"] { background: var(--surface-cream); color: var(--text-soft); }
+  .form-status[data-state="success"] { background: var(--green-soft); color: var(--green-deep); }
+  .form-status[data-state="error"] { background: #fff0ed; color: #8f2d1f; }
+  .form-note { margin: -2px 0 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
+  .form-note a { font-weight: 700; }
+
+  @media (min-width: 768px) { .inquiry-form { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 32px; } .inquiry-form h3, .inquiry-form .wide, .message-field, .form-submit, .form-status, .form-note { grid-column: 1 / -1; } }
+</style>
+<script>
+  import '../lib/inquiry-form';
+</script>

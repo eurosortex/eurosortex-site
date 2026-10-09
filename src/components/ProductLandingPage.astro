@@ -1,8 +1,14 @@
 ---
+import { storefront, productLabel } from '../i18n/storefront';
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
+import { localeConfig } from '../config/locales';
+import { ui } from '../i18n/ui';
 import type { Locale } from '../config/locales';
-import { company, contact, productWhatsappUrl } from '../config/contact';
-import { getLegalPath } from '../config/legal';
-import { getAssortmentPath, getCategoryPath, getProductAlternates, getProductPath } from '../config/marketing';
+import { contact, productWhatsappUrl } from '../config/contact';
+import QuoteForm from './QuoteForm.astro';
+import { polishProductNames } from '../i18n/marketing';
+import { getAssortmentPath, getProductAlternates, getProductPath } from '../config/marketing';
 import type { Product } from '../data/products';
 import { formatPrice, products } from '../data/products';
 import { content } from '../i18n/content';
@@ -10,7 +16,6 @@ import { productEnhancementCopy, productPageCopy } from '../i18n/marketing';
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import FinalCta from './FinalCta.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
 import IconWhatsApp from './IconWhatsApp.astro';
 import IconPhone from './IconPhone.astro';
@@ -18,18 +23,16 @@ import StickyBar from './StickyBar.astro';
 
 interface Props { locale: Locale; product: Product }
 const { locale, product } = Astro.props;
+const s = storefront(locale);
 const c = productPageCopy[locale];
 const extra = productEnhancementCopy[locale];
 const t = content[locale];
 const alternates = getProductAlternates(product.id);
 const assortmentPath = getAssortmentPath(locale);
-const categoryPath = getCategoryPath(locale, product.category);
-const faq = c.faq(product);
-const warmSeasonIds: string[] = [];
-const coolSeasonIds = ['winter-assortment', 'men-sweaters', 'ladies-sweaters', 'classic-outwear', 'season-shoes'];
-const seasonKey = warmSeasonIds.includes(product.id) ? 'warm' : coolSeasonIds.includes(product.id) ? 'cool' : 'yearRound';
-const suitabilityItems = [...extra.audiences, { title: extra.seasonTitle, text: extra.seasons[seasonKey] }];
-const privacyPath = getLegalPath(locale, 'privacy');
+const localizedName = productLabel(locale, product.name);
+const whatsappHref = productWhatsappUrl(localizedName, locale);
+const allFaq = c.faq(product);
+const faq = [allFaq[1], allFaq[3]];
 const related = [
   ...products.filter((item) => item.category === product.category && item.id !== product.id),
   ...products.filter((item) => item.category !== product.category),
@@ -40,12 +43,12 @@ const productJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   '@id': `${pageUrl}#product`,
-  name: product.name,
+  name: c.title(product.name),
   sku: product.id,
   ...(absoluteImage ? { image: [absoluteImage] } : {}),
   description: c.metaDescription(product),
   category: t.catalog.filters[product.category],
-  brand: { '@type': 'Brand', name: company.brandName },
+  itemCondition: 'https://schema.org/UsedCondition',
   offers: {
     '@type': 'Offer',
     url: pageUrl,
@@ -58,9 +61,11 @@ const productJsonLd = {
       priceCurrency: 'PLN',
       unitCode: 'KGM',
       unitText: 'kilogram',
+      valueAddedTaxIncluded: false,
+      referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitCode: 'KGM' },
     },
-    eligibleQuantity: { '@type': 'QuantitativeValue', minValue: 20, unitCode: 'KGM' },
-    seller: { '@type': 'Organization', name: company.brandName, url: new URL('/', Astro.site).href },
+    eligibleQuantity: { '@type': 'QuantitativeValue', minValue: 50, unitCode: 'KGM' },
+    seller: { '@id': `${new URL('/', Astro.site).href}#organization` },
   },
 };
 const faqJsonLd = {
@@ -81,62 +86,54 @@ const faqJsonLd = {
   alternatePaths={alternates}
   pageType="product_landing"
   image={product.image}
-  imageAlt={c.imageAlt(product.name)}
+  imageAlt={c.imageAlt(localizedName)}
 >
-  <Header locale={locale} linkSectionsToHome currentArea="assortment" languagePaths={alternates} />
+  <Header locale={locale} linkSectionsToHome contactHref="#zapytanie" currentArea="assortment" languagePaths={alternates} />
   <main id="tresc">
     <article>
-      <header class="product-hero">
+      <header class="product-hero product-hero-refined">
         <div class="container">
           <Breadcrumbs
             label={c.breadcrumb}
             items={[
+              { label: ui[locale].home, href: localeConfig[locale].path },
               { label: t.nav.offer, href: assortmentPath },
-              { label: t.catalog.filters[product.category], href: categoryPath },
-              { label: product.name },
+              { label: localizedName },
             ]}
           />
           <div class="product-hero-grid">
             <div class="product-hero-copy">
               <span class="kicker">{c.eyebrow}</span>
-              <h1>{c.title(product.name)}</h1>
-              <p class="product-lead">{c.lead(product)}</p>
+              <h1>{locale === 'pl' ? c.title(product.name) : productLabel(locale, product.name)}</h1>
+              <p class="product-lead">{product.description[locale]}</p>
+              <div class="product-price-panel">
+                <p class="product-unit-price"><strong>{formatPrice(product.netPricePlnPerKg, locale)}</strong> {s('zł/kg netto')} <span>+ VAT</span></p>
+                <p>{s('Od 50 kg ·')} <strong>{formatPrice(product.netPricePlnPerKg * 50, locale)} {s('zł netto')}</strong> {s('+ VAT i transport')}</p>
+                <span class="product-quality">{product.quality[locale]}</span>
+              </div>
               <div class="product-actions">
                 <a
                   class="btn btn-primary product-primary"
-                  href={productWhatsappUrl(product.name, locale)}
-                  data-analytics-whatsapp
+                  href="#zapytanie"
                   data-analytics-placement="product_landing_hero"
                   data-analytics-product-id={product.id}
                 >
-                  <IconWhatsApp size={18} />
+
                   {c.enquire}
                 </a>
-                <a class="btn btn-secondary product-secondary" href={assortmentPath}>
-                  {t.nav.offer} →
+                <a class="btn btn-secondary product-secondary" href={whatsappHref} data-analytics-whatsapp data-analytics-placement="product_landing_hero" data-analytics-product-id={product.id}>
+                  <IconWhatsApp size={18} /> WhatsApp
                 </a>
               </div>
               <p class="availability-note">{c.availabilityNote}</p>
-              <dl class="product-facts">
-                <div>
-                  <dt>{c.minimum}</dt>
-                  <dd>{c.minimumValue}</dd>
-                </div>
-                <div>
-                  <dt>{c.price}</dt>
-                  <dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd>
-                </div>
-                <div>
-                  <dt>{t.common.grade}</dt>
-                  <dd>{product.quality[locale]}</dd>
-                </div>
-              </dl>
+
+              <p class="product-terms-note">{s("Dostawa w 1–3 tygodnie od 100% przedpłaty.")}</p>
             </div>
             <figure class="product-image-wrap">
               {product.image
-                ? <img src={product.image} alt={c.imageAlt(product.name)} width="960" height="640" fetchpriority="high" />
+                ? <Image src={imageAsset(product.image)} alt={c.imageAlt(localizedName)} width={960} widths={[320, 480, 768, 960, 1280]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1199px) 50vw, 600px" format="webp" quality={80} loading="eager" fetchpriority="high" />
                 : <div class="product-image-placeholder" aria-hidden="true">{product.name}</div>}
-              {product.image && <figcaption>{product.name}</figcaption>}
+              {product.image && <figcaption>{s('Przykład asortymentu ·')} {localizedName}</figcaption>}
             </figure>
           </div>
         </div>
@@ -148,20 +145,16 @@ const faqJsonLd = {
             <span class="kicker">01 / {t.catalog.filters[product.category]}</span>
             <h2 id="product-data-title">{c.productData}</h2>
             <div class="product-description">
-              <p>{product.description[locale]}</p>
               <p>{product.details[locale]}</p>
             </div>
           </div>
           <div class="specs-side">
             <dl class="product-table">
-              <div><dt>{c.price}</dt><dd>{formatPrice(product.netPricePlnPerKg, locale)} {t.common.netSuffix}</dd></div>
-              <div><dt>{c.minimum}</dt><dd>{c.minimumValue}</dd></div>
               <div><dt>{t.common.grade}</dt><dd>{product.quality[locale]}</dd></div>
               {product.composition && <div><dt>{c.composition}</dt><dd>{product.composition[locale]}</dd></div>}
               <div><dt>{t.common.branded}</dt><dd>{product.luxuryShareApprox}%</dd></div>
               {product.disposalShareMax && <div><dt>{c.disposal}</dt><dd>≤ {product.disposalShareMax}%</dd></div>}
             </dl>
-            <p class="vat-note">{c.vatNote}</p>
             <section class="order-flow" aria-labelledby="order-flow-title">
               <h3 id="order-flow-title">{extra.orderTitle}</h3>
               <ol>
@@ -174,123 +167,26 @@ const faqJsonLd = {
         </div>
       </section>
 
-      <section class="suitability-section">
-        <div class="container">
-          <div class="section-heading">
-            <span class="kicker">{extra.suitabilityEyebrow}</span>
-            <h2>{extra.suitabilityTitle}</h2>
-            <p>{extra.suitabilityText}</p>
-          </div>
-          <div class="suitability-grid">
-            {suitabilityItems.map((item, index) => (
-              <article><span>0{index + 1}</span><h3>{item.title}</h3><p>{item.text}</p></article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section class="batch-section">
-        <div class="container">
-          <div class="section-heading">
-            <span class="kicker">03 / {c.batchTitle}</span>
-            <h2>{c.batchTitle}</h2>
-            <p>{c.batchText}</p>
-          </div>
-          <div class="batch-grid">
-            {c.batchPoints.map((point, index) => (
-              <article class="batch-card">
-                <span aria-hidden="true">0{index + 1}</span>
-                <h3>{point.title}</h3>
-                <p>{point.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
 
       <section class="product-contact" id="kontakt">
-        <div class="container">
+        <div class="container contact-layout">
           <div class="contact-heading">
-            <span class="kicker">{extra.contactEyebrow}</span>
+            <span class="kicker">{s('02 / WYCENA Z DOSTAWĄ')}</span>
             <h2>{extra.contactTitle}</h2>
-            <p>{extra.contactText}</p>
-          </div>
-          <div class="contact-layout">
-            <form
-              class="inquiry-form"
-              action="/api/inquiry"
-              method="post"
-              data-inquiry-form
-              data-submit-label={extra.submitForm}
-              data-sending-label={extra.formSending}
-              data-success-label={extra.formSuccess}
-              data-error-label={extra.formError}
-            >
-              <h3>{extra.formTitle}</h3>
-              <input type="hidden" name="product" value={product.name} />
-              <input type="hidden" name="productId" value={product.id} />
-              <input type="hidden" name="locale" value={locale} />
-              <input class="form-honeypot" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
-              <label>
-                <span>{extra.nameLabel}</span>
-                <input name="name" type="text" autocomplete="name" maxlength="120" placeholder={extra.namePlaceholder} required />
-              </label>
-              <label>
-                <span>{extra.replyLabel}</span>
-                <input name="reply" type="text" autocomplete="email" maxlength="160" placeholder={extra.replyPlaceholder} required />
-              </label>
-              <label>
-                <span>{extra.quantityLabel}</span>
-                <input name="quantity" type="number" min="20" max="100000" step="1" value="20" inputmode="numeric" required />
-              </label>
-              <label class="message-field">
-                <span>{extra.messageLabel}</span>
-                <textarea name="message" rows="4" maxlength="2000" placeholder={extra.messagePlaceholder}></textarea>
-              </label>
-              <button class="btn btn-primary form-submit" type="submit"><span data-submit-copy>{extra.submitForm}</span> →</button>
-              <p class="form-status" data-form-status role="status" aria-live="polite" hidden></p>
-              <p class="form-note">{extra.formNote} <a href={privacyPath}>{extra.privacyLink}</a>.</p>
-            </form>
-
-            <div class="contact-channels">
-              <article class="channel-card">
-                <span class="channel-icon"><IconPhone size={22} /></span>
-                <div><h3>{extra.callTitle}</h3><p>{extra.callText}</p></div>
-                <a class="btn btn-secondary" href={`tel:${contact.phoneE164}`} data-analytics-placement="product_contact">{extra.callAction}</a>
-                <strong>{contact.phoneDisplay}</strong>
-              </article>
-              <article class="channel-card channel-whatsapp">
-                <span class="channel-icon"><IconWhatsApp size={22} /></span>
-                <div><h3>{extra.whatsappTitle}</h3><p>{extra.whatsappText}</p></div>
-                <a class="btn btn-primary" href={productWhatsappUrl(product.name, locale)} data-analytics-whatsapp data-analytics-placement="product_contact" data-analytics-product-id={product.id}>{extra.whatsappAction}</a>
-              </article>
+            <p>{s('Zostaw kontakt. Potwierdzimy dostępną partię, prześlemy zdjęcia i omówimy dostawę.')}</p>
+            <div class="contact-direct">
+              <p>{s('Wolisz porozmawiać od razu?')}</p>
+              <a class="contact-phone" href={`tel:${contact.phoneE164}`} data-analytics-placement="product_contact"><IconPhone size={20} />{contact.phoneDisplay}</a>
+              <a class="contact-whatsapp" href={whatsappHref} data-analytics-whatsapp data-analytics-placement="product_contact" data-analytics-product-id={product.id}><IconWhatsApp size={20} />{s('Możesz też napisać na WhatsApp')} ↗</a>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section class="related-section">
-        <div class="container">
-          <span class="kicker">05 / {c.relatedEyebrow}</span>
-          <h2>{c.relatedTitle}</h2>
-          <div class="related-grid">
-            {related.map((item) => (
-              <a class="related-card" href={getProductPath(locale, item.id)}>
-                <img src={item.image} alt={c.imageAlt(item.name)} width="480" height="320" loading="lazy" />
-                <span class="related-copy">
-                  <strong>{item.name}</strong>
-                  <small>{item.description[locale]}</small>
-                  <span>{c.relatedAction} →</span>
-                </span>
-              </a>
-            ))}
-          </div>
+          <QuoteForm locale={locale} product={product} placement="product_contact" />
         </div>
       </section>
 
       <section class="product-faq">
         <div class="container faq-grid">
-          <div><span class="kicker">06 / {c.faqEyebrow}</span><h2>{c.faqTitle}</h2></div>
+          <div><span class="kicker">03 / {c.faqEyebrow}</span><h2>{c.faqTitle}</h2></div>
           <div class="faq-list">
             {faq.map((item) => (
               <details>
@@ -301,16 +197,35 @@ const faqJsonLd = {
           </div>
         </div>
       </section>
+      <section class="related-section">
+        <div class="container">
+          <span class="kicker">04 / {c.relatedEyebrow}</span>
+          <h2>{c.relatedTitle}</h2>
+          <div class="related-grid">
+            {related.map((item) => (
+              <a class="related-card" href={getProductPath(locale, item.id)}>
+                {item.image && <Image src={imageAsset(item.image)} alt={c.imageAlt(productLabel(locale, item.name))} width={480} widths={[320, 480, 768, 960, 1280]} sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1199px) 50vw, 600px" format="webp" quality={80} loading="lazy" />}
+                <span class="related-copy">
+                  <strong>{locale === 'pl' ? polishProductNames[item.name] ?? item.name : productLabel(locale, item.name)}</strong>
+                  <small>{item.description[locale]}</small>
+                  <span>{c.relatedAction} →</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </article>
-    <FinalCta locale={locale} />
   </main>
   <Footer locale={locale} languagePaths={alternates} />
-  <StickyBar locale={locale} />
+  <StickyBar locale={locale} productName={localizedName} />
   <script is:inline type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
   <script is:inline type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
 </Base>
 
 <style>
+
   .product-hero { padding-block: 22px 36px; border-bottom: 1px solid var(--border); }
   .product-hero-grid { display: grid; gap: 28px; margin-top: 24px; }
   .product-hero-copy { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -320,83 +235,44 @@ const faqJsonLd = {
   .product-actions { display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .product-primary, .product-secondary { min-height: 52px; padding: 0 20px; white-space: normal; text-align: center; }
   .availability-note { margin: -4px 0 0; max-width: 56ch; color: var(--text-muted); font-size: 13.5px; }
-  .product-image-wrap { position: relative; align-self: start; width: 100%; aspect-ratio: 3 / 2; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-cream); }
+  .product-image-wrap { position: relative; align-self: start; width: 100%; aspect-ratio: 3 / 2; margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; background: var(--surface-cream); }
   .product-image-wrap img { display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; }
   .product-image-placeholder { display: grid; place-items: end start; width: 100%; height: 100%; padding: 32px; background: linear-gradient(135deg, #e9e3d6, #d5dfd6 65%, #b4c9bd); color: var(--green); font-size: clamp(30px, 4vw, 54px); font-weight: 800; line-height: 1.05; }
   .product-image-wrap figcaption { position: absolute; right: 12px; bottom: 12px; padding: 7px 10px; border-radius: 6px; background: rgb(20 55 36 / 88%); color: #fff; font: 600 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; }
-  .product-facts { display: flex; flex-direction: column; width: 100%; margin: 4px 0 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
-  .product-facts div { display: flex; min-width: 0; justify-content: space-between; align-items: baseline; gap: 16px; padding: 13px 16px; border-bottom: 1px solid var(--border-soft); }
-  .product-facts div:last-child { border-bottom: 0; }
-  .product-facts dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
-  .product-facts dd { min-width: 0; margin: 0; color: var(--text-strong); font-size: 14px; font-weight: 800; text-align: right; overflow-wrap: anywhere; }
   .product-specs { padding-block: 40px; background: var(--surface); border-block: 1px solid var(--border); }
   .product-specs-grid { display: grid; gap: 22px; }
-  .product-specs h2, .suitability-section h2, .batch-section h2, .product-contact h2, .related-section h2, .product-faq h2 { margin: 8px 0 10px; color: var(--text-strong); font-size: 28px; line-height: 1.15; }
+  .product-specs h2, .product-contact h2, .related-section h2, .product-faq h2 { margin: 8px 0 10px; color: var(--text-strong); font-size: 28px; line-height: 1.15; }
   .product-specs p { margin: 0; color: var(--text-soft); line-height: 1.65; }
   .product-description { display: grid; gap: 12px; }
   .specs-side { display: flex; min-width: 0; flex-direction: column; gap: 14px; }
-  .product-table { margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: #fff; }
+  .product-table { margin: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 2px; background: #fff; }
   .product-table div { display: grid; gap: 4px; padding: 12px 14px; border-bottom: 1px solid var(--border-soft); }
   .product-table div:last-child { border-bottom: 0; }
   .product-table dt { color: var(--text-faint); font: 600 10.5px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
   .product-table dd { margin: 0; color: var(--text-strong); font-size: 14.5px; font-weight: 700; }
-  .vat-note { padding-left: 12px; border-left: 2px solid var(--green); font-size: 13.5px; }
-  .order-flow { margin-top: 4px; padding: 18px 16px; border: 1px solid var(--border-cream); border-radius: 10px; background: var(--surface-cream); }
+  .order-flow { margin-top: 4px; padding: 18px 16px; border: 1px solid var(--border-cream); border-radius: 2px; background: var(--surface-cream); }
   .order-flow h3 { margin: 0 0 14px; color: var(--text-strong); font-size: 18px; }
   .order-flow ol { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
   .order-flow li { display: grid; grid-template-columns: 30px 1fr; align-items: start; gap: 10px; }
   .order-flow li > span { display: inline-flex; justify-content: center; align-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: #fff; font: 700 10px var(--font-mono); }
   .order-flow li p { padding-top: 3px; color: var(--text-soft); font-size: 14px; line-height: 1.5; }
-  .suitability-section { padding-block: 44px; }
-  .section-heading { max-width: 720px; }
-  .section-heading p { margin: 0; color: var(--text-soft); line-height: 1.65; }
-  .suitability-grid { display: grid; gap: 1px; margin-top: 24px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--border); }
-  .suitability-grid article { padding: 20px; background: var(--surface); }
-  .suitability-grid article > span { color: var(--green); font: 700 12px var(--font-mono); }
-  .suitability-grid h3 { margin: 18px 0 7px; color: var(--text-strong); font-size: 19px; }
-  .suitability-grid p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
-  .batch-section, .related-section, .product-faq { padding-block: 44px; }
-  .batch-grid { display: grid; gap: 14px; margin-top: 24px; }
-  .batch-grid { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--border); gap: 1px; }
-  .batch-card { padding: 20px; background: var(--surface); }
-  .batch-card > span { color: var(--green); font: 700 12px var(--font-mono); }
-  .batch-card h3 { margin: 18px 0 7px; color: var(--text-strong); font-size: 19px; }
-  .batch-card p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
   .product-contact { padding-block: 44px; background: var(--green-deep); }
   .product-contact .kicker { color: var(--green-pale); }
   .product-contact h2 { color: #fff; }
   .contact-heading { max-width: 720px; }
   .contact-heading > p { margin: 0; color: var(--green-pale-text); line-height: 1.65; }
-  .contact-layout { display: grid; gap: 16px; margin-top: 24px; }
-  .inquiry-form { display: grid; gap: 14px; padding: 20px 16px; border-radius: 12px; background: var(--surface); }
-  .inquiry-form h3 { margin: 0 0 2px; color: var(--text-strong); font-size: 21px; }
-  .inquiry-form label { display: flex; min-width: 0; flex-direction: column; gap: 6px; }
-  .inquiry-form label > span { color: var(--text-mid); font-size: 13px; font-weight: 800; }
-  .inquiry-form input, .inquiry-form textarea { width: 100%; border: 1.5px solid var(--border-input); border-radius: 8px; background: #fff; color: var(--text); font: 500 15px var(--font-sans); }
-  .inquiry-form input { min-height: 48px; padding: 0 13px; }
-  .inquiry-form textarea { min-height: 108px; padding: 12px 13px; resize: vertical; }
-  .inquiry-form input:focus, .inquiry-form textarea:focus { border-color: var(--green); outline: 2px solid var(--green-soft-border); outline-offset: 1px; }
-  .inquiry-form .form-honeypot { position: absolute; left: -10000px; width: 1px; height: 1px; min-height: 0; padding: 0; opacity: 0; pointer-events: none; }
-  .form-submit { min-height: 50px; padding: 0 18px; }
-  .form-submit:disabled { opacity: .65; cursor: wait; box-shadow: none; }
-  .form-status { margin: 0; padding: 11px 13px; border-radius: 8px; font-size: 13.5px; font-weight: 700; line-height: 1.5; }
-  .form-status[data-state="pending"] { background: var(--surface-cream); color: var(--text-soft); }
-  .form-status[data-state="success"] { background: var(--green-soft); color: var(--green-deep); }
-  .form-status[data-state="error"] { background: #fff0ed; color: #8f2d1f; }
-  .form-note { margin: -2px 0 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.5; }
-  .form-note a { font-weight: 700; }
-  .contact-channels { display: grid; gap: 16px; }
-  .channel-card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 14px; padding: 20px; border-radius: 12px; background: var(--surface); }
-  .channel-icon { display: inline-flex; justify-content: center; align-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--green-soft); color: var(--green); }
-  .channel-card h3 { margin: 0 0 6px; color: var(--text-strong); font-size: 20px; }
-  .channel-card p { margin: 0; color: var(--text-soft); font-size: 14.5px; line-height: 1.55; }
-  .channel-card .btn { width: 100%; min-height: 48px; padding: 0 16px; }
-  .channel-card > strong { color: var(--text-strong); font-size: 16px; }
-  .channel-whatsapp { background: var(--green-soft); }
-  .channel-whatsapp .channel-icon { background: var(--green); color: #fff; }
+  .contact-layout { display: grid; align-items: start; gap: 28px; }
+  .contact-heading h2 { max-width: 18ch; }
+  .contact-direct { display: grid; gap: 18px; margin-top: 32px; padding-top: 28px; border-top: 1px solid rgb(255 255 255 / 20%); color: #fff; }
+  .contact-direct p { margin: 0; color: var(--green-pale-text); font-size: 14px; }
+  .contact-direct a { display: inline-flex; align-items: center; gap: 12px; width: fit-content; }
+  .contact-phone { color: #fff; font-size: clamp(22px, 2.5vw, 30px); font-weight: 600; }
+  .contact-whatsapp { color: var(--green-pale-text); font-size: 14px; line-height: 1.6; }
+  .contact-direct a:hover { text-decoration: underline; text-underline-offset: 5px; }
+  .related-section, .product-faq { padding-block: 44px; }
   .related-section { background: var(--surface-cream); border-block: 1px solid var(--border-cream); }
   .related-grid { display: grid; gap: 14px; margin-top: 22px; }
-  .related-card { overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: #fff; color: var(--text); }
+  .related-card { overflow: hidden; border: 1px solid var(--border); border-radius: 2px; background: #fff; color: var(--text); }
   .related-card:hover { border-color: var(--green-outline); color: var(--text); }
   .related-card img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; object-position: center; }
   .related-copy { display: flex; flex-direction: column; gap: 7px; padding: 15px; }
@@ -416,102 +292,37 @@ const faqJsonLd = {
     .product-hero-grid { grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); align-items: start; gap: 40px; }
     .product-actions { flex-direction: row; flex-wrap: wrap; width: auto; }
     .product-specs-grid { grid-template-columns: .8fr 1.2fr; align-items: start; gap: 40px; }
-    .suitability-grid { grid-template-columns: repeat(2, 1fr); }
-    .batch-grid, .related-grid { grid-template-columns: repeat(3, 1fr); }
-    .contact-layout { grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr); gap: 20px; }
-    .inquiry-form { grid-template-columns: 1fr 1fr; padding: 24px; }
-    .inquiry-form h3, .message-field, .form-submit, .form-status, .form-note { grid-column: 1 / -1; }
-    .form-submit { width: fit-content; }
+    .contact-layout { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: 48px; }
+    .related-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .faq-grid { grid-template-columns: .7fr 1.3fr; gap: 48px; }
   }
   @media (min-width: 1024px) {
     .product-hero { padding-block: 30px 52px; }
     .product-hero-grid { grid-template-areas: 'copy image'; gap: 56px; margin-top: 30px; }
+    .product-specs, .product-contact, .related-section, .product-faq { padding-block: 64px; }
     h1 { font-size: 44px; line-height: 1.12; }
     .product-lead { font-size: 18px; line-height: 1.6; }
-    .product-facts { margin-top: 6px; }
-    .product-specs, .suitability-section, .batch-section, .product-contact, .related-section, .product-faq { padding-block: 64px; }
-    .product-specs h2, .suitability-section h2, .batch-section h2, .product-contact h2, .related-section h2, .product-faq h2 { font-size: 34px; }
+    .product-specs h2, .product-contact h2, .related-section h2, .product-faq h2 { font-size: 34px; }
     .product-table div { grid-template-columns: 180px 1fr; gap: 20px; padding: 14px 16px; }
     .order-flow { padding: 22px; }
     .order-flow ol { grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .order-flow li { grid-template-columns: 1fr; gap: 8px; }
-    .suitability-grid { grid-template-columns: repeat(4, 1fr); }
-    .contact-layout { gap: 24px; }
-    .inquiry-form { padding: 28px; }
-    .channel-card { padding: 24px; }
+    .contact-layout { gap: 72px; }
   }
-  @media (min-width: 1200px) {
-    .product-facts { flex-direction: row; }
-    .product-facts div { flex: 1; flex-direction: column; align-items: flex-start; gap: 3px; border-right: 1px solid var(--border-soft); border-bottom: 0; }
-    .product-facts div:last-child { border-right: 0; }
-    .product-facts dd { text-align: left; overflow-wrap: normal; }
-  }
+
+  .product-hero-refined h1 { font-weight: 600; font-size: clamp(32px, 3.5vw, 44px); letter-spacing: -1px; }
+  .product-hero-refined .product-hero-copy { gap: 20px; }
+  .product-hero-refined .product-lead { font-size: 16px; }
+  .product-hero-refined .product-image-wrap { border: 0; border-radius: 0; aspect-ratio: auto; }
+  .product-hero-refined .product-image-wrap img { height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+  .product-hero-refined .product-image-wrap figcaption { position: static; border-radius: 0; padding: 12px 0; font: 400 12px var(--font-sans); text-transform: none; letter-spacing: 0; color: var(--text-muted); background: #fff; }
+  .product-price-panel { width: 100%; border-block: 1px solid var(--border); padding-block: 20px; }
+  .product-price-panel p { margin: 0 0 10px; color: var(--text-soft); font-size: 14px; }
+  .product-price-panel .product-unit-price { color: var(--text-strong); font-size: 16px; }
+  .product-unit-price strong { font-size: 32px; font-weight: 600; }
+  .product-unit-price span { color: var(--text-muted); font-size: 12px; margin-left: 8px; }
+  .product-quality { color: var(--green); font-size: 13px; }
+  .product-terms-note { margin: 0; font-size: 13px; color: var(--text-soft); }
+  @media(max-width: 767px) { .product-hero-refined .product-hero-grid { gap: 20px; } }
+  @media(min-width: 768px) { .product-hero-refined .product-hero-grid { grid-template-areas: 'image copy'; } .product-hero-refined .product-image-wrap { grid-area: image; } .product-hero-refined .product-hero-copy { grid-area: copy; } }
 </style>
-
-<script>
-  import { getLeadAttribution, pushAnalyticsEvent } from '../lib/analytics';
-
-  document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form) => {
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-
-      const data = new FormData(form);
-      const submit = form.querySelector<HTMLButtonElement>('.form-submit');
-      const submitCopy = form.querySelector<HTMLElement>('[data-submit-copy]');
-      const status = form.querySelector<HTMLElement>('[data-form-status]');
-
-      if (!submit || !submitCopy || !status) return;
-
-      submit.disabled = true;
-      submitCopy.textContent = form.dataset.sendingLabel ?? 'Sending…';
-      form.setAttribute('aria-busy', 'true');
-      status.hidden = false;
-      status.dataset.state = 'pending';
-      status.textContent = form.dataset.sendingLabel ?? 'Sending…';
-
-      const payload = {
-        product: String(data.get('product') ?? ''),
-        productId: String(data.get('productId') ?? ''),
-        locale: String(data.get('locale') ?? ''),
-        website: String(data.get('website') ?? ''),
-        name: String(data.get('name') ?? ''),
-        reply: String(data.get('reply') ?? ''),
-        quantity: Number(data.get('quantity')),
-        message: String(data.get('message') ?? ''),
-        pagePath: window.location.pathname,
-        attribution: getLeadAttribution(),
-      };
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          headers: { accept: 'application/json', 'content-type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        const result = await response.json().catch(() => null);
-
-        if (!response.ok || !result?.ok) throw new Error('Enquiry request failed');
-
-        pushAnalyticsEvent({
-          event: 'generate_lead',
-          form_id: 'product_enquiry',
-          placement: 'product_contact',
-          page_language: document.documentElement.lang || payload.locale,
-          product_id: payload.productId,
-          product_name: payload.product,
-        });
-        form.reset();
-        status.dataset.state = 'success';
-        status.textContent = form.dataset.successLabel ?? 'Thank you! Your enquiry has been sent.';
-      } catch {
-        status.dataset.state = 'error';
-        status.textContent = form.dataset.errorLabel ?? 'We could not send your enquiry. Please try again.';
-      } finally {
-        submit.disabled = false;
-        submitCopy.textContent = form.dataset.submitLabel ?? 'Send enquiry';
-        form.removeAttribute('aria-busy');
-      }
-    });
-  });
-</script>

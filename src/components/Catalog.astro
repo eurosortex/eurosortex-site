@@ -1,12 +1,17 @@
 ---
+import { storefront, productLabel } from '../i18n/storefront';
+import { Image } from 'astro:assets';
+import { imageAsset } from '../lib/images';
 import IconWhatsApp from './IconWhatsApp.astro';
+import PriceTable from './PriceTable.astro';
+import AssortmentPreview from './AssortmentPreview.astro';
 import type { Locale } from '../config/locales';
-import { productWhatsappUrl, whatsappUrl } from '../config/contact';
+import { productWhatsappUrl } from '../config/contact';
 import { products, productCategories, formatPrice, type Product, type ProductCategory } from '../data/products';
 import { content } from '../i18n/content';
 import { ui } from '../i18n/ui';
 import { getAssortmentPath, getCategoryPath, getProductPath } from '../config/marketing';
-import { productPageCopy } from '../i18n/marketing';
+import { polishProductNames, productPageCopy } from '../i18n/marketing';
 
 interface Props {
   locale: Locale;
@@ -16,23 +21,44 @@ interface Props {
   intro?: string;
   items?: Product[];
   activeCategory?: ProductCategory | 'all';
+  interactive?: boolean;
 }
-const { locale, variant = 'preview', eyebrow, title, intro, items, activeCategory = 'all' } = Astro.props;
+const { locale, variant = 'preview', eyebrow, title, intro, items, activeCategory = 'all', interactive = false } = Astro.props;
+const s = storefront(locale);
 const t = content[locale];
 const u = ui[locale];
 const productCopy = productPageCopy[locale];
 const categories = ['all', ...productCategories] as const;
 const isPreview = variant === 'preview';
+const showPriceList = isPreview;
 const sourceProducts = items ?? products;
-const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProducts;
+const productName = (p: Product) => locale === 'pl' && !isPreview && !interactive ? polishProductNames[p.name] ?? p.name : productLabel(locale, p.name);
+const displayedProducts = isPreview ? sourceProducts.slice(0, 4) : sourceProducts;
+const briefDescriptions: Record<string, string> = {
+  'urban-sweatshirts': s("Bluzy damskie i męskie w miejskim stylu."),
+  'winter-assortment': s("Odzież damska, męska i dziecięca na zimę."),
+  'mix-standart': s("Odzież damska, męska i dziecięca, obuwie i dodatki."),
+  'kids-wear': s("Odzież dla dziewczynek i chłopców."),
+  'men-sweaters': s("Swetry i dzianiny męskie."),
+  'ladies-sweaters': s("Swetry i dzianiny damskie."),
+  'classic-outwear': s("Mix kurtek męskich i damskich."),
+  'season-shoes': s("Sezonowe obuwie damskie i męskie."),
+};
 ---
 
-<section class:list={['catalog', { 'catalog-preview': isPreview, 'catalog-full': !isPreview }]} id="oferta">
+<section class:list={['catalog', { 'catalog-preview': isPreview, 'catalog-clean': true, 'catalog-full': !isPreview, 'catalog-interactive': interactive }]} id="oferta" data-interactive-catalog={interactive || undefined} data-count-label={s("Wyświetlono:")} data-count-of={s("z")} data-category-label={s("Poznaj kategorię")} aria-label={interactive ? s("Katalog hurtowy") : undefined}>
   <div class="container">
-    <span class="kicker">{eyebrow ?? t.catalog.eyebrow}</span>
-    <h2>{title ?? t.catalog.title}</h2>
-    <p class="catalog-intro">{intro ?? t.catalog.text}</p>
-    <p class="catalog-vat">{t.catalog.taxNote}</p>
+    {interactive && <h2 class="visually-hidden">{s("Wybierz asortyment do swojego sklepu")}</h2>}
+    {!interactive && <div class="catalog-heading">
+      <div><span class="kicker">{eyebrow ?? t.catalog.eyebrow}</span>
+      <h2>{showPriceList ? s("Cennik hurtowy") : title ?? t.catalog.title}</h2>
+      <p class="catalog-intro">{showPriceList ? s("Minimalne zamówienie: 50 kg każdej pozycji.") : intro ?? t.catalog.text}</p></div>
+    </div>}
+
+    {showPriceList && <>
+      <PriceTable locale={locale} />
+      <AssortmentPreview locale={locale} products={displayedProducts} />
+    </>}
 
     {!isPreview && (
       <div class="filters" role="group" aria-label={u.filterCatalog}>
@@ -42,39 +68,45 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
             class:list={['filter', { 'is-active': cat === activeCategory }]}
             data-analytics-filter-key={cat}
             data-analytics-filter-label={t.catalog.filters[cat]}
+            data-local-filter={interactive ? cat : undefined}
             aria-current={cat === activeCategory ? 'page' : undefined}
           >
             {t.catalog.filters[cat]}
+            {interactive && <span class="filter-count" aria-hidden="true">{cat === 'all' ? displayedProducts.length : displayedProducts.filter(p => p.category === cat).length}</span>}
           </a>
         ))}
       </div>
     )}
 
-    <ul class="products" id="product-list">
+    {interactive && <div class="catalog-results"><p role="status" aria-live="polite" data-catalog-count>{s('Wyświetlono:')} {displayedProducts.length} {s('z')} {displayedProducts.length}</p><a data-category-link href={getAssortmentPath(locale)} hidden>{s("Poznaj kategorię")} <span aria-hidden="true">↗</span></a><span>{s("Ceny netto / kg")}</span></div>}
+
+    {!showPriceList && <ul class="products" id="product-list">
       {displayedProducts.map((p) => (
         <li class="card" data-cat={p.category}>
-          <a class="card-image-link" href={getProductPath(locale, p.id)} aria-label={`${productCopy.relatedAction}: ${p.name}`}>
+          <a class="card-image-link" href={getProductPath(locale, p.id)} aria-label={`${productCopy.relatedAction}: ${productName(p)}`}>
             {p.image
-              ? <img class="card-image" src={p.image} alt={`${u.photo}: ${p.name}`} width="960" height="640" loading="lazy" decoding="async" />
+              ? <Image class="card-image" src={imageAsset(p.image)} alt={`${u.photo}: ${p.name}`} width={960} widths={[320, 480, 768, 960, 1280]} sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) 45vw, 400px" format="webp" quality={80} loading="lazy" decoding="async" />
               : <span class="card-image card-image-placeholder" aria-hidden="true"><span>{p.name}</span></span>}
           </a>
           <div class="card-body">
             <div class="card-head">
-              <h3><a href={getProductPath(locale, p.id)}>{p.name}</a></h3>
-              <span class="grade-label">{p.quality[locale]}</span>
+              <h3><a href={getProductPath(locale, p.id)}>{productName(p)}</a></h3>
+              {!isPreview && !interactive && <small class="catalog-code">{p.name}</small>}
+              {!showPriceList && !interactive && <span class="grade-label">{p.quality[locale]}</span>}
             </div>
-            <p class="card-desc">{p.description[locale]}</p>
-            {p.composition && <p class="card-spec">{p.composition[locale]}</p>}
-            <p class="card-spec">{t.common.branded}: {p.luxuryShareApprox}%</p>
-            <div class="card-price">
-              <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} {t.common.netSuffix}</span>
+            {!isPreview && <p class="card-desc">{interactive ? briefDescriptions[p.id] ?? p.description[locale] : p.description[locale]}</p>}
+            {!isPreview && !interactive && p.composition && <p class="card-spec">{p.composition[locale]}</p>}
+
+            {!showPriceList && <div class="card-price">
+              <span class="price">{formatPrice(p.netPricePlnPerKg, locale)} <span class="price-unit">{t.common.netSuffix}</span></span>
               <span class="vat">{t.common.vat}</span>
-            </div>
+            </div>}
+            {!showPriceList && <p class="minimum-budget">{interactive ? s("Minimum 50 kg") : '50 kg'}: <strong>{formatPrice(p.netPricePlnPerKg * 50, locale)} {s("zł netto")}</strong></p>}
             <div class="card-actions">
-              <a class="btn btn-soft card-details" href={getProductPath(locale, p.id)}>
+              {interactive ? <a class="card-inquiry" href="#kontakt" data-inquire-product={p.id} aria-label={`${s('Zapytaj o ofertę')}: ${productName(p)}`}>{s("Zapytaj o ofertę")} <span aria-hidden="true">→</span></a> : <a class="btn btn-soft card-details" href={getProductPath(locale, p.id)}>
                 {productCopy.relatedAction} →
-              </a>
-              <a
+              </a>}
+              {!isPreview && <a
                 class="card-whatsapp"
                 href={productWhatsappUrl(p.name, locale)}
                 aria-label={`${t.common.productQuestion}: ${p.name}`}
@@ -87,48 +119,40 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
                 data-analytics-product-price={p.netPricePlnPerKg}
               >
                 <IconWhatsApp size={19} />
-              </a>
+              </a>}
             </div>
+            {interactive && <a class="card-more" href={getProductPath(locale, p.id)}>{s("Zdjęcia i szczegóły")} <span aria-hidden="true">→</span></a>}
           </div>
         </li>
       ))}
-    </ul>
+    </ul>}
 
+    {!showPriceList && <p class="catalog-vat">{interactive ? s("Ceny netto. VAT i transport doliczamy osobno. Zdjęcia pokazują przykładowy asortyment — cenę, skład i dostępność partii potwierdzamy przed zamówieniem.") : t.catalog.taxNote}</p>}
     {isPreview ? (
-      <div class="preview-footer">
-        <span>{u.assortmentPreviewNote(products.length)}</span>
+      <div class:list={['preview-footer', { 'preview-footer-hidden': true }]}>
+
         <a class="btn btn-primary preview-link" href={getAssortmentPath(locale)}>
           {u.viewFullAssortment} →
         </a>
       </div>
     ) : (
       <>
-        <div class="disclaimers">
+        {!interactive && <div class="disclaimers">
           <span><strong>{t.catalog.disclaimer}</strong></span>
           <span>{u.wholesaleMinimum}</span>
-        </div>
+        </div>}
 
-        <div class="manager-cta">
-          <div class="manager-cta-text">
-            <h3>{u.managerTitle}</h3>
-            <p>{u.managerText}</p>
-          </div>
-          <a
-            class="btn btn-primary manager-cta-btn"
-            href={whatsappUrl('general', locale)}
-            data-analytics-whatsapp
-            data-analytics-placement="catalog_help"
-          >
-            <IconWhatsApp size={17} />
-            <span>{u.managerAction}</span>
-          </a>
-        </div>
+
       </>
     )}
   </div>
 </section>
 
 <style>
+  .catalog-code { color: var(--text-muted); font-size: 12px; }
+  .minimum-budget { margin: 0; padding: 12px; background: var(--green-soft); border-radius: 8px; color: var(--green-deep); font-size: 14px; }
+  .minimum-budget small { display: block; margin-top: 4px; font-size: 11px; color: var(--text-soft); }
+  .catalog-preview .products { margin-top: 24px; }
   .catalog {
     padding-block: 32px;
   }
@@ -590,4 +614,74 @@ const displayedProducts = isPreview ? sourceProducts.slice(0, 6) : sourceProduct
       }
     }
   }
+
+  .catalog-clean { padding-block: var(--section-space); border-top: 0; }
+  .catalog-clean h2 { font-size: var(--heading-section); line-height: 1.15; font-weight: 600; letter-spacing: -1px; margin-block: 12px; }
+  .catalog-clean .catalog-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+  .catalog-clean .catalog-vat { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 12px; font-weight: 400; color: var(--text-muted); }
+  .catalog-clean .products { gap: 32px 24px; margin-top: 32px; }
+  .catalog-clean .card { border: 0; border-radius: 0; }
+  .catalog-clean .card:hover { transform: none; box-shadow: none; }
+  .catalog-clean .card-image-link { border: 0; aspect-ratio: 4 / 3; }
+  .catalog-clean .card-body { padding: 16px 0 0; gap: 8px; }
+  .catalog-clean .card-head h3 { font-weight: 600; font-size: 19px; line-height: 1.35; }
+  .catalog-clean .grade-label { font-family: var(--font-sans); letter-spacing: 0; font-weight: 400; font-size: 12px; }
+  .catalog-clean .price { font-size: 23px; font-weight: 600; }
+  .catalog-clean .price-unit { font-size: 13px; font-weight: 400; color: var(--text-soft); }
+  .catalog-clean .vat { display: none; }
+  .catalog-clean .minimum-budget { padding: 0; background: none; color: var(--text-soft); font-size: 12px; }
+  .catalog-clean .minimum-budget strong { font-weight: 500; }
+  .catalog-clean .filter, .catalog-clean .card-whatsapp { border-radius: 2px; }
+  .catalog-clean.catalog-preview .card-actions { display: flex; }
+  .catalog-clean.catalog-preview .card-details { background: none; border: 0; justify-content: start; font-weight: 600; min-height: 40px; font-size: 13px; }
+  .catalog-clean .preview-footer-hidden { display: none; }
+  @media(min-width: 1100px) { .catalog-clean.catalog-preview .products { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media(max-width: 767px) {
+    .catalog-clean .catalog-heading { display: block; }
+    .catalog-clean.catalog-preview .products { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; }
+    .catalog-clean.catalog-preview .card-head h3 { font-size: 16px; }
+    .catalog-clean.catalog-preview .price { font-size: 21px; line-height: 1.5; }
+    .catalog-clean.catalog-preview .price-unit { display: block; font-size: 12px; }
+    .catalog-clean.catalog-preview .card-image-link { aspect-ratio: 1; }
+  }
 </style>
+
+<style>
+  .catalog-interactive { padding-block: 24px 56px; }
+  .catalog-interactive .filters { margin: 0; gap: 8px; }
+  .catalog-interactive .filter { gap: 10px; min-height: 44px; padding: 10px 14px; font-size: 13px; font-weight: 500; border-width: 1px; border-radius: 0; }
+  .filter-count { font-size: 11px; opacity: .7; }
+  .catalog-results { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 20px; font-size: 12px; color: var(--text-muted); }
+  .catalog-results p { margin: 0; }
+  .catalog-results > span { margin-left: auto; }
+  .catalog-results a { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+  .catalog-results a[hidden] { display: none; }
+  .catalog-interactive .products { margin-top: 18px; gap: 40px 24px; }
+  .catalog-interactive .card-image-link { aspect-ratio: 1.5; }
+  .catalog-interactive .card-head h3 { font-size: 22px; }
+  .catalog-interactive .card-desc { font-size: 14px; line-height: 1.6; margin-bottom: 10px; }
+  .catalog-interactive .price { font-size: 27px; letter-spacing: -.03em; }
+  .catalog-interactive .price-unit { letter-spacing: 0; font-size: 12px; }
+  .catalog-interactive .minimum-budget { font-size: 12px; }
+  .catalog-interactive .card-actions { margin-top: 10px; grid-template-columns: minmax(0, 1fr) 46px; gap: 8px; }
+  .card-inquiry { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 46px; padding: 12px 16px; background: var(--green); color: #fff; font-size: 13px; font-weight: 600; }
+  .card-inquiry:hover { background: var(--green-hover); }
+  .catalog-interactive .card-whatsapp { color: var(--green); background: white; border: 1px solid var(--border-input); border-radius: 0; }
+  .catalog-interactive .card-whatsapp:hover { border-color: var(--green); background: var(--green-soft); }
+  .card-more { display: flex; align-items: center; justify-content: space-between; min-height: 44px; gap: 16px; color: var(--text-soft); font-size: 12px; }
+  .card-more:hover { color: var(--green); text-decoration: underline; text-underline-offset: 4px; }
+  .catalog-interactive a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  @media(max-width: 599px) {
+    .catalog-interactive { padding-block: 18px 36px; }
+    .catalog-interactive .filters { flex-wrap: nowrap; overflow-x: auto; padding: 3px 3px 10px; }
+    .catalog-interactive .filter { flex: none; }
+    .catalog-interactive .products { gap: 30px; }
+    .catalog-interactive .card-head h3 { font-size: 21px; }
+    .catalog-results { gap: 10px 16px; margin-top: 12px; }
+    .catalog-results a { order: 3; width: 100%; }
+  }
+</style>
+
+<script>
+  import '../lib/catalog';
+</script>

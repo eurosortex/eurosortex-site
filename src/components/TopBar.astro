@@ -1,0 +1,92 @@
+---
+import IconPhone from './IconPhone.astro';
+import type { Locale } from '../config/locales';
+import { localeConfig, visibleLocales } from '../config/locales';
+import { contact } from '../config/contact';
+import { content } from '../i18n/content';
+
+interface Props { locale: Locale; languagePaths?: Partial<Record<Locale, string>> }
+const { locale, languagePaths } = Astro.props;
+---
+
+<div class="top-bar">
+  <div class="container top-bar-inner">
+    <div class="top-contacts">
+      <a href={`tel:${contact.phoneE164}`} data-analytics-placement="header">
+        <IconPhone size={16} /><span>{contact.phoneDisplay}</span>
+      </a>
+      <a class="top-email" href={`mailto:${contact.email}`} aria-label={contact.email} title={contact.email} data-analytics-placement="header">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1" stroke="currentColor" stroke-width="1.6" /><path d="m3 6 9 7 9-7" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" /></svg>
+        <span>{contact.email}</span>
+      </a>
+    </div>
+    <details class="language-select" data-language-select>
+      <summary aria-label={`${content[locale].languageLabel}: ${localeConfig[locale].label}`} title={localeConfig[locale].label}>
+        {locale === 'en' ? <span aria-hidden="true">🌐</span> : <span class:list={['flag', `flag-${locale}`]} aria-hidden="true"></span>}
+        <svg class="language-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </summary>
+      <nav class="top-languages" aria-label={content[locale].languageLabel}>
+      {visibleLocales.map((item) => <a
+        href={languagePaths?.[item] ?? localeConfig[item].path}
+        lang={item}
+        hreflang={item}
+        aria-label={localeConfig[item].label}
+        title={localeConfig[item].label}
+        aria-current={item === locale ? 'page' : undefined}
+        data-analytics-language-to={item}
+        data-analytics-placement="header"
+      ><span class:list={['flag', `flag-${item}`]} aria-hidden="true"></span><span>{localeConfig[item].label}</span>{item === locale && <span class="language-check" aria-hidden="true">✓</span>}</a>)}
+      </nav>
+    </details>
+  </div>
+</div>
+
+<style>
+  .top-bar { position: relative; z-index: 60; background: #f3f4f1; border-bottom: 1px solid var(--border-soft); }
+  .top-bar-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; min-height: 40px; }
+  .top-contacts { display: flex; align-items: center; gap: 28px; }
+  .top-contacts a { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font-size: 13px; color: var(--text-soft); }
+  .top-contacts a:hover { color: var(--green); }
+  .top-contacts svg { color: var(--green); flex: none; }
+  .language-select { position: relative; }
+  .language-select summary { display: flex; align-items: center; justify-content: center; gap: 10px; min-width: 50px; min-height: 40px; cursor: pointer; list-style: none; color: var(--text-soft); }
+  .language-select summary::-webkit-details-marker { display: none; }
+  .language-select summary:hover { color: var(--green); }
+  .language-select summary:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+  .language-select[open] .language-chevron { transform: rotate(180deg); }
+  .top-languages { position: absolute; top: calc(100% + 4px); right: 0; width: 190px; padding: 6px; background: #fff; border: 1px solid var(--border); border-radius: 2px; box-shadow: 0 8px 24px rgb(20 35 25 / 12%); }
+  .top-languages a { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 8px 12px; color: var(--text-soft); font-size: 14px; }
+  .top-languages a:hover, .top-languages a[aria-current='page'] { color: var(--green); background: var(--surface-cream); }
+  .language-check { margin-left: auto; }
+  .flag { display: block; width: 22px; height: 15px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / 7%); }
+  .flag-pl { background: linear-gradient(#fff 50%, #dc143c 50%); }
+  .flag-ru { background: linear-gradient(#fff 33.33%, #174fba 33.33% 66.66%, #d52b1e 66.66%); }
+  .flag-uk { background: linear-gradient(#0057b7 50%, #ffdd00 50%); }
+  @media(max-width: 600px) {
+    .top-bar-inner { gap: 12px; min-height: 36px; }
+    .top-contacts { gap: 14px; }
+    .top-contacts a { font-size: 12px; gap: 6px; min-height: 36px; }
+    .top-email { min-width: 28px; justify-content: center; }
+    .top-email span { display: none; }
+    .language-select summary { min-height: 36px; }
+    .flag { width: 20px; height: 14px; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('[data-language-select]').forEach((select) => {
+    const trigger = select.querySelector<HTMLElement>('summary')!;
+    document.addEventListener('click', (event) => {
+      if (!select.contains(event.target as Node)) select.open = false;
+    });
+    select.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && select.open) {
+        select.open = false;
+        trigger.focus();
+      }
+    });
+    select.addEventListener('focusout', (event) => {
+      if (!select.contains(event.relatedTarget as Node | null)) select.open = false;
+    });
+  });
+</script>
