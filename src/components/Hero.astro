@@ -5,8 +5,8 @@ import { imageAsset } from '../lib/images';
 import { getAssortmentPath } from '../config/marketing';
 import type { Locale } from '../config/locales';
 
-interface Props { locale: Locale }
-const { locale } = Astro.props;
+interface Props { locale: Locale; lead?: string }
+const { locale, lead } = Astro.props;
 const s = storefront(locale);
 ---
 
@@ -16,7 +16,7 @@ const s = storefront(locale);
     <div class="hero-content">
       <span class="kicker">{s('EUROSORTEX GROUP · WARSZAWA')}</span>
       <h1>{s('Hurtownia odzieży używanej')} <span>{s('dla Twojego sklepu')}</span></h1>
-      <p class="hero-lead">{s('Sortowana odzież i obuwie z Europy. Zamówienia od 50 kg, z dostawą do sklepów second-hand w całej Polsce.')}</p>
+      <p class="hero-lead">{lead ?? s('Sortowana odzież i obuwie z Europy. Zamówienia od 50 kg, z dostawą do sklepów second-hand w całej Polsce.')}</p>
       <div class="hero-ctas">
         <a class="btn btn-primary" href={getAssortmentPath(locale)}>{s('Zobacz ofertę')}</a>
         <a class="btn btn-secondary" href="#kontakt" data-analytics-placement="hero">{s('Kontakt')}</a>

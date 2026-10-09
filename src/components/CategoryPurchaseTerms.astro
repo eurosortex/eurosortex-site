@@ -1,0 +1,22 @@
+<section class="purchase-terms" aria-labelledby="category-purchase-terms-title">
+  <div class="container">
+    <h2 id="category-purchase-terms-title">Warunki zakupu</h2>
+    <dl>
+      <div><dt>Minimum</dt><dd>50 kg każdej pozycji</dd></div>
+      <div><dt>Płatność</dt><dd>100% przedpłaty przelewem na podstawie faktury</dd></div>
+      <div><dt>Dostawa w Polsce</dt><dd>Zwykle 1–3 tygodnie od zaksięgowania płatności</dd></div>
+      <div><dt>VAT i transport</dt><dd>Ceny netto. VAT i transport rozliczamy osobno</dd></div>
+    </dl>
+    <p>Dostępność, cenę i termin potwierdzamy przed zamówieniem.</p>
+  </div>
+</section>
+<style>
+  .purchase-terms { padding-block: 32px 40px; border-top: 1px solid var(--border); }
+  h2 { margin: 0 0 24px; color: var(--text-strong); font-size: clamp(24px, 2.4vw, 30px); font-weight: 650; line-height: 1.3; }
+  dl { display: grid; gap: 24px; margin: 0; }
+  dt { margin-bottom: 8px; color: var(--text-muted); font-size: 12px; }
+  dd { margin: 0; color: var(--text-strong); font-size: 15px; line-height: 1.6; }
+  p { margin: 24px 0 0; color: var(--text-soft); font-size: 13px; line-height: 1.7; }
+  @media (min-width: 600px) { dl { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) { dl { grid-template-columns: repeat(4, 1fr); gap: 32px; } }
+</style>

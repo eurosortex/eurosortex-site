@@ -13,7 +13,7 @@ const order = productEnhancementCopy[locale];
   <div class="container guide-grid">
     <div>
       <h2 id="buying-guide-title">{guide.title}</h2>
-      <p>{guide.text}</p>
+      {!(locale === 'pl' && category === 'mix') && <p>{guide.text}</p>}
       {guide.questions.map(({ question, answer }) => <div class="guide-answer">
         <h3>{question}</h3>
         <p>{answer}</p>
@@ -23,7 +23,7 @@ const order = productEnhancementCopy[locale];
       <h2 id="batch-guide-title">{copy.batchTitle}</h2>
       <p>{copy.batchText}</p>
       <ul>{copy.batchPoints.map((point) => <li><strong>{point.title}</strong><p>{point.text}</p></li>)}</ul>
-      <a class="btn btn-primary" href="#kontakt">{order.formTitle} →</a>
+      <a class="btn btn-primary" href="#kontakt" data-inquire-product={locale === 'pl' && category === 'children' ? 'kids-wear' : undefined}>{locale === 'pl' && category === 'children' ? 'Zapytaj o partię dziecięcą' : order.formTitle} →</a>
     </aside>
   </div>
 </section>}

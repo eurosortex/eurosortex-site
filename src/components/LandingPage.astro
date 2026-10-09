@@ -11,6 +11,7 @@ import Faq from './Faq.astro';
 import FinalCta from './FinalCta.astro';
 import Footer from './Footer.astro';
 import StickyBar from './StickyBar.astro';
+import FirstPurchase from './FirstPurchase.astro';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -27,8 +28,9 @@ const t = content[locale];
 >
   <Header locale={locale} />
   <main id="tresc">
-    <Hero locale={locale} />
+    <Hero locale={locale} lead={locale === 'pl' ? 'Sortowana odzież i obuwie z Europy dla sklepów second-hand. Minimum 50 kg każdej pozycji. Magazyn w Warszawie, dostawa na terenie Polski.' : undefined} />
     <Catalog locale={locale} />
+    {locale === 'pl' && <FirstPurchase />}
     <Quality locale={locale} />
     <Cooperation locale={locale} />
     <Faq locale={locale} />

@@ -1,0 +1,26 @@
+<section class="first-purchase" aria-labelledby="first-purchase-title">
+  <div class="container purchase-grid">
+    <div>
+      <span class="kicker">OTWIERASZ SKLEP?</span>
+      <h2 id="first-purchase-title">Pierwsze zatowarowanie<br />sklepu second-hand</h2>
+    </div>
+    <div class="purchase-copy">
+      <p>Pomożemy dobrać kategorie towaru do Twojego budżetu, sezonu i klientów. Napisz, gdzie i kiedy planujesz otwarcie oraz jaki asortyment chcesz sprzedawać. Omówimy dostępną partię i warunki pierwszej dostawy.</p>
+      <p class="purchase-note">Minimum: 50 kg każdej pozycji. Cena, skład partii i transport wymagają potwierdzenia przed zamówieniem.</p>
+      <a class="btn btn-primary" href="#kontakt">Zapytaj o pierwszą dostawę →</a>
+      <a class="guide-link" href="/blog/jak-otworzyc-sklep-second-hand/">Jak przygotować sklep do pierwszej dostawy? →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .first-purchase { padding-block: var(--section-space); border-top: 1px solid var(--border); background: var(--surface-cream); }
+  .purchase-grid { display: grid; gap: 28px; }
+  .kicker { color: var(--text-muted); font-size: 10px; letter-spacing: 1.7px; }
+  h2 { margin: 16px 0 0; color: var(--text-strong); font-size: clamp(28px, 3vw, 40px); font-weight: 600; line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
+  p { margin: 0; color: var(--text-soft); font-size: 16px; line-height: 1.75; }
+  .purchase-note { margin-top: 16px; font-size: 13px; }
+  .btn { display: inline-flex; align-items: center; min-height: 48px; margin-top: 24px; padding: 12px 20px; white-space: normal; }
+  .guide-link { display: block; width: fit-content; margin-top: 16px; padding-block: 8px; color: var(--green); font-size: 13px; line-height: 1.6; text-decoration: underline; text-underline-offset: 4px; }
+  @media (min-width: 960px) { .purchase-grid { grid-template-columns: 1fr 1fr; gap: 64px; } }
+</style>

@@ -14,6 +14,8 @@ import Catalog from './Catalog.astro';
 import FinalCta from './FinalCta.astro';
 import StickyBar from './StickyBar.astro';
 import CategoryBuyingGuide from './CategoryBuyingGuide.astro';
+import MixComparison from './MixComparison.astro';
+import CategoryPurchaseTerms from './CategoryPurchaseTerms.astro';
 
 interface Props { locale: Locale; category: ProductCategory }
 const { locale, category } = Astro.props;
@@ -92,7 +94,9 @@ const collectionJsonLd = {
       title={c.catalogTitle}
       intro={pageUi.catalogText}
     />
+    {locale === 'pl' && category === 'mix' && <MixComparison />}
     <CategoryBuyingGuide locale={locale} category={category} />
+    {locale === 'pl' && ['mix', 'children'].includes(category) && <CategoryPurchaseTerms />}
     <FinalCta locale={locale} />
   </main>
   <Footer locale={locale} languagePaths={alternates} />
