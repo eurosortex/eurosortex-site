@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 import { getAssortmentPath, getProductPath } from '../config/marketing';
 import type { Product } from '../data/products';
 import { imageAsset } from '../lib/images';
+import CategoryLinks from './CategoryLinks.astro';
 
 interface Props { products: Product[]; locale: Locale }
 const { products, locale } = Astro.props;
@@ -45,6 +46,7 @@ const descriptions: Record<string, string> = {
       </li>
     ))}
   </ul>
+  <CategoryLinks locale={locale} />
 </section>
 
 <style>

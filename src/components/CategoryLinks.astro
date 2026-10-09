@@ -1,0 +1,16 @@
+---
+import type { Locale } from '../config/locales';
+import { getCategoryPath } from '../config/marketing';
+import { featuredCategories } from '../i18n/category-guides';
+import { categoryPageCopy } from '../i18n/marketing';
+import { ui } from '../i18n/ui';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+---
+<nav class="category-links" aria-label={ui[locale].filterCatalog}>
+  {featuredCategories.map(category => <a href={getCategoryPath(locale, category)}>{categoryPageCopy[locale][category].title}<span aria-hidden="true"> →</span></a>)}
+</nav>
+<style>
+  .category-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 24px; }
+  a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 14px; line-height: 1.5; color: var(--green); text-decoration: underline; text-underline-offset: 4px; }
+</style>

@@ -4,6 +4,7 @@ import { getAssortmentPath } from '../config/marketing';
 import { whatsappUrl } from '../config/contact';
 import { blogCopy } from '../i18n/blog';
 import IconWhatsApp from './IconWhatsApp.astro';
+import CategoryLinks from './CategoryLinks.astro';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const copy = blogCopy[locale];
@@ -13,6 +14,7 @@ const copy = blogCopy[locale];
     <span class="kicker">{copy.offerEyebrow}</span>
     <h2>{copy.offerTitle}</h2>
     <p>{copy.offerText}</p>
+    <CategoryLinks locale={locale} />
   </div>
   <div class="offer-actions">
     <a class="btn btn-primary" href={getAssortmentPath(locale)}>{copy.viewOffer}<span aria-hidden="true">→</span></a>

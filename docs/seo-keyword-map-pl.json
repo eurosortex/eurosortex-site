@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-09",
+  "market": "Poland",
+  "audience": "Owners and buyers of second-hand shops purchasing wholesale goods for delivery in Poland",
+  "method": "Qualitative review of public search results and the existing catalogue; not a Poland-localized Google rank report. No Keyword Planner volume, CPC or competition data was available. Priorities reflect assortment fit and purchase intent, not measured search demand.",
+  "pages": [
+    {
+      "path": "/",
+      "queries": [
+        "hurtownia odzieży używanej",
+        "hurtownia odzieży używanej Warszawa"
+      ],
+      "intent": "Find a wholesale supplier",
+      "action": "Retain existing supplier positioning"
+    },
+    {
+      "path": "/asortyment/",
+      "queries": [
+        "odzież używana hurt cennik",
+        "odzież używana na wagę hurt"
+      ],
+      "intent": "Compare assortment and prices",
+      "action": "Retain catalogue and crawlable category links"
+    },
+    {
+      "path": "/asortyment/miksy-odziezy-uzywanej/",
+      "queries": [
+        "mix odzieży używanej hurt",
+        "odzież używana sortowana hurt",
+        "mix zimowy odzieży używanej"
+      ],
+      "intent": "Compare mixed wholesale batches",
+      "action": "Priority: unique metadata and introduction; explain universal versus winter mix and minimum per line"
+    },
+    {
+      "path": "/asortyment/odziez-dziecieca-uzywana/",
+      "queries": [
+        "odzież dziecięca używana hurt",
+        "hurtownia odzieży dziecięcej używanej",
+        "ubranka dziecięce używane na wagę hurt"
+      ],
+      "intent": "Stock a children’s department",
+      "action": "Priority: unique metadata and introduction; explain sizes, batch contents and weight versus piece count"
+    },
+    {
+      "path": "/asortyment/obuwie-uzywane/",
+      "queries": [
+        "obuwie używane hurt",
+        "buty używane hurt",
+        "obuwie używane na wagę"
+      ],
+      "intent": "Source seasonal footwear for resale",
+      "action": "Priority: unique metadata and introduction; explain season, sizes and kilograms versus pairs"
+    },
+    {
+      "path": "/asortyment/bluzy-uzywane/",
+      "queries": [
+        "bluzy używane hurt"
+      ],
+      "intent": "Restock sweatshirts",
+      "action": "Retain existing category; evaluate later from Polish Search Console data"
+    },
+    {
+      "path": "/asortyment/swetry-uzywane/",
+      "queries": [
+        "swetry używane hurt"
+      ],
+      "intent": "Restock knitwear",
+      "action": "Retain existing category; evaluate later from Polish Search Console data"
+    },
+    {
+      "path": "/asortyment/odziez-wierzchnia-uzywana/",
+      "queries": [
+        "kurtki używane hurt",
+        "odzież wierzchnia używana hurt"
+      ],
+      "intent": "Restock seasonal outerwear",
+      "action": "Retain existing category; evaluate later from Polish Search Console data"
+    }
+  ],
+  "page_roles": "Category pages answer selection questions; existing product pages retain exact line names, specifications and product enquiries. Keep existing URLs and self-canonicals.",
+  "links": "Home assortment preview and blog offer block now link directly to the three priority categories, with equivalent visitor-language routes.",
+  "excluded_claims": [
+    "Unverified search volumes or positions",
+    "Guaranteed brands, sizes, cream grade, stock availability or profit",
+    "Invented batch photos or customer reviews",
+    "Foreign delivery promises"
+  ],
+  "sources": [
+    {
+      "url": "https://hurtubran.pl/",
+      "observation": "Public supplier page addresses second-hand stores, sorted goods and an explicit wholesale minimum."
+    },
+    {
+      "url": "https://hurtowniabebe.pl/",
+      "observation": "Public children’s supplier page shows that queries may mix new, outlet and used clothing; retain the used-clothing qualifier."
+    },
+    {
+      "url": "https://freshstock.pl/",
+      "observation": "Footwear results also include consumer returns priced per pair; distinguish this catalogue’s seasonal goods priced per kilogram."
+    },
+    {
+      "url": "https://developers.google.com/search/docs/specialty/ecommerce/help-google-understand-your-ecommerce-site-structure",
+      "observation": "Google recommends crawlable category/product links and linking important categories from other content."
+    }
+  ],
+  "measurement": "After Google recrawls, compare Poland-filtered non-brand impressions and clicks by category with qualified enquiries. Confirm keyword volumes in Keyword Planner when access is available."
+}

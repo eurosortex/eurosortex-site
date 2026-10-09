@@ -218,6 +218,30 @@ export const categoryPageUi: Record<Locale, CategoryPageUi> = {
   en: { eyebrow: 'ASSORTMENT CATEGORY · B2B WHOLESALE', countLabel: 'LINES', countValue: (count) => `${count} in catalogue`, minimumLabel: 'MINIMUM', minimumValue: '50 kg / line', deliveryLabel: 'DELIVERY', deliveryValue: 'Across the entire EU', catalogEyebrow: '01 / CATEGORY LINES', catalogText: 'Below are all lines in this category. Availability and price are confirmed for the current batch.' },
 };
 
+const polishCategoryCopy: Partial<Record<ProductCategory, CategoryPageCopy>> = {
+  mix: {
+    metaTitle: 'Mix odzieży używanej hurt — dla sklepów | EuroSortex',
+    metaDescription: 'Mix odzieży używanej dla sklepów second-hand: uniwersalny i zimowy. Porównaj ceny netto za kg. Minimum 50 kg każdej pozycji, dostawa w Polsce.',
+    title: 'Miksy odzieży używanej dla sklepów',
+    lead: 'Wybierz mix uniwersalny lub zimowy do zatowarowania sklepu second-hand. Sprzedaż hurtowa od 50 kg każdej pozycji, z dostawą na terenie Polski. Przed zamówieniem potwierdzamy skład, jakość i dostępność partii.',
+    catalogTitle: 'Porównaj miksy i ceny hurtowe',
+  },
+  children: {
+    metaTitle: 'Odzież dziecięca używana — hurt dla sklepów | EuroSortex',
+    metaDescription: 'Odzież dziecięca używana na wagę dla sklepów second-hand. Hurt od 50 kg, ceny netto w katalogu. Zapytaj o rozmiary, zdjęcia partii i dostawę w Polsce.',
+    title: 'Odzież dziecięca używana — hurt dla sklepów',
+    lead: 'Zaopatrz dział dziecięcy w sklepie second-hand w odzież dla dziewczynek i chłopców. Kids Wear zamówisz od 50 kg, z dostawą w Polsce. Rozmiary, rodzaje ubrań i stan towaru potwierdzamy dla konkretnej partii.',
+    catalogTitle: 'Odzież dziecięca — cena za kilogram',
+  },
+  shoes: {
+    metaTitle: 'Obuwie używane hurt — na wagę dla sklepów | EuroSortex',
+    metaDescription: 'Obuwie używane damskie i męskie hurtowo na wagę. Minimum 50 kg, ceny netto za kilogram. Zapytaj o modele, rozmiary i dostawę do sklepu w Polsce.',
+    title: 'Obuwie używane hurtowo dla sklepów',
+    lead: 'Sezonowe obuwie damskie i męskie do dalszej sprzedaży w sklepach second-hand. Zamówienia hurtowe od 50 kg z dostawą w Polsce. Aktualne modele, rozmiary i jakość partii sprawdzisz przed zakupem.',
+    catalogTitle: 'Obuwie sezonowe — cena hurtowa za kilogram',
+  },
+};
+
 export const categoryPageCopy: Record<Locale, Record<ProductCategory, CategoryPageCopy>> = Object.fromEntries(
   (['pl', 'ru', 'uk', 'en'] as const).map((locale) => [
     locale,
@@ -230,7 +254,7 @@ export const categoryPageCopy: Record<Locale, Record<ProductCategory, CategoryPa
         : locale === 'uk'
         ? { metaTitle: `${label} гуртом | EuroSortex`, metaDescription: `${label} в актуальному асортименті EuroSortex. Запитайте наявність, ціну та фото партії. Гуртом від 50 кг, доставка по Польщі.`, title: `${label} гуртом`, lead: 'Перегляньте поточні позиції та запитайте про доступну партію. Ціну, якість і склад підтверджуємо до замовлення.', catalogTitle: `Доступні позиції: ${label}` }
         : { metaTitle: `${label} wholesale | EuroSortex`, metaDescription: `${label} in the current EuroSortex assortment. Ask for availability, price and batch photos. Wholesale from 50 kg with EU delivery.`, title: `${label} wholesale`, lead: 'Explore the current lines and ask about the available batch. We confirm price, quality and contents before ordering.', catalogTitle: `Available ${label.toLowerCase()} lines` };
-      return [category, copy];
+      return [category, locale === 'pl' ? polishCategoryCopy[category] ?? copy : copy];
     })),
   ]),
 ) as Record<Locale, Record<ProductCategory, CategoryPageCopy>>;

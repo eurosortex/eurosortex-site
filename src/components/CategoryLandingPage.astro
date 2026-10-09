@@ -13,6 +13,7 @@ import Breadcrumbs from './Breadcrumbs.astro';
 import Catalog from './Catalog.astro';
 import FinalCta from './FinalCta.astro';
 import StickyBar from './StickyBar.astro';
+import CategoryBuyingGuide from './CategoryBuyingGuide.astro';
 
 interface Props { locale: Locale; category: ProductCategory }
 const { locale, category } = Astro.props;
@@ -91,6 +92,7 @@ const collectionJsonLd = {
       title={c.catalogTitle}
       intro={pageUi.catalogText}
     />
+    <CategoryBuyingGuide locale={locale} category={category} />
     <FinalCta locale={locale} />
   </main>
   <Footer locale={locale} languagePaths={alternates} />

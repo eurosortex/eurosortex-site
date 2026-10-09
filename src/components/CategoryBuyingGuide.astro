@@ -1,0 +1,44 @@
+---
+import type { Locale } from '../config/locales';
+import type { ProductCategory } from '../data/products';
+import { getCategoryGuide } from '../i18n/category-guides';
+import { productPageCopy, productEnhancementCopy } from '../i18n/marketing';
+interface Props { locale: Locale; category: ProductCategory }
+const { locale, category } = Astro.props;
+const guide = getCategoryGuide(locale, category);
+const copy = productPageCopy[locale];
+const order = productEnhancementCopy[locale];
+---
+{guide && <section class="buying-guide" aria-labelledby="buying-guide-title">
+  <div class="container guide-grid">
+    <div>
+      <h2 id="buying-guide-title">{guide.title}</h2>
+      <p>{guide.text}</p>
+      {guide.questions.map(({ question, answer }) => <div class="guide-answer">
+        <h3>{question}</h3>
+        <p>{answer}</p>
+      </div>)}
+    </div>
+    <aside aria-labelledby="batch-guide-title">
+      <h2 id="batch-guide-title">{copy.batchTitle}</h2>
+      <p>{copy.batchText}</p>
+      <ul>{copy.batchPoints.map((point) => <li><strong>{point.title}</strong><p>{point.text}</p></li>)}</ul>
+      <a class="btn btn-primary" href="#kontakt">{order.formTitle} →</a>
+    </aside>
+  </div>
+</section>}
+<style>
+  .buying-guide { padding-block: 32px 48px; border-top: 1px solid var(--border); }
+  .guide-grid { display: grid; gap: 32px; }
+  h2 { margin: 0 0 16px; font-size: clamp(24px, 2.4vw, 30px); line-height: 1.25; font-weight: 650; color: var(--text-strong); text-wrap: pretty; }
+  h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.4; color: var(--text-strong); }
+  p { margin: 0; color: var(--text-soft); font-size: 15px; line-height: 1.75; }
+  .guide-answer { margin-top: 24px; }
+  aside { padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  aside h2 { font-size: 23px; }
+  ul { padding-left: 20px; margin: 20px 0 24px; }
+  li { margin-top: 16px; }
+  li strong { color: var(--text-strong); }
+  .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 12px 20px; white-space: normal; }
+  @media (min-width: 960px) { .guide-grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); align-items: start; gap: 64px; } }
+</style>
