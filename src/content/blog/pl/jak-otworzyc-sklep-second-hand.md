@@ -113,8 +113,6 @@ Podaj dostawcy planowany dzień otwarcia, miasto dostawy i oczekiwaną ilość. 
 
 ## 8. Przygotuj marketing otwarcia
 
-## 5. Przygotuj marketing otwarcia
-
 Nawet przy dobrej lokalizacji nie warto liczyć wyłącznie na osoby przechodzące obok. Potencjalni klienci powinni wcześniej dowiedzieć się o nowym sklepie i otrzymać konkretny powód, aby odwiedzić go w pierwszych dniach.
 
 Do promocji otwarcia można wykorzystać:
