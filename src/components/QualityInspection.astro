@@ -3,7 +3,6 @@ import type { Locale } from '../config/locales';
 import { storefront } from '../i18n/storefront';
 import { Image } from 'astro:assets';
 import { imageAsset } from '../lib/images';
-import { whatsappUrl } from '../config/contact';
 
 interface Props { locale?: Locale }
 const { locale = 'pl' } = Astro.props;
@@ -36,13 +35,6 @@ const details = [
             <div><dt>{detail.title}</dt><dd>{detail.text}</dd></div>
           ))}
         </dl>
-        <div class="inspection-action">
-          <a class="inspection-cta" href={whatsappUrl('photos', locale)} data-analytics-whatsapp data-analytics-placement="quality_photos">
-            {s("Zapytaj o aktualną partię")}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.5" /></svg>
-          </a>
-          <span>{s("Kontakt przez WhatsApp")}</span>
-        </div>
         <p class="inspection-note">{s("Zdjęcia w katalogu są przykładowe. Skład i stan dostępnej partii mogą się różnić.")}</p>
       </div>
     </div>
@@ -63,11 +55,6 @@ const details = [
   .inspection-details > div { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 24px; padding: 21px 0; border-bottom: 1px solid var(--border); }
   dt { color: var(--text-strong); font-size: 14px; font-weight: 600; line-height: 1.65; }
   dd { margin: 0; max-width: 32ch; color: var(--text-soft); font-size: 13px; line-height: 1.7; }
-  .inspection-action { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; margin-top: 24px; }
-  .inspection-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 46px; padding: 12px 18px; background: var(--green); color: white; font-size: 13px; font-weight: 600; line-height: 1.5; }
-  .inspection-cta:hover { background: var(--green-hover); }
-  .inspection-cta svg { flex: none; }
-  .inspection-action > span { color: var(--text-muted); font-size: 11px; }
   .inspection-note { max-width: 60ch; margin: 18px 0 0; color: var(--text-muted); font-size: 11px; line-height: 1.7; }
   @media (max-width: 1099px) {
     .inspection-heading, .inspection-grid { column-gap: 36px; }
@@ -80,7 +67,6 @@ const details = [
     .inspection-heading > p { margin: 0; font-size: 14px; }
     .inspection-photo img { aspect-ratio: 8 / 5; }
     .inspection-details > div { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
-    .inspection-action { margin-top: 22px; }
   }
   @media (max-width: 359px) {
     .inspection-details > div { grid-template-columns: 1fr; gap: 5px; }
