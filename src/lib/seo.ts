@@ -37,6 +37,12 @@ export function organizationSchema(site: URL, description: string) {
     location: {
       '@type': 'Place',
       name: `${company.brandName} — magazyn`,
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        opens: contact.workingHours.split('–')[0],
+        closes: contact.workingHours.split('–')[1],
+      },
       address: {
         '@type': 'PostalAddress',
         streetAddress: company.warehouse.street,

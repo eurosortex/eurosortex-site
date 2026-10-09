@@ -7,6 +7,13 @@ const JSON_HEADERS = {
 const DEFAULT_KOMMO_SUBDOMAIN = 'anydayspl';
 const DEFAULT_PIPELINE_ID = 14241439;
 const MAX_BODY_LENGTH = 12_000;
+// Existing tracking fields verified in the anydayspl lead card, 2026-10-09.
+// These IDs are account-specific; never send them to another Kommo account.
+const TRACKING_FIELD_IDS = {
+  utm_content: 772241, utm_medium: 772243, utm_campaign: 772245,
+  utm_source: 772247, utm_term: 772249, referrer: 772253,
+  gclid: 772257, fbclid: 772259,
+};
 const ATTRIBUTION_KEYS = [
   'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id',
   'gclid', 'wbraid', 'gbraid', 'fbclid', 'msclkid', 'ttclid',
@@ -122,7 +129,7 @@ async function handleInquiry({ request, env }) {
 
   // Honeypot: bots receive a neutral success response without creating a lead.
   if (clean(input.website, 120)) {
-    return json({ ok: true });
+    return json({ ok: true, lead_created: false });
   }
 
   const name = clean(input.name, 120);
@@ -162,10 +169,18 @@ async function handleInquiry({ request, env }) {
   }
 
   const baseUrl = `https://${subdomain}.kommo.com/api/v4`;
+  const testLead = /@[^@]+\.invalid$/i.test(reply);
+  const trackingTouch = lastTouch || firstTouch;
+  const trackingFields = subdomain.toLowerCase() === DEFAULT_KOMMO_SUBDOMAIN && trackingTouch
+    ? Object.entries(TRACKING_FIELD_IDS)
+      .filter(([key]) => trackingTouch[key])
+      .map(([key, fieldId]) => ({ field_id: fieldId, values: [{ value: trackingTouch[key] }] }))
+    : [];
   const lead = {
-    name: `Website · ${product}`.slice(0, 250),
+    name: `${testLead ? 'TEST · NIE OBSŁUGIWAĆ · ' : ''}Website · ${product}`.slice(0, 250),
     pipeline_id: pipelineId,
     ...(statusId ? { status_id: statusId } : {}),
+    ...(trackingFields.length ? { custom_fields_values: trackingFields } : {}),
     _embedded: {
       contacts: [
         {
@@ -173,7 +188,7 @@ async function handleInquiry({ request, env }) {
           custom_fields_values: contactFields(reply),
         },
       ],
-      tags: [{ name: 'eurosortex.com' }, { name: `site-${locale}` }],
+      tags: [{ name: 'eurosortex.com' }, { name: `site-${locale}` }, ...(testLead ? [{ name: 'website-test' }] : [])],
     },
   };
 
@@ -227,7 +242,7 @@ async function handleInquiry({ request, env }) {
     console.error('Kommo note creation failed: network error');
   }
 
-  return json({ ok: true });
+  return json({ ok: true, lead_created: true, test_lead: testLead });
 }
 
 export function onRequest(context) {

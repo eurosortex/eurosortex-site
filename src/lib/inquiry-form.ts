@@ -116,7 +116,8 @@ document.querySelectorAll<HTMLFormElement>('[data-inquiry-form]').forEach((form)
 
       if (!response.ok || !result?.ok) throw new Error('Enquiry request failed');
 
-      pushAnalyticsEvent({
+      // Only a confirmed, non-test CRM lead counts as a conversion.
+      if (result.lead_created === true && result.test_lead !== true) pushAnalyticsEvent({
         event: 'generate_lead',
         form_id: 'product_enquiry',
         placement: form.dataset.inquiryPlacement === 'final_cta' ? 'final_cta' : 'product_contact',

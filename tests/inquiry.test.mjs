@@ -29,6 +29,56 @@ test('quote keeps the selected product, delivery city and attribution in the CRM
   assert.match(note, /ID ассортимента: urban-sweatshirts/);
   assert.match(note, /Количество: 50 кг/);
   assert.match(note, /utm_source: local-test/);
+  assert.deepEqual(calls[0].body[0].custom_fields_values, [{ field_id: 772247, values: [{ value: 'local-test' }] }]);
+  assert.deepEqual(await response.json(), { ok: true, lead_created: true, test_lead: false });
+});
+
+test('last-touch attribution is stored atomically with the lead, first touch remains in the note', async (t) => {
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (_url, options) => {
+    calls.push(JSON.parse(options.body));
+    return Response.json(calls.length === 1 ? [{ id: 123 }] : {});
+  });
+  const response = await onRequest({ request: request({ ...base, attribution: {
+    first_touch: { utm_source: 'google', utm_medium: 'organic' },
+    last_touch: { utm_source: 'partner', utm_medium: 'referral', utm_campaign: 'autumn', gclid: 'click-test', referrer: 'https://example.org/' },
+  } }), env: { KOMMO_ACCESS_TOKEN: 'test-only-not-a-credential' } });
+  assert.equal(response.status, 200);
+  const fields = Object.fromEntries(calls[0][0].custom_fields_values.map(f => [f.field_id, f.values[0].value]));
+  assert.deepEqual(fields, { 772247: 'partner', 772243: 'referral', 772245: 'autumn', 772257: 'click-test', 772253: 'https://example.org/' });
+  assert.match(calls[1][0].params.text, /utm_source: google/);
+  assert.match(calls[1][0].params.text, /utm_source: partner/);
+});
+
+test('missing consent attribution does not fabricate a direct source, other accounts get no foreign IDs', async (t) => {
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (_url, options) => {
+    calls.push(JSON.parse(options.body));
+    return Response.json(calls.length % 2 === 1 ? [{ id: 123 }] : {});
+  });
+  await onRequest({ request: request(base), env: { KOMMO_ACCESS_TOKEN: 'test-only-not-a-credential' } });
+  await onRequest({ request: request({ ...base, attribution: { last_touch: { utm_source: 'google' } } }), env: { KOMMO_ACCESS_TOKEN: 'test-only-not-a-credential', KOMMO_SUBDOMAIN: 'another-account' } });
+  assert.equal(calls[0][0].custom_fields_values, undefined);
+  assert.equal(calls[2][0].custom_fields_values, undefined);
+});
+
+test('reserved invalid-domain tests are marked and excluded from conversion reporting', async (t) => {
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (_url, options) => {
+    calls.push(JSON.parse(options.body));
+    return Response.json(calls.length === 1 ? [{ id: 123 }] : {});
+  });
+  const response = await onRequest({ request: request({ ...base, reply: 'seo-test@example.invalid' }), env: { KOMMO_ACCESS_TOKEN: 'test-only-not-a-credential' } });
+  assert.match(calls[0][0].name, /^TEST · NIE OBSŁUGIWAĆ/);
+  assert.ok(calls[0][0]._embedded.tags.some(tag => tag.name === 'website-test'));
+  assert.deepEqual(await response.json(), { ok: true, lead_created: true, test_lead: true });
+});
+
+test('honeypot never creates or reports a lead', async (t) => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => { throw new Error('Unexpected request'); });
+  const response = await onRequest({ request: request({ ...base, website: 'spam' }), env: {} });
+  assert.deepEqual(await response.json(), { ok: true, lead_created: false });
+  assert.equal(fetch.mock.callCount(), 0);
 });
 
 test('older product forms without a city remain compatible', async (t) => {

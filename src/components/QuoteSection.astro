@@ -31,7 +31,7 @@ const s = storefront(locale);
       </dl>
       <div class="company-proof">
         <span class="kicker">{s("MAGAZYN W WARSZAWIE")}</span>
-        <address>{company.warehouse.street}<br />{company.warehouse.postalCode} {company.warehouse.city}</address>
+        <address>{company.warehouse.street}<br />{company.warehouse.postalCode} {company.warehouse.city}<br />{contact.workingDays[locale]} {contact.workingHours}</address>
         <a href={getAboutPath(locale)}>{s("Poznaj EuroSortex →")}</a>
       </div>
     </div>

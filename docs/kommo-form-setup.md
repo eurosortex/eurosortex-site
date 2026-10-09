@@ -4,6 +4,29 @@ The product enquiry form posts to the Cloudflare Pages Function at
 `/api/inquiry`. The function creates a lead and contact in Kommo and then adds
 the complete enquiry as a lead note.
 
+## Attribution and test enquiries
+
+For the existing `anydayspl` account, the function also writes the latest
+available attribution touch into its existing lead tracking fields in the same
+request that creates the lead: utm_content (772241), utm_medium (772243),
+utm_campaign (772245), utm_source (772247), utm_term (772249), referrer (772253),
+gclid (772257), fbclid (772259). Field labels and IDs were verified in Kommo's
+Statistics tab on 2026-10-09. They are deliberately not used for other accounts.
+The note retains both first and last touch, including identifiers that have no
+matching standard field. Missing attribution is left unknown, not invented as
+direct traffic. Existing leads are not backfilled or overwritten.
+
+Successful responses include `lead_created: true`. The frontend counts
+`generate_lead` only for confirmed non-test leads. Enquiries using reserved
+`.invalid` email domains are named `TEST · NIE OBSŁUGIWAĆ`, tagged `website-test`,
+and return `test_lead: true`; they do not count as website conversions. This is
+a reporting convention, not a bypass for validation or CRM automation. A
+honeypot response is neutral success with `lead_created: false`.
+
+Do not sum contact clicks, new leads, qualified leads and sales. Exclude the
+`website-test` tag from CRM sales reports. Historical test #25190214 is identified
+by its explicit TEST title; older GA4 events are not retroactively removed.
+
 ## One-time Kommo setup
 
 1. In Kommo, open **Settings → Integrations → Create integration**.

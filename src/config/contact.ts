@@ -6,7 +6,8 @@ export const contact = {
   whatsappNumber: '48787000980',
   email: 'eurosortexgroup@gmail.com',
   instagramUrl: 'https://instagram.com/eurosortexgroup/',
-  workingHours: '08:00–15:00',
+  workingHours: '08:00–16:00',
+  workingDays: { pl: 'Pon.–pt.', ru: 'Пн–пт', uk: 'Пн–пт', en: 'Mon–Fri' },
 } as const;
 
 export const company = {
@@ -27,7 +28,7 @@ export const company = {
   shareCapital: '5 000,00 PLN',
   warehouse: {
     street: 'ul. Jagiellońska 88',
-    postalCode: '00-992',
+    postalCode: '03-215',
     city: 'Warszawa',
   },
 } as const;
